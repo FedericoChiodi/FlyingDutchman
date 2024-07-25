@@ -8,7 +8,7 @@ import java.sql.Date;
 import java.util.List;
 
 @Repository
-public interface UserDAO extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<User, Long> {
 
     User findByUsername(String username);
 
