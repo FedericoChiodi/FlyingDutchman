@@ -25,11 +25,10 @@ public class Order {
     @JoinColumn(name = "userID")
     private User buyer;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "productID")
     private Product product;
 
-    // Getters and Setters
     public Long getOrderID() {
         return orderID;
     }
@@ -54,7 +53,7 @@ public class Order {
         this.orderTime = orderTime;
     }
 
-    public Boolean isBoughtFromThreshold() {
+    public Boolean getBoughtFromThreshold() {
         return boughtFromThreshold;
     }
 

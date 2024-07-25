@@ -2,6 +2,7 @@ package com.ingsw.flyingdutchman.model.mo;
 
 import jakarta.persistence.*;
 import java.sql.Timestamp;
+import java.util.List;
 
 @Entity
 @Table(name = "AUCTION")
@@ -28,7 +29,8 @@ public class Auction {
     @JoinColumn(name = "productID", nullable = false)
     private Product product_auctioned;
 
-    // Getters and setters
+    @OneToMany(mappedBy = "auction")
+    private List<Threshold> thresholds;
 
     public Long getAuctionID() {
         return auctionID;
@@ -54,7 +56,7 @@ public class Auction {
         this.closing_timestamp = closing_timestamp;
     }
 
-    public Boolean isProduct_sold() {
+    public Boolean getProduct_sold() {
         return product_sold;
     }
 
@@ -62,7 +64,7 @@ public class Auction {
         this.product_sold = product_sold;
     }
 
-    public Boolean isDeleted() {
+    public Boolean getDeleted() {
         return deleted;
     }
 
@@ -76,5 +78,13 @@ public class Auction {
 
     public void setProduct_auctioned(Product product_auctioned) {
         this.product_auctioned = product_auctioned;
+    }
+
+    public List<Threshold> getThresholds() {
+        return thresholds;
+    }
+
+    public void setThresholds(List<Threshold> thresholds) {
+        this.thresholds = thresholds;
     }
 }

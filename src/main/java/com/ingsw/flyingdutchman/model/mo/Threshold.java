@@ -26,7 +26,6 @@ public class Threshold {
     @JoinColumn(name = "auctionID")
     private Auction auction;
 
-    // Getters and Setters
     public Long getThresholdID() {
         return thresholdID;
     }

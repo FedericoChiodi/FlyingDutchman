@@ -2,6 +2,8 @@ package com.ingsw.flyingdutchman.model.mo;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "PRODUCT")
 public class Product {
@@ -37,7 +39,11 @@ public class Product {
     @JoinColumn(name = "ownerID", nullable = false)
     private User owner;
 
-    // Getters and Setters
+    @OneToOne(mappedBy = "product")
+    private Order order;
+
+    @OneToMany(mappedBy = "product_auctioned")
+    private List<Auction> auctions;
 
     public Long getProductID() {
         return productID;
@@ -111,7 +117,19 @@ public class Product {
         this.owner = owner;
     }
 
-    public Boolean isDeleted() {
-        return deleted;
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
+    }
+
+    public List<Auction> getAuctions() {
+        return auctions;
+    }
+
+    public void setAuctions(List<Auction> auctions) {
+        this.auctions = auctions;
     }
 }

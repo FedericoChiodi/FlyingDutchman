@@ -2,6 +2,7 @@ package com.ingsw.flyingdutchman.model.mo;
 
 import jakarta.persistence.*;
 import java.sql.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "USER")
@@ -53,6 +54,15 @@ public class User {
 
     @Column(name = "deleted")
     private boolean deleted;
+
+    @OneToMany(mappedBy = "user")
+    private List<Threshold> thresholds;
+
+    @OneToMany(mappedBy = "owner")
+    private List<Product> products;
+
+    @OneToMany(mappedBy = "buyer")
+    private List<Order> orders;
 
     public Long getUserID() {
         return userID;
@@ -172,5 +182,29 @@ public class User {
 
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
+    }
+
+    public List<Threshold> getThresholds() {
+        return thresholds;
+    }
+
+    public void setThresholds(List<Threshold> thresholds) {
+        this.thresholds = thresholds;
+    }
+
+    public List<Product> getProducts() {
+        return products;
+    }
+
+    public void setProducts(List<Product> products) {
+        this.products = products;
+    }
+
+    public List<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<Order> orders) {
+        this.orders = orders;
     }
 }
