@@ -1,12 +1,11 @@
 package com.ingsw.flyingdutchman.model.mo;
 
 import jakarta.persistence.*;
-import java.io.Serializable;
 import java.sql.Date;
 
 @Entity
 @Table(name = "USER")
-public class User implements Serializable {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
