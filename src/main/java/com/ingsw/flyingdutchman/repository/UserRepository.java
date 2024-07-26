@@ -43,4 +43,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
         user.setDeleted(true);
         save(user);
     }
+
 }

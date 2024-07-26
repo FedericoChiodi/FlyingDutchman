@@ -2,10 +2,14 @@ package com.ingsw.flyingdutchman.model.service;
 
 import com.ingsw.flyingdutchman.model.mo.User;
 import com.ingsw.flyingdutchman.repository.UserRepository;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
+import java.util.Base64;
 import java.util.List;
 
 @Service
@@ -48,4 +52,53 @@ public class UserService {
     public List<User> findAllUsersExceptMeAndDeleted(Long userID) {
         return userRepository.findAllByDeletedFalseAndUserIDNot(userID);
     }
+
+    public void loginUser(User user, HttpServletResponse response) {
+        // Crea un valore del cookie con le informazioni dell'utente
+        String userInfo = user.getUsername();
+
+        // Codifica le informazioni per sicurezza
+        String encodedUserInfo = Base64.getEncoder().encodeToString(userInfo.getBytes());
+
+        // Crea il cookie
+        Cookie userCookie = new Cookie("loggedUser", encodedUserInfo);
+        userCookie.setHttpOnly(true); // Sicurezza
+        userCookie.setSecure(true); // Solo su HTTPS
+        userCookie.setPath("/"); // Disponibile per tutta l'applicazione
+
+        // Aggiungi il cookie alla risposta
+        response.addCookie(userCookie);
+    }
+
+    public void logoutUser(HttpServletRequest request, HttpServletResponse response) {
+        // Trova il cookie esistente e rimuovilo
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("loggedUser".equals(cookie.getName())) {
+                    // Imposta la scadenza del cookie nel passato
+                    cookie.setMaxAge(0);
+                    cookie.setPath("/");
+                    response.addCookie(cookie);
+                    break;
+                }
+            }
+        }
+    }
+
+    public User findLoggedUser(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("loggedUser".equals(cookie.getName())) {
+                    String encodedUserInfo = cookie.getValue();
+                    String decodedUserInfo = new String(Base64.getDecoder().decode(encodedUserInfo));
+
+                    return userRepository.findByUsername(decodedUserInfo);
+                }
+            }
+        }
+        return null; // Utente non trovato
+    }
+
 }
