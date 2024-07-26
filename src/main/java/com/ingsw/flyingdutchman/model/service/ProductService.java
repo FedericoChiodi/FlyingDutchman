@@ -5,6 +5,7 @@ import com.ingsw.flyingdutchman.model.mo.Category;
 import com.ingsw.flyingdutchman.model.mo.Product;
 import com.ingsw.flyingdutchman.model.mo.User;
 import com.ingsw.flyingdutchman.repository.ProductRepository;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,7 +41,7 @@ public class ProductService {
         productRepository.save(product);
     }
 
-    public void deleteProduct(Product product) {
+    public void deleteProduct(@NotNull Product product) {
         product.setDeleted('N');
         productRepository.save(product);
     }
@@ -53,12 +54,16 @@ public class ProductService {
         return productRepository.findByOwner(owner);
     }
 
+    public List<Product> findAllProducts() {
+        return productRepository.findAll();
+    }
+
     public List<Product> findProductsByOwnerNotDeleted(User owner) {
         return productRepository.findByOwnerAndDeletedFalse(owner);
     }
 
-    public List<Product> findAllProducts() {
-        return productRepository.findAll();
+    public List<Product> findByCategory(Category category) {
+        return productRepository.findByCategory(category);
     }
 
     public Product findProductByAuction(Auction auction) {
