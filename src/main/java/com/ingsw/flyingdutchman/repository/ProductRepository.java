@@ -24,6 +24,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findByCategory(Category category);
 
     // Trova il prodotto venduto in un'asta
-    @Query("SELECT p FROM Product p JOIN Auction a WHERE a = :auction")
+    @Query("SELECT p FROM Auction a JOIN a.product_auctioned p WHERE a = :auction")
     Product findByAuction(@Param("auction") Auction auction);
 }
