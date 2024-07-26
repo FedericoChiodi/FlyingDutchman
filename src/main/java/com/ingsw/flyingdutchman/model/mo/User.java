@@ -53,7 +53,7 @@ public class User {
     private String role;
 
     @Column(name = "deleted")
-    private boolean deleted;
+    private Character deleted;
 
     @OneToMany(mappedBy = "user")
     private List<Threshold> thresholds;
@@ -176,11 +176,11 @@ public class User {
         this.role = role;
     }
 
-    public boolean isDeleted() {
+    public Character isDeleted() {
         return deleted;
     }
 
-    public void setDeleted(boolean deleted) {
+    public void setDeleted(Character deleted) {
         this.deleted = deleted;
     }
 

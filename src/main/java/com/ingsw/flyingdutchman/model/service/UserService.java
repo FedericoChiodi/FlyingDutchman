@@ -5,6 +5,7 @@ import com.ingsw.flyingdutchman.repository.UserRepository;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,16 +22,32 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public User createUser(String username, String password, String firstname, String surname, Date birthdate, String address, Short civic_number, Short cap, String city, String state, String email, String cel_number, String role) {
-        return userRepository.create(username, password, firstname, surname, birthdate, address, civic_number, cap, city, state, email, cel_number, role);
+    public User create(String username, String password, String firstname, String surname, Date birthdate, String address, Short civic_number, Short cap, String city, String state, String email, String cel_number, String role) {
+        User user = new User();
+        user.setUsername(username);
+        user.setPassword(password);
+        user.setFirstname(firstname);
+        user.setSurname(surname);
+        user.setBirthdate(birthdate);
+        user.setAddress(address);
+        user.setCivic_number(civic_number);
+        user.setCap(cap);
+        user.setCity(city);
+        user.setState(state);
+        user.setEmail(email);
+        user.setCel_number(cel_number);
+        user.setRole(role);
+        user.setDeleted('N');
+        return userRepository.save(user);
     }
 
     public void updateUser(User user) {
-        userRepository.update(user);
+        userRepository.save(user);
     }
 
-    public void deleteUser(User user) {
-        userRepository.delete(user);
+    public void deleteUser(@NotNull User user) {
+        user.setDeleted('Y');
+        userRepository.save(user);
     }
 
     public User findByUserID(Long userID) {
@@ -49,11 +66,11 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public List<User> findAllUsersExceptMeAndDeleted(Long userID) {
-        return userRepository.findAllByDeletedFalseAndUserIDNot(userID);
+    public List<User> findAllUsersExceptMeAndDeleted(User user) {
+        return userRepository.findAllUsersExceptMeAndDeleted(user);
     }
 
-    public void loginUser(User user, HttpServletResponse response) {
+    public void createLoginCookie(@NotNull User user, @NotNull HttpServletResponse response) {
         // Crea un valore del cookie con le informazioni dell'utente
         String userInfo = user.getUsername();
 
@@ -63,14 +80,14 @@ public class UserService {
         // Crea il cookie
         Cookie userCookie = new Cookie("loggedUser", encodedUserInfo);
         userCookie.setHttpOnly(true); // Sicurezza
-        userCookie.setSecure(true); // Solo su HTTPS
+        userCookie.setSecure(true);   // Solo su HTTPS
         userCookie.setPath("/"); // Disponibile per tutta l'applicazione
 
         // Aggiungi il cookie alla risposta
         response.addCookie(userCookie);
     }
 
-    public void logoutUser(HttpServletRequest request, HttpServletResponse response) {
+    public void deleteLoginCookie(@NotNull HttpServletRequest request, HttpServletResponse response) {
         // Trova il cookie esistente e rimuovilo
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
@@ -86,7 +103,7 @@ public class UserService {
         }
     }
 
-    public User findLoggedUser(HttpServletRequest request) {
+    public User findLoggedUser(@NotNull HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
@@ -100,5 +117,4 @@ public class UserService {
         }
         return null; // Utente non trovato
     }
-
 }
