@@ -19,7 +19,7 @@ public class Order {
     private Timestamp orderTime;
 
     @Column(name = "bought_from_threshold")
-    private Boolean boughtFromThreshold;
+    private Character boughtFromThreshold;
 
     @ManyToOne
     @JoinColumn(name = "userID")
@@ -53,11 +53,11 @@ public class Order {
         this.orderTime = orderTime;
     }
 
-    public Boolean getBoughtFromThreshold() {
+    public Character getBoughtFromThreshold() {
         return boughtFromThreshold;
     }
 
-    public void setBoughtFromThreshold(Boolean boughtFromThreshold) {
+    public void setBoughtFromThreshold(Character boughtFromThreshold) {
         this.boughtFromThreshold = boughtFromThreshold;
     }
 

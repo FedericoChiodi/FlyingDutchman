@@ -49,5 +49,4 @@ public interface AuctionRepository extends JpaRepository<Auction, Long> {
     // Trova Aste dalla categoria del Prodotto
     @Query("SELECT a FROM Auction a WHERE a.product_auctioned.category = :category")
     List<Auction> findAuctionsByCategory(@Param("category") Category category);
-
 }

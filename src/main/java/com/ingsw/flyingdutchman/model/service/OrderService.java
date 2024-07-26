@@ -20,7 +20,7 @@ public class OrderService {
         this.orderRepository = orderRepository;
     }
 
-    public Order createOrder(Timestamp orderTime, Float sellingPrice, Boolean boughtFromThreshold, User buyer, Product product) {
+    public Order createOrder(Timestamp orderTime, Float sellingPrice, Character boughtFromThreshold, User buyer, Product product) {
         sellingPrice = Math.round(sellingPrice * 100.0f) / 100.0f; // Arrotondamento a 2 decimali
         Order order = new Order();
         order.setOrderTime(orderTime);
@@ -43,11 +43,11 @@ public class OrderService {
         return orderRepository.findById(orderId).orElse(null);
     }
 
-    public List<Order> findOrdersByUser(User user) {
-        return orderRepository.findByBuyer(user);
-    }
-
     public Order findOrderByProduct(Product product) {
         return orderRepository.findByProduct(product);
+    }
+
+    public List<Order> findOrdersByUser(User user) {
+        return orderRepository.findByBuyer(user);
     }
 }

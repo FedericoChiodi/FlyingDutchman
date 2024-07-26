@@ -10,6 +10,10 @@ import java.util.List;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long> {
-    List<Order> findByBuyer(User buyer);
+
+    // Trova Ordine dal Prodotto comprato
     Order findByProduct(Product product);
+
+    // Trova Ordini dall'Utente che li ha piazzati
+    List<Order> findByBuyer(User buyer);
 }
