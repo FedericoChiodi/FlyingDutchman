@@ -1,6 +1,5 @@
 package com.ingsw.flyingdutchman.repository;
 
-import com.ingsw.flyingdutchman.model.mo.Auction;
 import com.ingsw.flyingdutchman.model.mo.Category;
 import com.ingsw.flyingdutchman.model.mo.Product;
 import com.ingsw.flyingdutchman.model.mo.User;
@@ -18,12 +17,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findByOwner(User owner);
 
     // Trova i Prodotti dall'Utente che lo vende, ma non cancellato
-    List<Product> findByOwnerAndDeletedFalse(User owner);
+    @Query("SELECT p FROM Product p  WHERE p.owner = :owner AND p.deleted = 'N'")
+    List<Product> findByOwnerAndDeletedFalse(@Param("owner") User owner);
 
     // Trova i Prodotti di una determinata Categoria
     List<Product> findByCategory(Category category);
-
-    // Trova il prodotto venduto in un'asta
-    @Query("SELECT p FROM Auction a JOIN a.product_auctioned p WHERE a = :auction")
-    Product findByAuction(@Param("auction") Auction auction);
 }

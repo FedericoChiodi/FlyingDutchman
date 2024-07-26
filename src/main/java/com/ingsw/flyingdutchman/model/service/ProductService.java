@@ -1,6 +1,5 @@
 package com.ingsw.flyingdutchman.model.service;
 
-import com.ingsw.flyingdutchman.model.mo.Auction;
 import com.ingsw.flyingdutchman.model.mo.Category;
 import com.ingsw.flyingdutchman.model.mo.Product;
 import com.ingsw.flyingdutchman.model.mo.User;
@@ -64,9 +63,5 @@ public class ProductService {
 
     public List<Product> findByCategory(Category category) {
         return productRepository.findByCategory(category);
-    }
-
-    public Product findProductByAuction(Auction auction) {
-        return productRepository.findByAuction(auction);
     }
 }
