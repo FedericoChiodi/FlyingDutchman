@@ -42,7 +42,7 @@ public class ProductService {
     }
 
     public void deleteProduct(@NotNull Product product) {
-        product.setDeleted('N');
+        product.setDeleted('Y');
         productRepository.save(product);
     }
 

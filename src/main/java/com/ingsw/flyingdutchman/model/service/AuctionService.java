@@ -32,7 +32,7 @@ public class AuctionService {
     }
 
     public void deleteAuction(@NotNull Auction auction) {
-        auction.setDeleted('N');
+        auction.setDeleted('Y');
         auctionRepository.save(auction);
     }
 
