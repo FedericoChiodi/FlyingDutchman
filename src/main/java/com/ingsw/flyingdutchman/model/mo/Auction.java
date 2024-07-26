@@ -20,10 +20,10 @@ public class Auction {
     private Timestamp closing_timestamp;
 
     @Column(name = "is_product_sold")
-    private Boolean product_sold;
+    private Character product_sold;
 
     @Column(name = "deleted")
-    private Boolean deleted;
+    private Character deleted;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "productID", nullable = false)
@@ -56,19 +56,19 @@ public class Auction {
         this.closing_timestamp = closing_timestamp;
     }
 
-    public Boolean getProduct_sold() {
+    public Character getProduct_sold() {
         return product_sold;
     }
 
-    public void setProduct_sold(Boolean product_sold) {
+    public void setProduct_sold(Character product_sold) {
         this.product_sold = product_sold;
     }
 
-    public Boolean getDeleted() {
+    public Character getDeleted() {
         return deleted;
     }
 
-    public void setDeleted(Boolean deleted) {
+    public void setDeleted(Character deleted) {
         this.deleted = deleted;
     }
 

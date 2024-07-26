@@ -5,6 +5,7 @@ import com.ingsw.flyingdutchman.model.mo.Category;
 import com.ingsw.flyingdutchman.model.mo.Product;
 import com.ingsw.flyingdutchman.model.mo.User;
 import com.ingsw.flyingdutchman.repository.AuctionRepository;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,13 +26,13 @@ public class AuctionService {
         Auction auction = new Auction();
         auction.setProduct_auctioned(product);
         auction.setOpening_timestamp(openingTimestamp);
-        auction.setDeleted(false);
-        auction.setProduct_sold(false);
+        auction.setDeleted('N');
+        auction.setProduct_sold('N');
         return auctionRepository.save(auction);
     }
 
-    public void deleteAuction(Auction auction) {
-        auction.setDeleted(true);
+    public void deleteAuction(@NotNull Auction auction) {
+        auction.setDeleted('N');
         auctionRepository.save(auction);
     }
 
@@ -43,12 +44,12 @@ public class AuctionService {
         return auctionRepository.findById(auctionID).orElse(null);
     }
 
-    public List<Auction> findByProductOwner(Product product) {
-        return auctionRepository.findByProductOwner(product.getOwner());
+    public List<Auction> findByProductOwner(@NotNull Product product) {
+        return auctionRepository.findByProductOwner(product);
     }
 
-    public List<Auction> findByProductOwnerOpenNotDeleted(Product product) {
-        return auctionRepository.findByProductOwnerAndDeletedIsFalseAndClosingTimestampIsNull(product.getOwner());
+    public List<Auction> findByProductOwnerOpenNotDeleted(@NotNull Product product) {
+        return auctionRepository.findByProductOwnerOpenNotDeleted(product);
     }
 
     public List<Auction> findByOwner(User user) {
@@ -60,11 +61,11 @@ public class AuctionService {
     }
 
     public List<Auction> findOpenAuctionsByOwnerNotDeleted(User user) {
-        return auctionRepository.findByOwnerAndDeletedIsFalseAndClosingTimestampIsNullAndProductSoldIsFalse(user);
+        return auctionRepository.findOpenAuctionsByOwnerNotDeleted(user);
     }
 
     public List<Auction> findAllOpenAuctionsExceptUser(User user) {
-        return auctionRepository.findByOwnerIsNotAndClosingTimestampIsNullAndProductSoldIsFalseAndDeletedIsFalse(user);
+        return auctionRepository.findAllOpenAuctionsExceptUser(user);
     }
 
     public List<Auction> findAllAuctions() {
@@ -76,10 +77,10 @@ public class AuctionService {
     }
 
     public List<Auction> findAuctionByProductDescription(String description) {
-        return auctionRepository.findByDescriptionContainingAndClosingTimestampIsNullAndProductSoldIsFalseAndDeletedIsFalse(description);
+        return auctionRepository.findAuctionByProductDescription(description);
     }
 
     public List<Auction> findAuctionsByCategory(Category category) {
-        return auctionRepository.findByCategoryAndClosingTimestampIsNullAndProductSoldIsFalseAndDeletedIsFalse(category);
+        return auctionRepository.findAuctionsByCategory(category);
     }
 }

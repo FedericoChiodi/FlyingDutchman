@@ -29,7 +29,7 @@ public class Product {
     private String image;
 
     @Column(name = "deleted")
-    private Boolean deleted;
+    private Character deleted;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "categoryID", nullable = false)
@@ -93,11 +93,11 @@ public class Product {
         this.image = image;
     }
 
-    public Boolean getDeleted() {
+    public Character getDeleted() {
         return deleted;
     }
 
-    public void setDeleted(Boolean deleted) {
+    public void setDeleted(Character deleted) {
         this.deleted = deleted;
     }
 

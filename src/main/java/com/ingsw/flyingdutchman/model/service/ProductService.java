@@ -30,7 +30,7 @@ public class ProductService {
         product.setStarting_price(startingPrice);
         product.setCurrent_price(currentPrice);
         product.setImage(image);
-        product.setDeleted(false);
+        product.setDeleted('N');
         product.setCategory(category);
         product.setOwner(owner);
         return productRepository.save(product);
@@ -41,7 +41,7 @@ public class ProductService {
     }
 
     public void deleteProduct(Product product) {
-        product.setDeleted(true);
+        product.setDeleted('N');
         productRepository.save(product);
     }
 
