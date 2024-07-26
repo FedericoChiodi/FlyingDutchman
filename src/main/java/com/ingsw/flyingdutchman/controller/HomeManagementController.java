@@ -6,7 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -20,19 +20,19 @@ public class HomeManagementController {
         this.userService = userService;
     }
 
-    @RequestMapping("/view")
-    public String view(HttpServletRequest request, Model model) {
+    @GetMapping("/view")
+    public String view(HttpServletRequest request) {
         String username = request.getParameter("username");
         User userToAuthenticate = userService.findByUsername(username);
 
-        model.addAttribute("loggedUser", userToAuthenticate);
-        model.addAttribute("loggedOn", userToAuthenticate != null);
+        request.setAttribute("loggedUser", userToAuthenticate);
+        request.setAttribute("loggedOn", userToAuthenticate != null);
 
         return "homeManagement/view";
     }
 
     @RequestMapping("/login")
-    public String login(HttpServletRequest request, HttpServletResponse response, Model model) {
+    public String login(HttpServletRequest request, HttpServletResponse response) {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
         User userToAuthenticate = userService.findByUsername(username);
@@ -48,22 +48,22 @@ public class HomeManagementController {
             applicationMessage = "Could not find such User";
         }
 
-        model.addAttribute("loggedUser", userToAuthenticate);
-        model.addAttribute("loggedOn", userToAuthenticate != null);
-        model.addAttribute("applicationMessage", applicationMessage);
+        request.setAttribute("loggedUser", userToAuthenticate);
+        request.setAttribute("loggedOn", userToAuthenticate != null);
+        request.setAttribute("applicationMessage", applicationMessage);
 
         return "homeManagement/view";
     }
 
     @RequestMapping("/logout")
-    public String logout(HttpServletRequest request, HttpServletResponse response, Model model) {
+    public String logout(HttpServletRequest request, HttpServletResponse response) {
         userService.deleteLoginCookie(request, response);
 
         String applicationMessage = "Logged out successfully!";
 
-        model.addAttribute("loggedUser", null);
-        model.addAttribute("loggedOn", false);
-        model.addAttribute("applicationMessage", applicationMessage);
+        request.setAttribute("loggedUser", null);
+        request.setAttribute("loggedOn", false);
+        request.setAttribute("applicationMessage", applicationMessage);
 
         return "homeManagement/view";
     }
