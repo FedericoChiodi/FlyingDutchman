@@ -8,6 +8,10 @@ import java.util.List;
 
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long> {
+
+    // Trova una Categoria dal nome
     Category findByName(String name);
+
+    // Trova tutte le Categorie tranne quella specificata
     List<Category> findAllByCategoryIDNot(Long categoryID);
 }
