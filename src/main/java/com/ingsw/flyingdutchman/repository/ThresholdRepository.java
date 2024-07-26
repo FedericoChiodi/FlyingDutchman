@@ -10,6 +10,10 @@ import java.util.List;
 
 @Repository
 public interface ThresholdRepository extends JpaRepository<Threshold, Long> {
+
+    // Trova le Prenotazioni piazzate da un Utente
     List<Threshold> findByUser(User user);
+
+    // Trova le Prenotazioni di un'Asta
     List<Threshold> findByAuction(Auction auction);
 }
