@@ -1,8 +1,9 @@
 <meta charset="utf-8"/>
 
 <!-- Linking styles -->
-<link rel="stylesheet" href="${pageContext.request.contextPath}/WEB-INF/css/flyingdutchman.css" type="text/css" media="screen">
+<link rel="stylesheet" href="${pageContext.request.contextPath}css/flyingdutchman.css" type="text/css" media="screen">
 <title>Flying Dutchman: <%=menuActiveLink%></title>
+<link rel="icon" type="image/x-icon" href="${pageContext.request.contextPath}images/favicon.ico">
 <script>
     let applicationMessage;
     <%if (applicationMessage != null) {%>

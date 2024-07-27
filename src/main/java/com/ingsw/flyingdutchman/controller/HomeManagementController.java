@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/homeManagement")
 public class HomeManagementController {
 
     private final UserService userService;
@@ -20,7 +19,7 @@ public class HomeManagementController {
         this.userService = userService;
     }
 
-    @GetMapping("/view")
+    @GetMapping({"/", "/view"})
     public String view(HttpServletRequest request) {
         String username = request.getParameter("username");
         User userToAuthenticate = userService.findByUsername(username);

@@ -35,7 +35,7 @@
 
   <section id="logoContainer">
     <h1 class="logo">Flying Dutchman</h1>
-    <img id="logoImage" src="${pageContext.request.contextPath}/WEB-INF/images/logoSimple.png" height="115" width="115" loading="eager" alt="Immagine Logo del Sito">
+    <img id="logoImage" src="${pageContext.request.contextPath}images/logoSimple.png" height="115" width="115" loading="eager" alt="Immagine Logo del Sito">
   </section>
 
   <form name="logoutForm" action="${pageContext.request.contextPath}/logout" method="post"></form>
