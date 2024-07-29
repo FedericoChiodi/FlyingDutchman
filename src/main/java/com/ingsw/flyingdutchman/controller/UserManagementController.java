@@ -86,7 +86,7 @@ public class UserManagementController {
 
             // Elimina l'utente e il cookie di login
             userService.deleteUser(loggedUser);
-            userService.deleteLoginCookie(request, response);
+            userService.deleteLoginCookie(response);
 
             request.setAttribute("loggedOn",false);
             request.setAttribute("loggedUser",null);

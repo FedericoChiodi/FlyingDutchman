@@ -79,28 +79,17 @@ public class UserService {
 
         // Crea il cookie
         Cookie userCookie = new Cookie("loggedUser", encodedUserInfo);
-        userCookie.setHttpOnly(true); // Sicurezza
-        userCookie.setSecure(true);   // Solo su HTTPS
-        userCookie.setPath("/"); // Disponibile per tutta l'applicazione
+        userCookie.setPath("/");
 
         // Aggiungi il cookie alla risposta
         response.addCookie(userCookie);
     }
 
-    public void deleteLoginCookie(@NotNull HttpServletRequest request, HttpServletResponse response) {
-        // Trova il cookie esistente e rimuovilo
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if ("loggedUser".equals(cookie.getName())) {
-                    // Imposta la scadenza del cookie nel passato
-                    cookie.setMaxAge(0);
-                    cookie.setPath("/");
-                    response.addCookie(cookie);
-                    break;
-                }
-            }
-        }
+    public void deleteLoginCookie(HttpServletResponse response) {
+        Cookie cookie = new Cookie("loggedUser", "");
+        cookie.setMaxAge(0);
+        cookie.setPath("/");
+        response.addCookie(cookie);
     }
 
     public User findLoggedUser(@NotNull HttpServletRequest request) {

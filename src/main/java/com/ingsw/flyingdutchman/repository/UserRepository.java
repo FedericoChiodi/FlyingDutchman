@@ -12,7 +12,8 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<User, Long> {
 
     // Trova un Utente dal suo username
-    User findByUsername(String username);
+    @Query("SELECT u FROM User u WHERE u.username = :username AND u.deleted = 'N'")
+    User findByUsername(@Param("username") String username);
 
     // Trova gli Utenti dal loro ruolo
     List<User> findByRole(String role);

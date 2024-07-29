@@ -6,8 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class HomeManagementController {
@@ -19,10 +18,9 @@ public class HomeManagementController {
         this.userService = userService;
     }
 
-    @GetMapping({"/", "/view"})
+    @GetMapping({"/", "/homeManagement/view"})
     public String view(HttpServletRequest request) {
-        String username = request.getParameter("username");
-        User userToAuthenticate = userService.findByUsername(username);
+        User userToAuthenticate = userService.findLoggedUser(request);
 
         request.setAttribute("loggedUser", userToAuthenticate);
         request.setAttribute("loggedOn", userToAuthenticate != null);
@@ -30,39 +28,43 @@ public class HomeManagementController {
         return "homeManagement/view";
     }
 
-    @RequestMapping("/login")
-    public String login(HttpServletRequest request, HttpServletResponse response) {
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
+    @RequestMapping(value = "/login", params = {"username","password"})
+    public String login(HttpServletRequest request,
+                        HttpServletResponse response,
+                        @CookieValue(value = "loggedUser", defaultValue = "") String loggedUserCookie,
+                        @RequestParam(value = "username", defaultValue = "") String username,
+                        @RequestParam(value = "password", defaultValue = "") String password
+                        ) {
         User userToAuthenticate = userService.findByUsername(username);
-        String applicationMessage = null;
+        String applicationMessage;
+
+        if(!loggedUserCookie.isEmpty()) throw new RuntimeException("Errore cookie");
 
         if (userToAuthenticate != null) {
             if (userToAuthenticate.getPassword().equals(password) && userToAuthenticate.isDeleted() == 'N') {
                 userService.createLoginCookie(userToAuthenticate, response);
             } else {
                 applicationMessage = "Invalid username or password";
+                request.setAttribute("applicationMessage", applicationMessage);
             }
-        } else {
-            applicationMessage = "Could not find such User";
+        }
+        else{
+            applicationMessage = "Could not find that User";
+            request.setAttribute("applicationMessage", applicationMessage);
         }
 
         request.setAttribute("loggedUser", userToAuthenticate);
         request.setAttribute("loggedOn", userToAuthenticate != null);
-        request.setAttribute("applicationMessage", applicationMessage);
 
         return "homeManagement/view";
     }
 
     @RequestMapping("/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response) {
-        userService.deleteLoginCookie(request, response);
-
-        String applicationMessage = "Logged out successfully!";
+        userService.deleteLoginCookie(response);
 
         request.setAttribute("loggedUser", null);
         request.setAttribute("loggedOn", false);
-        request.setAttribute("applicationMessage", applicationMessage);
 
         return "homeManagement/view";
     }
