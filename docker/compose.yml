@@ -1,0 +1,38 @@
+networks:
+        flying_dutchman_net:
+
+        services:
+                db_flying_dutchman:
+                image: FedericoChiodi/db:latest
+                container_name: db_flying_dutchman
+                environment:
+                        - MYSQL_USER=root
+                        - MYSQL_PASSWORD=StrongPassword123@
+                ports:
+                        - 3306:3306
+                command: --default-authentication-plugin=caching_sha2_password
+                volumes:
+                        - dbdata:/var/lib/mysql
+                networks:
+                        - flying_dutchman_net
+        healthcheck:
+                test: mysqladmin ping -h 127.0.0.1 -u $$MYSQL_USER --password=$$MYSQL_PASSWORD
+                start_period: 2s
+                interval: 3s
+                timeout: 5s
+                retries: 15
+
+        forze_armate:
+                image: FedericoChiodi/flying_dutchman:latest
+                container_name: flying_dutchman
+                environment:
+                        DB_HOST: db_flying_dutchman
+                ports:
+                        - 8080:8080
+                depends_on:
+                        db_sito:
+                                condition: service_healthy
+                networks:
+                        - flying_dutchman_net
+        volumes:
+                dbdata:
