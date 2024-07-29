@@ -1,5 +1,16 @@
 <%response.setHeader("Cache-Control", "no-cache");%>
 
+<%
+  String menuActiveLink;
+  String menuActiveLinkReq = (String) request.getAttribute("menuActiveLink");
+  if (menuActiveLinkReq == null || menuActiveLinkReq.isEmpty()) {
+    menuActiveLink = "Home";
+  }
+  else{
+    menuActiveLink = menuActiveLinkReq;
+  }
+%>
+
 <script>
   function headerOnLoadHandler() {
     const usernameTextField = document.querySelector("#usernameLogin");
@@ -43,43 +54,45 @@
   <nav>
     <ul>
       <li <%=menuActiveLink.equals("Home")?"class=\"active\"":""%>>
-        <a href="${pageContext.request.contextPath}/home">Home</a>
+        <a href="${pageContext.request.contextPath}/">Home</a>
       </li>
       <%if (!loggedOn) {%>
       <li <%=menuActiveLink.equals("Registrati")?"class=\"active\"":""%>>
-        <a href="${pageContext.request.contextPath}/user/register">Registrati</a>
+        <a href="${pageContext.request.contextPath}/userManagement/register">Registrati</a>
       </li>
       <%}%>
       <%if (loggedOn){%>
       <li <%=menuActiveLink.equals("Utente")?"class=\"active\"":""%>>
-        <a href="${pageContext.request.contextPath}/user">Utente</a>
+        <a href="${pageContext.request.contextPath}/userManagement">Utente</a>
       </li>
       <li <%=menuActiveLink.equals("Prodotti")?"class=\"active\"":""%>>
-        <a href="${pageContext.request.contextPath}/product">Prodotti</a>
+        <a href="${pageContext.request.contextPath}/productManagement">Prodotti</a>
       </li>
       <li <%=menuActiveLink.equals("Aste")?"class=\"active\"":""%>>
-        <a href="${pageContext.request.contextPath}/auction">Aste</a>
+        <a href="${pageContext.request.contextPath}/auctionManagement">Aste</a>
       </li>
       <li <%=menuActiveLink.equals("Ordini")?"class=\"active\"":""%>>
-        <a href="${pageContext.request.contextPath}/order">Ordini</a>
+        <a href="${pageContext.request.contextPath}/orderManagement">Ordini</a>
       </li>
       <%String role = loggedUser.getRole();%>
       <%if(role.equals("Premium") || role.equals("Admin") || role.equals("SuperAdmin")){%>
       <li <%=menuActiveLink.equals("Prenota")?"class=\"active\"":""%>>
-        <a href="${pageContext.request.contextPath}/threshold">Prenota</a>
+        <a href="${pageContext.request.contextPath}/thresholdManagement">Prenota</a>
       </li>
       <%}%>
       <%if(role.equals("Admin") || role.equals("SuperAdmin")){%>
       <li <%=menuActiveLink.equals("Banna")?"class=\"active\"":""%>>
-        <a href="${pageContext.request.contextPath}/user/ban">Banna</a>
+        <a href="${pageContext.request.contextPath}/userManagement/ban">Banna</a>
       </li>
       <%}%>
       <%if(role.equals("SuperAdmin")){%>
       <li <%=menuActiveLink.equals("Abbassa")?"class=\"active\"":""%>>
-        <a href="${pageContext.request.contextPath}/auction/lowerAll">Abbassa</a>
+        <a href="${pageContext.request.contextPath}/auctionManagement/lowerAll">Abbassa</a>
       </li>
       <%}%>
-      <li><a href="javascript:logoutForm.submit()">Logout</a></li>
+      <li>
+        <a href="javascript:logoutForm.submit()">Logout</a>
+      </li>
       <%}%>
     </ul>
   </nav>
