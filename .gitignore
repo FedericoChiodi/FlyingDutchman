@@ -5,7 +5,6 @@ target/
 !**/src/test/**/target/
 /.jqwik-database
 /flyingdutchman.log
-/flyingdutchman.log.2024-07-27.0.gz
 
 ### STS ###
 .apt_generated
