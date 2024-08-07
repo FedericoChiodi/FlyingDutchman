@@ -13,7 +13,7 @@
 <!DOCTYPE html>
     <html>
     <head>
-        <%@include file="/include/htmlHead.jsp"%>
+        <%@include file="../include/htmlHead.jsp"%>
         <style>
             main {
                 display: flex;
@@ -74,9 +74,10 @@
                 }
             }
         </script>
+        <title></title>
     </head>
     <body>
-        <%@include file="/include/header.jsp"%>
+        <%@include file="../include/header.jsp"%>
     <main>
         <section id="pageTitle">
             <h1>Centro Gestione degli Utenti</h1>
@@ -89,7 +90,9 @@
             </section>
         <%}%>
 
-        <%if (loggedOn){%>
+        <%if (loggedOn){
+            assert loggedUser != null;
+        %>
             <section id="modifyUserButtonSelection">
                 <input type="button" id="modifyUserButton" name="modifyUserButton"
                        class="button" value="Modifica i miei dati" onclick="modifyUser(<%=loggedUser.getUserID()%>)"/>
@@ -100,20 +103,17 @@
                        class="button" value="Cancella il mio Account" onclick="deleteUser(<%=loggedUser.getUserID()%>)"/>
             </section>
         <%}%>
-        <form name="insertForm" method="post" action="Dispatcher">
-            <input type="hidden" name="controllerAction" value="UserManagement.insertView"/>
+        <form name="insertForm" method="get" action="userManagement/view">
         </form>
 
-        <form name="modifyForm" method="post" action="Dispatcher">
+        <form name="modifyForm" method="get" action="userManagement/modify">
             <input type="hidden" name="userID"/>
-            <input type="hidden" name="controllerAction" value="UserManagement.modifyView"/>
         </form>
 
-        <form name="deleteForm" method="post" action="Dispatcher">
+        <form name="deleteForm" method="post" action="userManagement/ban">
             <input type="hidden" name="userID"/>
-            <input type="hidden" name="controllerAction" value="UserManagement.delete"/>
         </form>
     </main>
-    <%@include file="/include/footer.inc"%>
+    <%@include file="../include/footer.inc"%>
     </body>
 </html>

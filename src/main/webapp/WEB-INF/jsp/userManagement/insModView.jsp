@@ -1,10 +1,9 @@
 <%@ page session="false"%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8"%>
 <%@ page import="com.ingsw.flyingdutchman.model.mo.User" %>
 
 <%
-  int i = 0;
-  boolean loggedOn = (Boolean) request.getAttribute("loggedOn");
+    boolean loggedOn = (Boolean) request.getAttribute("loggedOn");
   String applicationMessage = (String) request.getAttribute("applicationMessage");
   User loggedUser = (User) request.getAttribute("loggedUser");
   String auctionID = (String) request.getAttribute("auctionID");
@@ -14,7 +13,8 @@
 <!DOCTYPE html>
 <html>
   <head>
-      <%@include file="/include/htmlHead.jsp"%>
+      <%@include file="../include/htmlHead.jsp"%>
+    <title></title>
   </head>
   <style>
     /* Allinea gli elementi del form in colonne */
@@ -72,42 +72,8 @@
       font-size: 24px;
     }
   </style>
-  <script>
-    var status  = "<%=action%>";
-    
-    function submitUser(){
-      let f;
-      f = document.insModForm;
-
-      let auctionID = <%=auctionID%>;
-      if (auctionID == null){
-        f.controllerAction.value = "UserManagement."+status;
-      }
-      else {
-        f.auctionID.value = auctionID;
-        f.controllerAction.value = "UserManagement."+status;
-      }
-
-    }
-    function goBack(){
-      let auctionID = <%=auctionID%>;
-      if (auctionID == null){
-        document.backForm.submit();
-      }
-      else {
-        document.backForm.controllerAction.value = "AuctionManagement.inspectAuction";
-        document.backForm.auctionID.value = auctionID;
-        document.backForm.submit();
-      }
-    }
-
-    function mainOnLoadHandler(){
-      document.insModForm.addEventListener("submit",submitUser);
-      document.insModForm.backButton.addEventListener("click", goBack);
-    }
-  </script>
   <body>
-    <%@include file="/include/header.jsp"%>
+    <%@include file="../include/header.jsp"%>
     <main>
     <section id="pageTitle">
       <h1>
@@ -116,7 +82,7 @@
     </section>
     
     <section id="insModFormSection">
-      <form name="insModForm" action="Dispatcher" method="post">
+      <form name="insModForm" action="<%=action.equals("insert") ? "userManagement/insert" : "userManagement/modify"%>" method="post">
         
         <div class="field clearfix">
           <label for="username">Username</label>
@@ -197,20 +163,18 @@
         <div class="field clearfix">
           <label>&#160;</label>
           <input type="submit" class="button" value="Invia"/>
-          <input type="button" name="backButton" class="button" value="Annulla"/>
+
+          <form name="backForm" method="get" action="userManagement/view">
+            <input type="hidden" name="auctionID" value="<%=auctionID%>">
+            <input type="submit" name="backButton" class="button" value="Annulla"/>
+          </form>
         </div>
 
-        <input type="hidden" name="controllerAction"/>
         <input type="hidden" name="auctionID" value="-1">
       </form>
     </section>
     
-    <form name="backForm" method="post" action="Dispatcher">
-      <input type="hidden" name="controllerAction" value="UserManagement.view">
-      <input type="hidden" name="auctionID">
-    </form>
-    
   </main>
-  <%@include file="/include/footer.inc"%>
+  <%@include file="../include/footer.inc"%>
   </body>
 </html>

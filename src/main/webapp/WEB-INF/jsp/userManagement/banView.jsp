@@ -2,10 +2,9 @@
 <%@ page import="com.ingsw.flyingdutchman.model.mo.User" %>
 
 <%
-  int i = 0;
+  int i;
   boolean loggedOn = (Boolean) request.getAttribute("loggedOn");
   User loggedUser = (User) request.getAttribute("loggedUser");
-  String applicationMessage = (String) request.getAttribute("applicationMessage");
   String menuActiveLink = "Banna";
   User[] usernames = (User[]) request.getAttribute("usernames");
 %>
@@ -37,15 +36,7 @@
       margin-bottom: 10px;
     }
   </style>
-  <script>
-    function deleteUser(){
-      document.banForm.controllerAction.value = "UserManagement.ban";
-      document.banForm.submit();
-    }
-    function mainOnLoadHandler(){
-      document.banForm.addEventListener("submit",deleteUser);
-    }
-  </script>
+  <title></title>
 </head>
 <body>
   <%@include file="../include/header.jsp"%>
@@ -59,7 +50,7 @@
     </section>
 
     <section id="banFormSection">
-      <form name="banForm" action="Dispatcher" method="post" autocomplete="off">
+      <form name="banForm" action="userManagement/ban" method="post" autocomplete="off">
         <div class="field clearfix">
           <label for="username">Username dell'utente da bannare: </label>
           <input list="usernames" name="username" id="username">
@@ -72,7 +63,6 @@
         <div class="field clearfix">
           <input type="submit" class="button" value="Banna"/>
         </div>
-        <input type="hidden" name="controllerAction"/>
       </form>
     </section>
   </main>
