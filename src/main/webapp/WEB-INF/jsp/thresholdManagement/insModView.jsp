@@ -5,7 +5,6 @@
 <%@ page import="com.ingsw.flyingdutchman.model.mo.Auction" %>
 
 <%
-    int i = 0;
     boolean loggedOn = (Boolean) request.getAttribute("loggedOn");
     User loggedUser = (User) request.getAttribute("loggedUser");
     String applicationMessage = (String) request.getAttribute("applicationMessage");
@@ -17,8 +16,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <%@include file="/include/htmlHead.jsp"%>
-</head>
+    <%@include file="../include/htmlHead.jsp"%>
+    <title></title></head>
 <style>
     /* Allinea gli elementi del form in colonne */
     .field {
@@ -64,12 +63,11 @@
     }
 </style>
 <script>
-    let status  = "<%=action%>";
+    let status = "<%=action%>";
 
     function submitThreshold(){
         let f;
         f = document.insModForm;
-        f.controllerAction.value = "ThresholdManagement."+status;
         <%if(action.equals("modify")){%>
             f.thresholdID.value = <%=threshold.getThresholdID()%>;
         <%}%>
@@ -77,23 +75,14 @@
             f.auctionID.value = <%=auction.getAuctionID()%>;
         <%}%>
     }
-    function goBack(){
-        <%if(action.equals("modify")){%>
-            document.backForm.controllerAction.value = "ThresholdManagement.view";
-        <%}%>
-        <%if(action.equals("insert")){%>
-            document.backForm.auctionID.value = <%=auction.getAuctionID()%>;
-            document.backForm.controllerAction.value = "AuctionManagement.inspectAuction";
-        <%}%>
-        document.backForm.submit();
-    }
+
     function mainOnLoadHandler(){
-        document.insModForm.addEventListener("submit",submitThreshold);
+        document.insModForm.addEventListener("submit", submitThreshold);
         document.insModForm.backButton.addEventListener("click", goBack);
     }
 </script>
 <body>
-<%@include file="/include/header.jsp"%>
+<%@include file="../include/header.jsp"%>
 <main>
     <section id="pageTitle">
         <h1>
@@ -102,7 +91,7 @@
     </section>
 
     <section id="insModFormSection">
-        <form name="insModForm" action="Dispatcher" method="post">
+        <form name="insModForm" action="<%=action.equals("modify") ? "thresholdManagement/modify" : "thresholdManagement/insert"%>" method="post">
 
             <div class="field clearfix">
                 <span>Prezzo corrente del Prodotto: </span>
@@ -127,16 +116,14 @@
 
             <input type="hidden" name="auctionID"/>
             <input type="hidden" name="thresholdID"/>
-            <input type="hidden" name="controllerAction"/>
         </form>
     </section>
 
-    <form name="backForm" method="post" action="Dispatcher">
-        <input type="hidden" name="controllerAction">
-        <input type="hidden" name="auctionID"/>
+    <form name="backForm" method="get" action="<%=action.equals("modify") ? "thresholdManagement/view" : "auctionManagement/inspect"%>">
+        <input type="hidden" name="auctionID" value="<%=auction.getAuctionID()%>"/>
     </form>
 
 </main>
-<%@include file="/include/footer.inc"%>
+<%@include file="../include/footer.inc"%>
 </body>
 </html>

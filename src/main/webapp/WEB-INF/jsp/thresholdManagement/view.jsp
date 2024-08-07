@@ -14,7 +14,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <%@include file="/include/htmlHead.jsp"%>
+    <%@include file="../include/htmlHead.jsp"%>
     <script>
         function deleteThreshold(thresholdID){
             document.deleteForm.thresholdID.value = thresholdID;
@@ -74,9 +74,10 @@
             font-size: x-large;
         }
     </style>
+    <title></title>
 </head>
 <body>
-<%@include file="/include/header.jsp"%>
+<%@include file="../include/header.jsp"%>
 <main>
 
     <section id="pageTitle">
@@ -90,13 +91,13 @@
     <%if(thresholds.length > 0){%>
         <section id="thresholds" class="clearfix">
             <%for (i = 0; i < thresholds.length; i++){%>
-                <%if(!thresholds[i].getAuction().isDeleted()){%>
+                <%if(thresholds[i].getAuction().getDeleted() == 'N'){%>
                     <article>
                         <a href="javascript:deleteThreshold(<%=thresholds[i].getThresholdID()%>)">
-                            <img id="trashcan" src="images/trashcan.png" width="24" height="24" alt="X">
+                            <img id="trashcan" src="${pageContext.request.contextPath}images/trashcan.png" width="24" height="24" alt="X">
                         </a>
                         <a href="javascript:editThreshold(<%=thresholds[i].getThresholdID()%>)">
-                            <img id="pencil" src="images/pencil.png" width="24" height="24" alt="E">
+                            <img id="pencil" src="${pageContext.request.contextPath}images/pencil.png" width="24" height="24" alt="E">
                         </a>
                         <b><span class="description"><%=thresholds[i].getAuction().getProduct_auctioned().getDescription()%></span></b>
                         <br/>
@@ -115,21 +116,18 @@
                class="button" value="Inizia Subito!" onclick="goToAuctions()"/>
     <%}%>
 
-    <form name="deleteForm" method="post" action="Dispatcher">
+    <form name="deleteForm" method="post" action="thresholdManagement/delete">
         <input type="hidden" name="thresholdID"/>
-        <input type="hidden" name="controllerAction" value="ThresholdManagement.delete"/>
     </form>
 
-    <form name="editForm" method="post" action="Dispatcher">
+    <form name="editForm" method="get" action="thresholdManagement/modify">
         <input type="hidden" name="thresholdID"/>
-        <input type="hidden" name="controllerAction" value="ThresholdManagement.modifyView"/>
     </form>
 
-    <form name="goToAuctionsForm" method="post" action="Dispatcher">
-        <input type="hidden" name="controllerAction" value="AuctionManagement.view"/>
+    <form name="goToAuctionsForm" method="get" action="auctionManagement/view">
     </form>
 
 </main>
-<%@include file="/include/footer.inc"%>
+<%@include file="../include/footer.inc"%>
 </body>
 </html>
