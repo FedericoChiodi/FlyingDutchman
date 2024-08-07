@@ -44,7 +44,7 @@ public class UserManagementController {
         return "userManagement/view";
     }
 
-    @DeleteMapping("/ban")
+    @PostMapping("/ban")
     public String delete(HttpServletRequest request, HttpServletResponse response){
         User loggedUser = userService.findLoggedUser(request);
 
@@ -153,7 +153,7 @@ public class UserManagementController {
         return "userManagement/insModView";
     }
 
-    @PutMapping("/modify")
+    @PostMapping("/modify")
     public String modifyUser(HttpServletRequest request){
         User user = userService.findLoggedUser(request);
 
