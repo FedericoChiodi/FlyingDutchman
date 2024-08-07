@@ -51,7 +51,7 @@ public class ThresholdManagementController {
         return "thresholdManagement/view";
     }
 
-    @DeleteMapping("/delete")
+    @PostMapping("/delete")
     public String delete(HttpServletRequest request){
         User loggedUser = userService.findLoggedUser(request);
         List<Threshold> thresholds = thresholdService.findThresholdsByUser(loggedUser);
@@ -102,7 +102,7 @@ public class ThresholdManagementController {
         return "thresholdManagement/insModView";
     }
 
-    @PutMapping("/modify")
+    @PostMapping("/modify")
     public String modify(HttpServletRequest request){
         User loggedUser = userService.findLoggedUser(request);
         Threshold threshold = thresholdService.findThresholdById(Long.valueOf(request.getParameter("thresholdID")));
