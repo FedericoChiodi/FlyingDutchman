@@ -1,5 +1,5 @@
 <%@ page session="false"%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8"%>
 <%@ page import="com.ingsw.flyingdutchman.model.mo.User" %>
 <%@ page import="com.ingsw.flyingdutchman.model.mo.Category" %>
 
@@ -15,7 +15,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <%@include file="/include/htmlHead.jsp"%>
+    <%@include file="../include/htmlHead.jsp"%>
+    <title></title>
 </head>
 <style>
     /* Allinea gli elementi del form in colonne */
@@ -77,9 +78,9 @@
     function submitProduct(){
         document.insertForm.current_price.value = document.insertForm.starting_price.value;
 
-        var f;
+        let f;
         f = document.insertForm;
-        f.controllerAction.value = "ProductManagement.insert";
+        f.controllerAction.value = "ProductManagementController.insert";
     }
     function goBack(){
         document.backForm.submit();
@@ -91,9 +92,9 @@
         document.getElementById("starting_price").addEventListener("input", validateForm);
     }
     function previewFile() {
-        var preview = document.querySelector('#preview');
-        var file    = document.querySelector('input[type=file]').files[0];
-        var reader  = new FileReader();
+        const preview = document.querySelector('#preview');
+        const file = document.querySelector('input[type=file]').files[0];
+        const reader = new FileReader();
 
         reader.onloadend = function () {
             preview.src = reader.result;
@@ -106,10 +107,10 @@
     }
 
     function validateForm() {
-        var minPriceInput = document.getElementById("min_price");
-        var startingPriceInput = document.getElementById("starting_price");
-        var minPrice = parseFloat(minPriceInput.value);
-        var startingPrice = parseFloat(startingPriceInput.value);
+        const minPriceInput = document.getElementById("min_price");
+        const startingPriceInput = document.getElementById("starting_price");
+        const minPrice = parseFloat(minPriceInput.value);
+        const startingPrice = parseFloat(startingPriceInput.value);
 
         if (startingPrice < minPrice) {
             startingPriceInput.setCustomValidity("Il Prezzo di Partenza non può essere minore del Prezzo Minimo!");
@@ -119,7 +120,7 @@
     }
 </script>
 <body>
-<%@include file="/include/header.jsp"%>
+<%@include file="../include/header.jsp"%>
 <main>
     <section id="pageTitle">
         <h1>
@@ -128,7 +129,7 @@
     </section>
 
     <section id="insertFormSection">
-        <form id="insertForm" name="insertForm" action="Upload" method="post" enctype="multipart/form-data">
+        <form id="insertForm" name="insertForm" action="${pageContext.request.contextPath}/Upload" method="post" enctype="multipart/form-data">
             <div class="field clearfix">
                 <label for="description">Descrizione</label>
                 <input type="text" id="description" name="description"
@@ -159,7 +160,7 @@
             <div class="field clearfix">
                 <label for="image">Immagine del prodotto</label>
                 <input type="file" id="image" name="image" onchange="previewFile()" required accept="image/png"/>
-                <img id="preview" src="">
+                <img id="preview" src="" alt="Immagine del Prodotto">
             </div>
 
             <div class="field clearfix">
@@ -174,11 +175,10 @@
         </form>
     </section>
 
-    <form name="backForm" method="post" action="Dispatcher">
-        <input type="hidden" name="controllerAction" value="ProductManagement.view">
+    <form name="backForm" method="get" action="productManagement/view">
     </form>
 
 </main>
-<%@include file="/include/footer.inc"%>
+<%@include file="../include/footer.inc"%>
 </body>
 </html>

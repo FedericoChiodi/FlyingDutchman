@@ -16,7 +16,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <%@include file="/include/htmlHead.jsp"%>
+        <%@include file="../include/htmlHead.jsp"%>
         <script>
             function insertProduct(){
                 document.insertForm.submit();
@@ -81,9 +81,10 @@
                 margin-bottom: 12px;
             }
         </style>
+        <title></title>
     </head>
     <body>
-        <%@include file="/include/header.jsp"%>
+        <%@include file="../include/header.jsp"%>
     <main>
         <%if(!soldProductsAction){%>
             <section id="pageTitle">
@@ -126,7 +127,7 @@
                     <article>
                         <%if(!soldProductsAction){%>
                             <a href="javascript:deleteProduct(<%=products[i].getProductID()%>)">
-                                <img id="trashcan" src="images/trashcan.png" width="24" height="24" alt="X">
+                                <img id="trashcan" src="${pageContext.request.contextPath}images/trashcan.png" width="24" height="24" alt="X">
                             </a>
                         <%}%>
                         <b><span class="description"><%=products[i].getDescription()%></span></b>
@@ -146,23 +147,19 @@
             </section>
         <%}%>
 
-        <form name="insertForm" method="post" action="Dispatcher">
-            <input type="hidden" name="controllerAction" value="ProductManagement.insertView"/>
+        <form name="insertForm" method="get" action="productManagement/insertView">
         </form>
 
-        <form name="viewSoldProductsForm" method="post" action="Dispatcher">
-            <input type="hidden" name="controllerAction" value="ProductManagement.viewSoldProducts"/>
+        <form name="viewSoldProductsForm" method="post" action="productManagement/viewSold">
         </form>
 
-        <form name="viewProductForm" method="post" action="Dispatcher">
-            <input type="hidden" name="controllerAction" value="ProductManagement.view"/>
+        <form name="viewProductForm" method="get" action="productManagement/view">
         </form>
 
-        <form name="deleteForm" method="post" action="Dispatcher">
+        <form name="deleteForm" method="post" action="productManagement/delete">
             <input type="hidden" name="productID"/>
-            <input type="hidden" name="controllerAction" value="ProductManagement.delete"/>
         </form>
     </main>
-        <%@include file="/include/footer.inc"%>
+        <%@include file="../include/footer.inc"%>
     </body>
 </html>
