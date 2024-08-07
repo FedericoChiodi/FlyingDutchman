@@ -42,7 +42,7 @@ public class ProductManagementController {
         return prepareProducts(request, loggedUser);
     }
 
-    @GetMapping("/insert")
+    @GetMapping("/insertView")
     public String insertView(HttpServletRequest request){
         User loggedUser = userService.findLoggedUser(request);
         List<Category> categories = categoryService.getAllCategoriesExceptPremium();
@@ -79,7 +79,7 @@ public class ProductManagementController {
         return "productManagement/view";
     }
 
-    @DeleteMapping("/delete")
+    @PostMapping("/delete")
     public String delete(HttpServletRequest request){
         User loggedUser = userService.findLoggedUser(request);
         Product product = productService.findProductById(Long.valueOf(request.getParameter("productID")));
