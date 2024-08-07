@@ -12,7 +12,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <%@include file="/include/htmlHead.jsp"%>
+    <%@include file="../include/htmlHead.jsp"%>
     <script>
         function tryThresholds(){
             document.tryForm.submit();
@@ -46,12 +46,13 @@
         }
 
     </style>
+    <title></title>
 </head>
 <body>
-    <%@include file="/include/header.jsp"%>
+    <%@include file="../include/header.jsp"%>
     <main>
         <section id="confettiSectionLeft">
-            <img src="images/confetti.png" width="300px" height="550px" alt="Image containing Confetti">
+            <img src="${pageContext.request.contextPath}images/confetti.png" width="300px" height="550px" alt="Image containing Confetti">
         </section>
 
         <section id="contentSection">
@@ -62,13 +63,12 @@
         </section>
 
         <section id="confettiSectionRight">
-            <img src="images/confetti.png" width="300px" height="550px" alt="Image containing Confetti">
+            <img src="${pageContext.request.contextPath}images/confetti.png" width="300px" height="550px" alt="Image containing Confetti">
         </section>
 
-        <form name="tryForm" method="post" action="Dispatcher">
-            <input type="hidden" name="controllerAction" value="ThresholdManagement.view">
+        <form name="tryForm" method="get" action="thresholdManagement/view">
         </form>
     </main>
-    <%@include file="/include/footer.inc"%>
+    <%@include file="../include/footer.inc"%>
 </body>
 </html>

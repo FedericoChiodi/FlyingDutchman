@@ -1,5 +1,5 @@
 <%@ page session="false"%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8"%>
 <%@ page import="com.ingsw.flyingdutchman.model.mo.User" %>
 <%@ page import="com.ingsw.flyingdutchman.model.mo.Auction" %>
 <%
@@ -17,18 +17,13 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <%@include file="/include/htmlHead.jsp"%>
+        <%@include file="../include/htmlHead.jsp"%>
+        <title></title>
     </head>
     <script>
         function submitOrder(){
             let f;
             f = document.insertForm;
-            <%if(isPremium){%>
-                f.controllerAction.value = "OrderManagement.buyPremium";
-            <%}%>
-            <%if(!isPremium){%>
-                f.controllerAction.value = "OrderManagement.pay";
-            <%}%>
             f.auctionID.value = <%=auction.getAuctionID()%>;
         }
         function goBack(){
@@ -94,7 +89,7 @@
 
     </style>
     <body>
-        <%@include file="/include/header.jsp"%>
+        <%@include file="../include/header.jsp"%>
         <main>
             <section id="orderInfo">
                 <h2>Stai per acquistare: </h2><br/>
@@ -110,25 +105,22 @@
                 </span><br/>
             </section>
 
-            <form form id="insertForm" name="insertForm" action="Dispatcher" method="post">
+            <form id="insertForm" name="insertForm" action="<%=isPremium ? "orderManagement/premium" : "orderManagement/pay"%>" method="post">
                 <input type="submit" id="confirmButton" name="confirmButton" class="button" value="Paga"/>
                 <input type="button" id="modifyButton" name="modifyButton" class="button" value="Modifica i miei Dati"/>
                 <input type="button" id="backButton" name="backButton" class="button" value="Annulla"/>
-                <input type="hidden" name="controllerAction"/>
                 <input type="hidden" name="auctionID">
             </form>
 
-            <form name="backForm" method="post" action="Dispatcher">
+            <form name="backForm" method="get" action="auctionManagement/inspect">
                 <input type="hidden" name="auctionID"/>
-                <input type="hidden" name="controllerAction" value="AuctionManagement.inspectAuction">
             </form>
 
-            <form name="modifyForm" method="post" action="Dispatcher">
-                <input type="hidden" name="controllerAction" value="UserManagement.modifyView">
+            <form name="modifyForm" method="get" action="userManagement/modify">
                 <input type="hidden" name="auctionID" value="<%=auction.getAuctionID()%>">
             </form>
 
         </main>
-        <%@include file="/include/footer.inc"%>
+        <%@include file="../include/footer.inc"%>
     </body>
 </html>
