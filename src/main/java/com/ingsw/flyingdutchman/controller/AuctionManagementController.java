@@ -98,7 +98,7 @@ public class AuctionManagementController {
         }
     }
 
-    @PutMapping("/update")
+    @PostMapping("/update")
     public String update(HttpServletRequest request){
         User loggedUser = userService.findLoggedUser(request);
         Auction auction = auctionService.findAuctionById(Long.valueOf(request.getParameter("auctionID")));
@@ -120,7 +120,7 @@ public class AuctionManagementController {
         return "auctionManagement/lowerAllView";
     }
 
-    @DeleteMapping("/delete")
+    @PostMapping("/delete")
     public String delete(HttpServletRequest request){
         User loggedUser = userService.findLoggedUser(request);
         Auction auction = auctionService.findAuctionById(Long.valueOf(request.getParameter("auctionID")));
