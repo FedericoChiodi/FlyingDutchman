@@ -43,10 +43,10 @@ public interface AuctionRepository extends JpaRepository<Auction, Long> {
     List<Auction> findAllAuctionsExceptPremium();
 
     // Trova Aste per la descrizione del Prodotto
-    @Query("SELECT a FROM Auction a WHERE a.product_auctioned.description = :description")
+    @Query("SELECT a FROM Auction a WHERE a.product_auctioned.description = :description AND a.deleted = 'N' AND a.product_sold = 'N'")
     List<Auction> findAuctionByProductDescription(@Param("description") String description);
 
     // Trova Aste dalla categoria del Prodotto
-    @Query("SELECT a FROM Auction a WHERE a.product_auctioned.category = :category")
+    @Query("SELECT a FROM Auction a WHERE a.product_auctioned.category = :category AND a.deleted = 'N' AND a.product_sold = 'N'")
     List<Auction> findAuctionsByCategory(@Param("category") Category category);
 }
