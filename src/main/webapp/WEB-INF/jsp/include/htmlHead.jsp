@@ -2,7 +2,7 @@
     String applicationMessageHeader = (String) request.getAttribute("applicationMessage");
 %>
 
-<meta charset="utf-8"/>
+<meta charset="UTF-8"/>
 
 <!-- Linking styles -->
 <link rel="stylesheet" href="/css/flyingdutchman.css" type="text/css" media="screen">
@@ -25,7 +25,7 @@
     function formatFloat(value) {
       const number = parseFloat(value);
       if (!isNaN(number)) {
-          return '€' + number.toFixed(2);
+          return '\u20AC' + number.toFixed(2);
       } else {
           return value;
       }
