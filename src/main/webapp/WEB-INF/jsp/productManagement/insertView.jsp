@@ -1,15 +1,8 @@
 <%@ page session="false"%>
 <%@ page contentType="text/html;charset=UTF-8"%>
-<%@ page import="com.ingsw.flyingdutchman.model.mo.User" %>
 <%@ page import="com.ingsw.flyingdutchman.model.mo.Category" %>
 
 <%
-    int i = 0;
-    boolean loggedOn = (Boolean) request.getAttribute("loggedOn");
-    User loggedUser = (User) request.getAttribute("loggedUser");
-    String applicationMessage = (String) request.getAttribute("applicationMessage");
-    String menuActiveLink = "Prodotti";
-    User user = (User) request.getAttribute("user");
     Category[] categories = (Category[]) request.getAttribute("categories");
 %>
 <!DOCTYPE html>
@@ -77,10 +70,6 @@
 <script>
     function submitProduct(){
         document.insertForm.current_price.value = document.insertForm.starting_price.value;
-
-        let f;
-        f = document.insertForm;
-        f.controllerAction.value = "ProductManagementController.insert";
     }
     function goBack(){
         document.backForm.submit();
@@ -129,7 +118,7 @@
     </section>
 
     <section id="insertFormSection">
-        <form id="insertForm" name="insertForm" action="${pageContext.request.contextPath}/Upload" method="post" enctype="multipart/form-data">
+        <form id="insertForm" name="insertForm" action="/Upload" method="post" enctype="multipart/form-data">
             <div class="field clearfix">
                 <label for="description">Descrizione</label>
                 <input type="text" id="description" name="description"
@@ -151,8 +140,8 @@
             <div>
                 <label for="categoryID">Categoria: </label>
                 <select id="categoryID" name="categoryID">
-                    <%for(i = 0; i < categories.length ; i++){%>
-                        <option value="<%=categories[i].getCategoryID()%>"><%=categories[i].getName()%></option>
+                    <%for(Category category : categories){%>
+                        <option value="<%=category.getCategoryID()%>"><%=category.getName()%></option>
                     <%}%>
                 </select>
             </div>
@@ -171,11 +160,10 @@
 
             <input type="hidden" id="current_price" name="current_price"/>
             <input type="hidden" id="ownerID" name="ownerID"/>
-            <input type="hidden" name="controllerAction"/>
         </form>
     </section>
 
-    <form name="backForm" method="get" action="productManagement/view">
+    <form name="backForm" method="get" action="/productManagement/view">
     </form>
 
 </main>

@@ -1,17 +1,17 @@
 <%
-    String applicationMessage = (String) request.getAttribute("applicationMessage");
+    String applicationMessageHeader = (String) request.getAttribute("applicationMessage");
 %>
 
 <meta charset="utf-8"/>
 
 <!-- Linking styles -->
-<link rel="stylesheet" href="${pageContext.request.contextPath}css/flyingdutchman.css" type="text/css" media="screen">
+<link rel="stylesheet" href="/css/flyingdutchman.css" type="text/css" media="screen">
 <title>Flying Dutchman</title>
-<link rel="icon" type="image/x-icon" href="${pageContext.request.contextPath}images/favicon.ico">
+<link rel="icon" type="image/x-icon" href="/images/favicon.ico">
 <script>
     let applicationMessage;
-    <%if (applicationMessage != null) {%>
-        applicationMessage="<%=applicationMessage%>";
+    <%if (applicationMessageHeader != null) {%>
+        applicationMessage="<%=applicationMessageHeader%>";
     <%}%>
     function onLoadHandler() {
         headerOnLoadHandler();

@@ -2,13 +2,8 @@
 <%@ page import="com.ingsw.flyingdutchman.model.mo.User" %>
 
 <%
-    int i = 0;
     boolean loggedOn = (Boolean) request.getAttribute("loggedOn");
     User loggedUser = (User) request.getAttribute("loggedUser");
-    String applicationMessage = (String) request.getAttribute("applicationMessage");
-    User user = (User) request.getAttribute("user");
-    String action = (user!=null) ? "modify" : "insert";
-    String menuActiveLink = (loggedUser!=null) ? "Utente" : "Registrati";
 %>
 <!DOCTYPE html>
     <html>
@@ -103,14 +98,14 @@
                        class="button" value="Cancella il mio Account" onclick="deleteUser(<%=loggedUser.getUserID()%>)"/>
             </section>
         <%}%>
-        <form name="insertForm" method="get" action="userManagement/view">
+        <form name="insertForm" method="get" action="/userManagement/view">
         </form>
 
-        <form name="modifyForm" method="get" action="userManagement/modify">
+        <form name="modifyForm" method="get" action="/userManagement/modify">
             <input type="hidden" name="userID"/>
         </form>
 
-        <form name="deleteForm" method="post" action="userManagement/ban">
+        <form name="deleteForm" method="post" action="/userManagement/ban">
             <input type="hidden" name="userID"/>
         </form>
     </main>

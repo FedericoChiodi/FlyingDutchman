@@ -38,7 +38,7 @@
       <%if(loggedOn){%>
         <%if (loggedUser.getRole().equals("Default")){%>
         <a href="javascript:buyPremium()">
-          <img id="premiumBanner" src="${pageContext.request.contextPath}images/premiumBanner.png" alt="Premium Banner Image" height="175px" width="900px">
+          <img id="premiumBanner" src="/images/premiumBanner.png" alt="Premium Banner Image" height="175px" width="900px">
         </a>
         <%}%>
       <%}%>
@@ -88,7 +88,7 @@
       </p>
     </article>
 
-    <form name="buyPremiumForm" method="post" action="${pageContext.request.contextPath}/orderManagement/premium"></form>
+    <form name="buyPremiumForm" method="post" action="/orderManagement/premium"></form>
   </main>
   <%@include file="../include/footer.inc"%>
 </body>

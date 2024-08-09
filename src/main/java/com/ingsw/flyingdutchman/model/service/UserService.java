@@ -74,11 +74,8 @@ public class UserService {
         // Crea un valore del cookie con le informazioni dell'utente
         String userInfo = user.getUsername();
 
-        // Codifica le informazioni per sicurezza
-        String encodedUserInfo = Base64.getEncoder().encodeToString(userInfo.getBytes());
-
         // Crea il cookie
-        Cookie userCookie = new Cookie("loggedUser", encodedUserInfo);
+        Cookie userCookie = new Cookie("loggedUser", userInfo);
         userCookie.setPath("/");
 
         // Aggiungi il cookie alla risposta
@@ -97,10 +94,7 @@ public class UserService {
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if ("loggedUser".equals(cookie.getName())) {
-                    String encodedUserInfo = cookie.getValue();
-                    String decodedUserInfo = new String(Base64.getDecoder().decode(encodedUserInfo));
-
-                    return userRepository.findByUsername(decodedUserInfo);
+                    return userRepository.findByUsername(cookie.getValue());
                 }
             }
         }

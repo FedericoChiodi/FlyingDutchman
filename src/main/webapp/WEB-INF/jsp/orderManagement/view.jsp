@@ -1,13 +1,7 @@
 <%@ page session="false"%>
-<%@page import="com.ingsw.flyingdutchman.model.mo.User"%>
 <%@ page import="com.ingsw.flyingdutchman.model.mo.Order" %>
 
 <%
-    int i;
-    boolean loggedOn = (Boolean) request.getAttribute("loggedOn");
-    User loggedUser = (User) request.getAttribute("loggedUser");
-    String applicationMessage = (String) request.getAttribute("applicationMessage");
-    String menuActiveLink = "Ordini";
     Order[] orders = (Order[]) request.getAttribute("orders");
 %>
 <%@ page contentType="text/html;charset=UTF-8"%>
@@ -56,7 +50,7 @@
 
             <section id="orders">
                 <%if(orders.length > 0){%>
-                    <%for(i = 0; i < orders.length; i++){%>
+                    <%for(int i = 0; i < orders.length; i++){%>
                         <article id="orderContainer" class="clearfix">
                             <span id="counter" class="counter"><%=i+1%>- </span>
                             <b><span id="productDescription" class="description"><%=orders[i].getProduct().getDescription()%></span></b><br/>

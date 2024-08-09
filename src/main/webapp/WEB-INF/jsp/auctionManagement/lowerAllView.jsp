@@ -1,14 +1,6 @@
 <%@ page session="false"%>
-<%@page import="com.ingsw.flyingdutchman.model.mo.User"%>
 
-<%
-    int i = 0;
-    boolean loggedOn = (Boolean) request.getAttribute("loggedOn");
-    User loggedUser = (User) request.getAttribute("loggedUser");
-    String applicationMessage = (String) request.getAttribute("applicationMessage");
-    String menuActiveLink = "Abbassa";
-%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8"%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -51,8 +43,8 @@
                 </button>
             </section>
 
-            <form name="lowerForm" method="get" action="thresholdManagement/update">
-                <input type="hidden" name="pageToReturn" value="auctionManagement/lowerAllView">
+            <form name="lowerForm" method="get" action="/thresholdManagement/update">
+                <input type="hidden" name="pageToReturn" value="/auctionManagement/lowerAllView">
             </form>
         </main>
     <%@include file="../include/footer.inc"%>

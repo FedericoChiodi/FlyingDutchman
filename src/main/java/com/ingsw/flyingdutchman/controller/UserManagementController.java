@@ -96,7 +96,7 @@ public class UserManagementController {
         return "homeManagement/view";
     }
 
-    @GetMapping("/ban")
+    @RequestMapping("/ban")
     public String banView(HttpServletRequest request){
         User loggedUser = userService.findLoggedUser(request);
 
@@ -109,7 +109,7 @@ public class UserManagementController {
         return "userManagement/banView";
     }
 
-    @PostMapping("/insert")
+    @RequestMapping("/register")
     public String insertUser(HttpServletRequest request){
         User loggedUser = userService.findLoggedUser(request);
 
@@ -178,14 +178,14 @@ public class UserManagementController {
         request.setAttribute("loggedUser", user);
 
         String auctionID = request.getParameter("auctionID");
-        if(auctionID != null){
+        try{
             Auction auction = auctionService.findAuctionById(Long.valueOf(auctionID));
-
             request.setAttribute("auction",auction);
             return "auctionManagement/inspectAuction";
+
         }
-        else{
-            return "homeManagement/view";
+        catch (Exception e) {
+            return "userManagement/view";
         }
     }
 

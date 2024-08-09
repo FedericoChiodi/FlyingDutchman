@@ -1,13 +1,7 @@
 <%@ page session="false"%>
-<%@page import="com.ingsw.flyingdutchman.model.mo.User"%>
 <%@ page import="com.ingsw.flyingdutchman.model.mo.Threshold" %>
 
 <%
-    int i = 0;
-    boolean loggedOn = (Boolean) request.getAttribute("loggedOn");
-    User loggedUser = (User) request.getAttribute("loggedUser");
-    String applicationMessage = (String) request.getAttribute("applicationMessage");
-    String menuActiveLink = "Prenota";
     Threshold[] thresholds = (Threshold[]) request.getAttribute("thresholds");
 %>
 
@@ -90,18 +84,18 @@
 
     <%if(thresholds.length > 0){%>
         <section id="thresholds" class="clearfix">
-            <%for (i = 0; i < thresholds.length; i++){%>
-                <%if(thresholds[i].getAuction().getDeleted() == 'N'){%>
+            <%for (Threshold threshold : thresholds){%>
+                <%if(threshold.getAuction().getDeleted() == 'N'){%>
                     <article>
-                        <a href="javascript:deleteThreshold(<%=thresholds[i].getThresholdID()%>)">
-                            <img id="trashcan" src="${pageContext.request.contextPath}images/trashcan.png" width="24" height="24" alt="X">
+                        <a href="javascript:deleteThreshold(<%=threshold.getThresholdID()%>)">
+                            <img id="trashcan" src="/images/trashcan.png" width="24" height="24" alt="X">
                         </a>
-                        <a href="javascript:editThreshold(<%=thresholds[i].getThresholdID()%>)">
-                            <img id="pencil" src="${pageContext.request.contextPath}images/pencil.png" width="24" height="24" alt="E">
+                        <a href="javascript:editThreshold(<%=threshold.getThresholdID()%>)">
+                            <img id="pencil" src="/images/pencil.png" width="24" height="24" alt="E">
                         </a>
-                        <b><span class="description"><%=thresholds[i].getAuction().getProduct_auctioned().getDescription()%></span></b>
+                        <b><span class="description"><%=threshold.getAuction().getProduct_auctioned().getDescription()%></span></b>
                         <br/>
-                        <span class="float-value"><%=thresholds[i].getPrice()%></span>
+                        <span class="float-value"><%=threshold.getPrice()%></span>
                     </article>
                 <%}%>
             <%}%>
@@ -116,15 +110,15 @@
                class="button" value="Inizia Subito!" onclick="goToAuctions()"/>
     <%}%>
 
-    <form name="deleteForm" method="post" action="thresholdManagement/delete">
+    <form name="deleteForm" method="post" action="/thresholdManagement/delete">
         <input type="hidden" name="thresholdID"/>
     </form>
 
-    <form name="editForm" method="get" action="thresholdManagement/modify">
+    <form name="editForm" method="get" action="/thresholdManagement/modify">
         <input type="hidden" name="thresholdID"/>
     </form>
 
-    <form name="goToAuctionsForm" method="get" action="auctionManagement/view">
+    <form name="goToAuctionsForm" method="get" action="/auctionManagement/view">
     </form>
 
 </main>

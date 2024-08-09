@@ -1,14 +1,8 @@
 <%@ page session="false"%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="com.ingsw.flyingdutchman.model.mo.User" %>
+<%@ page contentType="text/html;charset=UTF-8"%>
 <%@ page import="com.ingsw.flyingdutchman.model.mo.Product" %>
 
 <%
-    int i = 0;
-    boolean loggedOn = (Boolean) request.getAttribute("loggedOn");
-    User loggedUser = (User) request.getAttribute("loggedUser");
-    String applicationMessage = (String) request.getAttribute("applicationMessage");
-    String menuActiveLink = "Aste";
     Product[] products = (Product []) request.getAttribute("products");
 %>
 <!DOCTYPE html>
@@ -94,13 +88,13 @@
     <%}%>
 
     <section id="insertFormSection">
-        <form id="insertForm" name="insertForm" action="auctionManagement/insert" method="post">
+        <form id="insertForm" name="insertForm" action="/auctionManagement/insert" method="post">
 
             <%if(products.length > 0){%>
                 <div id="productsList">
                     <select id="productID" name="productID">
-                        <%for(i = 0; i < products.length ; i++){%>
-                            <option value="<%=products[i].getProductID()%>"><%=products[i].getDescription()%></option>
+                        <%for(Product product : products){%>
+                            <option value="<%=product.getProductID()%>"><%=product.getDescription()%></option>
                         <%}%>
                     </select>
                 </div>
@@ -125,7 +119,7 @@
         </form>
     </section>
 
-    <form name="backForm" method="get" action="auctionManagement/view">
+    <form name="backForm" method="get" action="/auctionManagement/view">
     </form>
 
 </main>

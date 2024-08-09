@@ -1,12 +1,12 @@
-<%response.setHeader("Cache-Control", "no-cache");%>
-
 <%
-  String menuActiveLink;
+  response.setHeader("Cache-Control", "no-cache");
   String menuActiveLinkReq = (String) request.getAttribute("menuActiveLink");
+  Boolean loggedOnHeader = (Boolean) request.getAttribute("loggedOn");
+
+  String menuActiveLink;
   if (menuActiveLinkReq == null || menuActiveLinkReq.isEmpty()) {
     menuActiveLink = "Home";
-  }
-  else{
+  } else {
     menuActiveLink = menuActiveLinkReq;
   }
 %>
@@ -18,7 +18,7 @@
     const passwordTextField = document.querySelector("#passwordLogin");
     const passwordTextFieldMsg = "La password \xE8 obbligatoria.";
 
-    if (usernameTextField !== undefined && passwordTextField !== undefined ) {
+    if (usernameTextField !== null && passwordTextField !== null ) {
       usernameTextField.setCustomValidity(usernameTextFieldMsg);
       usernameTextField.addEventListener("change", function () {
         this.setCustomValidity(this.validity.valueMissing ? usernameTextFieldMsg : "");
@@ -46,48 +46,48 @@
 
   <section id="logoContainer">
     <h1 class="logo">Flying Dutchman</h1>
-    <img id="logoImage" src="${pageContext.request.contextPath}images/logoSimple.png" height="115" width="115" loading="eager" alt="Immagine Logo del Sito">
+    <img id="logoImage" src="/images/logoSimple.png" height="115" width="115" loading="eager" alt="Immagine Logo del Sito">
   </section>
 
-  <form name="logoutForm" action="${pageContext.request.contextPath}/logout" method="post"></form>
+  <form name="logoutForm" action="/logout" method="post"></form>
 
   <nav>
     <ul>
       <li <%=menuActiveLink.equals("Home")?"class=\"active\"":""%>>
-        <a href="${pageContext.request.contextPath}/">Home</a>
+        <a href="/homeManagement/view">Home</a>
       </li>
-      <%if (!loggedOn) {%>
+      <%if (!loggedOnHeader) {%>
       <li <%=menuActiveLink.equals("Registrati")?"class=\"active\"":""%>>
-        <a href="${pageContext.request.contextPath}/userManagement/register">Registrati</a>
+        <a href="/userManagement/insert">Registrati</a>
       </li>
       <%}%>
-      <%if (loggedOn){%>
+      <%if (loggedOnHeader){%>
       <li <%=menuActiveLink.equals("Utente")?"class=\"active\"":""%>>
-        <a href="${pageContext.request.contextPath}/userManagement">Utente</a>
+        <a href="/userManagement/view">Utente</a>
       </li>
       <li <%=menuActiveLink.equals("Prodotti")?"class=\"active\"":""%>>
-        <a href="${pageContext.request.contextPath}/productManagement">Prodotti</a>
+        <a href="/productManagement/view">Prodotti</a>
       </li>
       <li <%=menuActiveLink.equals("Aste")?"class=\"active\"":""%>>
-        <a href="${pageContext.request.contextPath}/auctionManagement">Aste</a>
+        <a href="/auctionManagement/view">Aste</a>
       </li>
       <li <%=menuActiveLink.equals("Ordini")?"class=\"active\"":""%>>
-        <a href="${pageContext.request.contextPath}/orderManagement">Ordini</a>
+        <a href="/orderManagement/view">Ordini</a>
       </li>
       <%String role = loggedUser.getRole();%>
       <%if(role.equals("Premium") || role.equals("Admin") || role.equals("SuperAdmin")){%>
       <li <%=menuActiveLink.equals("Prenota")?"class=\"active\"":""%>>
-        <a href="${pageContext.request.contextPath}/thresholdManagement">Prenota</a>
+        <a href="/thresholdManagement/view">Prenota</a>
       </li>
       <%}%>
       <%if(role.equals("Admin") || role.equals("SuperAdmin")){%>
       <li <%=menuActiveLink.equals("Banna")?"class=\"active\"":""%>>
-        <a href="${pageContext.request.contextPath}/userManagement/ban">Banna</a>
+        <a href="/userManagement/ban">Banna</a>
       </li>
       <%}%>
       <%if(role.equals("SuperAdmin")){%>
       <li <%=menuActiveLink.equals("Abbassa")?"class=\"active\"":""%>>
-        <a href="${pageContext.request.contextPath}/auctionManagement/lowerAll">Abbassa</a>
+        <a href="/auctionManagement/lowerAll">Abbassa</a>
       </li>
       <%}%>
       <li>
@@ -97,9 +97,9 @@
     </ul>
   </nav>
 
-  <%if (!loggedOn) {%>
+  <%if (!loggedOnHeader) {%>
     <section id="login" class="clearfix">
-      <form name="logonForm" action="${pageContext.request.contextPath}/login" method="post">
+      <form name="logonForm" action="/login" method="post">
         <label for="usernameLogin">Utente</label>
         <input type="text" id="usernameLogin" name="username" maxlength="40" required autocomplete="off">
 

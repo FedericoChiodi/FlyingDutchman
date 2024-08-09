@@ -3,11 +3,8 @@
 <%@ page import="com.ingsw.flyingdutchman.model.mo.User" %>
 
 <%
-    boolean loggedOn = (Boolean) request.getAttribute("loggedOn");
-  String applicationMessage = (String) request.getAttribute("applicationMessage");
   User loggedUser = (User) request.getAttribute("loggedUser");
   String auctionID = (String) request.getAttribute("auctionID");
-  String menuActiveLink = (loggedUser !=null) ? "Utente" : "Registrati";
   String action = (loggedUser !=null) ? "modify" : "insert";
 %>
 <!DOCTYPE html>
@@ -82,7 +79,7 @@
     </section>
     
     <section id="insModFormSection">
-      <form name="insModForm" action="<%=action.equals("insert") ? "userManagement/insert" : "userManagement/modify"%>" method="post">
+      <form name="insModForm" action="<%=action.equals("insert") ? "/userManagement/register" : "/userManagement/modify"%>" method="post">
         
         <div class="field clearfix">
           <label for="username">Username</label>
@@ -164,7 +161,7 @@
           <label>&#160;</label>
           <input type="submit" class="button" value="Invia"/>
 
-          <form name="backForm" method="get" action="userManagement/view">
+          <form name="backForm" method="get" action="/userManagement/view">
             <input type="hidden" name="auctionID" value="<%=auctionID%>">
             <input type="submit" name="backButton" class="button" value="Annulla"/>
           </form>

@@ -2,17 +2,13 @@
 <%@ page contentType="text/html;charset=UTF-8"%>
 <%@ page import="com.ingsw.flyingdutchman.model.mo.User" %>
 <%@ page import="com.ingsw.flyingdutchman.model.mo.Auction" %>
+<%@ page import="java.util.Objects" %>
 <%
-    int i = 0;
-    boolean loggedOn = (Boolean) request.getAttribute("loggedOn");
     User loggedUser = (User) request.getAttribute("loggedUser");
-    String applicationMessage = (String) request.getAttribute("applicationMessage");
-    String menuActiveLink = "Ordini";
     Auction auction = (Auction) request.getAttribute("auction");
-    Boolean isPremium = (Boolean) request.getAttribute("isPremium");
-    if(isPremium == null){
-        isPremium = false;
-    }
+    Boolean isPremiumReq = (Boolean) request.getAttribute("isPremium");
+    boolean isPremium;
+    isPremium = Objects.requireNonNullElse(isPremiumReq, false);
 %>
 <!DOCTYPE html>
 <html>
@@ -105,18 +101,18 @@
                 </span><br/>
             </section>
 
-            <form id="insertForm" name="insertForm" action="<%=isPremium ? "orderManagement/premium" : "orderManagement/pay"%>" method="post">
+            <form id="insertForm" name="insertForm" action="<%=isPremium ? "/orderManagement/premium" : "/orderManagement/pay"%>" method="post">
                 <input type="submit" id="confirmButton" name="confirmButton" class="button" value="Paga"/>
                 <input type="button" id="modifyButton" name="modifyButton" class="button" value="Modifica i miei Dati"/>
                 <input type="button" id="backButton" name="backButton" class="button" value="Annulla"/>
                 <input type="hidden" name="auctionID">
             </form>
 
-            <form name="backForm" method="get" action="auctionManagement/inspect">
+            <form name="backForm" method="get" action="/auctionManagement/inspect">
                 <input type="hidden" name="auctionID"/>
             </form>
 
-            <form name="modifyForm" method="get" action="userManagement/modify">
+            <form name="modifyForm" method="get" action="/userManagement/modify">
                 <input type="hidden" name="auctionID" value="<%=auction.getAuctionID()%>">
             </form>
 

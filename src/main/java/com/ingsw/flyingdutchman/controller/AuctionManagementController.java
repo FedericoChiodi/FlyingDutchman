@@ -110,7 +110,7 @@ public class AuctionManagementController {
         return prepareRequestAuctions(request, loggedUser);
     }
 
-    @GetMapping("/lowerAll")
+    @RequestMapping("/lowerAll")
     public String lowerAllView(HttpServletRequest request){
         User loggedUser = userService.findLoggedUser(request);
 

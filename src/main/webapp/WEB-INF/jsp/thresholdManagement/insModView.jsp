@@ -1,14 +1,9 @@
 <%@ page session="false"%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="com.ingsw.flyingdutchman.model.mo.User" %>
+<%@ page contentType="text/html;charset=UTF-8"%>
 <%@ page import="com.ingsw.flyingdutchman.model.mo.Threshold" %>
 <%@ page import="com.ingsw.flyingdutchman.model.mo.Auction" %>
 
 <%
-    boolean loggedOn = (Boolean) request.getAttribute("loggedOn");
-    User loggedUser = (User) request.getAttribute("loggedUser");
-    String applicationMessage = (String) request.getAttribute("applicationMessage");
-    String menuActiveLink = "Prenota";
     Threshold threshold = (Threshold) request.getAttribute("threshold");
     Auction auction = (Auction) request.getAttribute("auction");
     String action = (threshold!=null) ? "modify" : "insert";
@@ -91,7 +86,7 @@
     </section>
 
     <section id="insModFormSection">
-        <form name="insModForm" action="<%=action.equals("modify") ? "thresholdManagement/modify" : "thresholdManagement/insert"%>" method="post">
+        <form name="insModForm" action="<%=action.equals("modify") ? "/thresholdManagement/modify" : "/thresholdManagement/insert"%>" method="post">
 
             <div class="field clearfix">
                 <span>Prezzo corrente del Prodotto: </span>
@@ -119,7 +114,7 @@
         </form>
     </section>
 
-    <form name="backForm" method="get" action="<%=action.equals("modify") ? "thresholdManagement/view" : "auctionManagement/inspect"%>">
+    <form name="backForm" method="get" action="<%=action.equals("modify") ? "/thresholdManagement/view" : "/auctionManagement/inspect"%>">
         <input type="hidden" name="auctionID" value="<%=auction.getAuctionID()%>"/>
     </form>
 

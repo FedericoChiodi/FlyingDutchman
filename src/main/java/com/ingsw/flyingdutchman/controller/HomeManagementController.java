@@ -18,7 +18,7 @@ public class HomeManagementController {
         this.userService = userService;
     }
 
-    @GetMapping({"/", "/homeManagement/view"})
+    @GetMapping({"/", "/view", "/homeManagement/view"})
     public String view(HttpServletRequest request) {
         User userToAuthenticate = userService.findLoggedUser(request);
 
@@ -31,14 +31,11 @@ public class HomeManagementController {
     @RequestMapping(value = "/login", params = {"username","password"})
     public String login(HttpServletRequest request,
                         HttpServletResponse response,
-                        @CookieValue(value = "loggedUser", defaultValue = "") String loggedUserCookie,
                         @RequestParam(value = "username", defaultValue = "") String username,
                         @RequestParam(value = "password", defaultValue = "") String password
                         ) {
         User userToAuthenticate = userService.findByUsername(username);
         String applicationMessage;
-
-        if(!loggedUserCookie.isEmpty()) throw new RuntimeException("Errore cookie");
 
         if (userToAuthenticate != null) {
             if (userToAuthenticate.getPassword().equals(password) && userToAuthenticate.isDeleted() == 'N') {

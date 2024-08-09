@@ -2,13 +2,9 @@
 <%@page import="com.ingsw.flyingdutchman.model.mo.User"%>
 
 <%
-    int i = 0;
-    boolean loggedOn = (Boolean) request.getAttribute("loggedOn");
     User loggedUser = (User) request.getAttribute("loggedUser");
-    String applicationMessage = (String) request.getAttribute("applicationMessage");
-    String menuActiveLink = "Ordini";
 %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -52,7 +48,7 @@
     <%@include file="../include/header.jsp"%>
     <main>
         <section id="confettiSectionLeft">
-            <img src="${pageContext.request.contextPath}images/confetti.png" width="300px" height="550px" alt="Image containing Confetti">
+            <img src="/images/confetti.png" width="300px" height="550px" alt="Image containing Confetti">
         </section>
 
         <section id="contentSection">
@@ -63,10 +59,10 @@
         </section>
 
         <section id="confettiSectionRight">
-            <img src="${pageContext.request.contextPath}images/confetti.png" width="300px" height="550px" alt="Image containing Confetti">
+            <img src="/images/confetti.png" width="300px" height="550px" alt="Image containing Confetti">
         </section>
 
-        <form name="tryForm" method="get" action="thresholdManagement/view">
+        <form name="tryForm" method="get" action="/thresholdManagement/view">
         </form>
     </main>
     <%@include file="../include/footer.inc"%>

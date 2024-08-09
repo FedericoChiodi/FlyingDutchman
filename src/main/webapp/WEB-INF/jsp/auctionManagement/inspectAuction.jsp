@@ -3,11 +3,7 @@
 <%@page import="com.ingsw.flyingdutchman.model.mo.User"%>
 <%@ page import="java.io.File" %>
 <%
-    int i = 0;
-    boolean loggedOn = (Boolean) request.getAttribute("loggedOn");
     User loggedUser = (User) request.getAttribute("loggedUser");
-    String applicationMessage = (String) request.getAttribute("applicationMessage");
-    String menuActiveLink = "Aste";
     Auction auction = (Auction) request.getAttribute("auction");
 %>
 <!DOCTYPE html>
@@ -152,22 +148,22 @@
                 </article>
             </section>
 
-            <form name="buyForm" method="get" action="auctionManagement/buyProduct">
+            <form name="buyForm" method="get" action="/auctionManagement/buyProduct">
                 <input type="hidden" name="auctionID"/>
             </form>
 
-            <form name="insertThresholdForm" method="get" action="thresholdManagement/insert">
+            <form name="insertThresholdForm" method="get" action="/thresholdManagement/insert">
                 <input type="hidden" name="auctionID"/>
             </form>
 
-            <form name="lowerPriceForm" method="get" action="auctionManagement/update">
+            <form name="lowerPriceForm" method="get" action="/auctionManagement/update">
                 <input type="hidden" name="auctionID"/>
             </form>
 
-            <form name="backForm" method="get" action="<%=auction.getProduct_auctioned().getOwner().getUsername().equals(loggedUser.getUsername()) ? "auctionManagement/myAuctions" : "auctionManagement/view"%>">
+            <form name="backForm" method="get" action="<%=auction.getProduct_auctioned().getOwner().getUsername().equals(loggedUser.getUsername()) ? "/auctionManagement/myAuctions" : "/auctionManagement/view"%>">
             </form>
 
-            <form name="deleteForm" method="post" action="auctionManagement/delete">
+            <form name="deleteForm" method="post" action="/auctionManagement/delete">
                 <input type="hidden" name="auctionID"/>
             </form>
         </main>

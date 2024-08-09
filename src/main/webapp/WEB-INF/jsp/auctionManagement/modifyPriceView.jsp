@@ -1,14 +1,8 @@
 <%@ page session="false"%>
 <%@ page contentType="text/html;charset=UTF-8"%>
-<%@ page import="com.ingsw.flyingdutchman.model.mo.User" %>
 <%@ page import="com.ingsw.flyingdutchman.model.mo.Auction" %>
 
 <%
-    int i = 0;
-    boolean loggedOn = (Boolean) request.getAttribute("loggedOn");
-    String applicationMessage = (String) request.getAttribute("applicationMessage");
-    String menuActiveLink = "Aste";
-    User loggedUser = (User) request.getAttribute("loggedUser");
     Auction auction = (Auction) request.getAttribute("auction");
 %>
 <!DOCTYPE html>
@@ -83,7 +77,7 @@
     </section>
 
     <section id="ModFormSection">
-        <form name="ModForm" action="thresholdManagement/update" method="post">
+        <form name="ModForm" action="/thresholdManagement/update" method="post">
             <span class="large-text">Attualmente il Prodotto costa: </span><br/>
             <span class="float-value"><%=auction.getProduct_auctioned().getCurrent_price()%></span><br/>
             <span class="large-text">Il prezzo minimo impostato vale: </span><br/>
@@ -102,12 +96,12 @@
                 <input type="button" name="backButton" class="button" value="Annulla"/>
             </div>
 
-            <input type="hidden" name="pageToReturn" value="auctionManagement/view">
+            <input type="hidden" name="pageToReturn" value="/auctionManagement/view">
             <input type="hidden" name="auctionID" value="<%=auction.getAuctionID()%>"/>
         </form>
     </section>
 
-    <form name="backForm" method="get" action="auctionManagement/myAuctions">
+    <form name="backForm" method="get" action="/auctionManagement/myAuctions">
     </form>
 
 </main>

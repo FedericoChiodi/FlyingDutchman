@@ -3,11 +3,6 @@
 <%@page import="com.ingsw.flyingdutchman.model.mo.Product"%>
 
 <%
-    int i = 0;
-    boolean loggedOn = (Boolean) request.getAttribute("loggedOn");
-    User loggedUser = (User) request.getAttribute("loggedUser");
-    String applicationMessage = (String) request.getAttribute("applicationMessage");
-    String menuActiveLink = "Prodotti";
     Product[] products = (Product[]) request.getAttribute("products");
     Boolean soldProductsAction = (Boolean) request.getAttribute("soldProductsAction");
     User[] buyers = (User[]) request.getAttribute("buyers");
@@ -123,40 +118,42 @@
 
         <%if(products.length > 0){%>
             <section id="products" class="clearfix">
-                <%for (i = 0; i < products.length; i++){%>
+                <%int i = 0;%>
+                <%for (Product product : products){%>
                     <article>
                         <%if(!soldProductsAction){%>
-                            <a href="javascript:deleteProduct(<%=products[i].getProductID()%>)">
-                                <img id="trashcan" src="${pageContext.request.contextPath}images/trashcan.png" width="24" height="24" alt="X">
+                            <a href="javascript:deleteProduct(<%=product.getProductID()%>)">
+                                <img id="trashcan" src="/images/trashcan.png" width="24" height="24" alt="X">
                             </a>
                         <%}%>
-                        <b><span class="description"><%=products[i].getDescription()%></span></b>
+                        <b><span class="description"><%=product.getDescription()%></span></b>
                         <br/>
                         <%if(soldProductsAction){%>
                             <label for="who_sold">Venduto a: </label>
                             <span id="who_sold"><%=buyers[i].getUsername()%></span><br/>
                             <label for="current_price_sold">Venduto per: </label>
-                            <span id="current_price_sold" class="float-value"><%=products[i].getCurrent_price()%></span>
+                            <span id="current_price_sold" class="float-value"><%=product.getCurrent_price()%></span>
                         <%}%>
                         <%if(!soldProductsAction){%>
                         <label for="current_price">Attualmente costa: </label>
-                            <span id="current_price" class="float-value"><%=products[i].getCurrent_price()%></span>
+                            <span id="current_price" class="float-value"><%=product.getCurrent_price()%></span>
                         <%}%>
                     </article>
+                    <%i++;%>
                 <%}%>
             </section>
         <%}%>
 
-        <form name="insertForm" method="get" action="productManagement/insertView">
+        <form name="insertForm" method="get" action="/productManagement/insertView">
         </form>
 
-        <form name="viewSoldProductsForm" method="post" action="productManagement/viewSold">
+        <form name="viewSoldProductsForm" method="post" action="/productManagement/viewSold">
         </form>
 
-        <form name="viewProductForm" method="get" action="productManagement/view">
+        <form name="viewProductForm" method="get" action="/productManagement/view">
         </form>
 
-        <form name="deleteForm" method="post" action="productManagement/delete">
+        <form name="deleteForm" method="post" action="/productManagement/delete">
             <input type="hidden" name="productID"/>
         </form>
     </main>

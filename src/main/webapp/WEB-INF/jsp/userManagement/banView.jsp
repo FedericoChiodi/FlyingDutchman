@@ -2,10 +2,6 @@
 <%@ page import="com.ingsw.flyingdutchman.model.mo.User" %>
 
 <%
-  int i;
-  boolean loggedOn = (Boolean) request.getAttribute("loggedOn");
-  User loggedUser = (User) request.getAttribute("loggedUser");
-  String menuActiveLink = "Banna";
   User[] usernames = (User[]) request.getAttribute("usernames");
 %>
 <!DOCTYPE html>
@@ -50,13 +46,13 @@
     </section>
 
     <section id="banFormSection">
-      <form name="banForm" action="userManagement/ban" method="post" autocomplete="off">
+      <form name="banForm" action="/userManagement/ban" method="post" autocomplete="off">
         <div class="field clearfix">
           <label for="username">Username dell'utente da bannare: </label>
           <input list="usernames" name="username" id="username">
           <datalist id="usernames">
-            <%for(i = 0; i < usernames.length ; i++){%>
-              <option value="<%=usernames[i].getUsername()%>"><%=usernames[i].getUsername()%></option>
+            <%for(User user : usernames){%>
+              <option value="<%=user.getUsername()%>"><%=user.getUsername()%></option>
             <%}%>
           </datalist>
         </div>

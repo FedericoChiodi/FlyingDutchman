@@ -1,17 +1,15 @@
 <%@ page session="false"%>
 <%@page import="com.ingsw.flyingdutchman.model.mo.Auction"%>
-<%@page import="com.ingsw.flyingdutchman.model.mo.User"%>
 <%@ page import="java.io.File" %>
 <%@ page import="com.ingsw.flyingdutchman.model.mo.Category" %>
 <%
-    int i = 0;
-    boolean loggedOn = (Boolean) request.getAttribute("loggedOn");
-    User loggedUser = (User) request.getAttribute("loggedUser");
-    String applicationMessage = (String) request.getAttribute("applicationMessage");
-    String menuActiveLink = "Aste";
     Auction[] auctions = (Auction[]) request.getAttribute("auctions");
-    Boolean canEdit = (Boolean) request.getAttribute("canEdit");
-    if(canEdit == null) canEdit = false;
+    Boolean canEditReq = (Boolean) request.getAttribute("canEdit");
+    boolean canEdit;
+    if(canEditReq == null)
+        canEdit = false;
+    else
+        canEdit = canEditReq;
     Category[] categories = (Category[]) request.getAttribute("categories");
     if (categories.length == 0){
         categories[0] = new Category();
@@ -141,18 +139,18 @@
             </article>
 
             <article id="searchFormSection">
-                <form id="searchCategoryForm" name="searchCategoryForm" action="auctionManagement/searchCategory" method="post">
+                <form id="searchCategoryForm" name="searchCategoryForm" action="/auctionManagement/searchCategory" method="post">
                     <label for="categoryID" class="hidden-label">Elenco delle categorie: </label>
                     <select id="categoryID" name="categoryID">
-                        <%for(i = 0; i < categories.length ; i++){%>
-                        <option value="<%=categories[i].getCategoryID()%>"><%=categories[i].getName()%></option>
+                        <%for(Category category : categories){%>
+                        <option value="<%=category.getCategoryID()%>"><%=category.getName()%></option>
                         <%}%>
                     </select>
                     <label for="searchCategoryButton" class="hidden-label">Cerca per Categoria:</label>
                     <input type="submit" id="searchCategoryButton" name="searchCategoryButton" value="Cerca"/>
                 </form>
 
-                <form id="searchForm" name="searchForm" action="auctionManagement/search" method="post">
+                <form id="searchForm" name="searchForm" action="/auctionManagement/search" method="post">
                     <label for="auctionName" class="hidden-label">Cerca un'asta: </label>
                     <input type="text" id="auctionName" name="auctionName" required size="15" maxlength="200" minlength="5"
                            placeholder="Cerca un'asta..." autocomplete="off"/>
@@ -177,13 +175,13 @@
 
         <%if(auctions.length > 0){%>
             <section id="auctions" class="clearfix">
-                <%for (i = 0; i < auctions.length; i++){%>
-                        <button id="auctionButton" onclick="inspectAuction(<%=auctions[i].getAuctionID()%>)">
-                            <b><span id="productDescription" class="description"><%=auctions[i].getProduct_auctioned().getDescription()%></span></b><br/>
-                            <span id="productPrice" class="float-value"><%=auctions[i].getProduct_auctioned().getCurrent_price()%></span><br/>
+                <%for (Auction auction : auctions){%>
+                        <button id="auctionButton" onclick="inspectAuction(<%=auction.getAuctionID()%>)">
+                            <b><span id="productDescription" class="description"><%=auction.getProduct_auctioned().getDescription()%></span></b><br/>
+                            <span id="productPrice" class="float-value"><%=auction.getProduct_auctioned().getCurrent_price()%></span><br/>
                             <br/>
                             <%
-                                String imgPath = "/Uploads/" + auctions[i].getProduct_auctioned().getOwner().getUsername() + "/" + auctions[i].getProduct_auctioned().getDescription() + ".png";
+                                String imgPath = "/Uploads/" + auction.getProduct_auctioned().getOwner().getUsername() + "/" + auction.getProduct_auctioned().getDescription() + ".png";
                                 String imgPathAbs = "/home/sanpc/tomcat/webapps" + imgPath;
                                 File file = new File(imgPathAbs);
                                 if (!file.exists()) {
@@ -210,20 +208,20 @@
             </section>
         <%}%>
 
-        <form name="insertForm" method="get" action="auctionManagement/view">
+        <form name="insertForm" method="get" action="/auctionManagement/view">
         </form>
 
-        <form name="inspectForm" method="get" action="auctionManagement/inspect">
+        <form name="inspectForm" method="get" action="/auctionManagement/inspect">
             <input type="hidden" name="auctionID"/>
         </form>
 
-        <form name="viewMyAuctionsForm" method="get" action="auctionManagement/myAuctions">
+        <form name="viewMyAuctionsForm" method="get" action="/auctionManagement/myAuctions">
         </form>
 
-        <form name="viewAllAuctionsForm" method="post" action="auctionManagement/view">
+        <form name="viewAllAuctionsForm" method="get" action="/auctionManagement/view">
         </form>
 
-        <form name="editForm" method="get" action="auctionManagement/update">
+        <form name="editForm" method="get" action="/auctionManagement/update">
             <input type="hidden" name="auctionID"/>
         </form>
     </main>
