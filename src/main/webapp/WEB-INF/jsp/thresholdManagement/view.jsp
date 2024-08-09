@@ -1,8 +1,10 @@
 <%@ page session="false"%>
 <%@ page import="com.ingsw.flyingdutchman.model.mo.Threshold" %>
+<%@ page import="java.util.List"%>
 
 <%
-    Threshold[] thresholds = (Threshold[]) request.getAttribute("thresholds");
+    @SuppressWarnings("unchecked")
+    List<Threshold> thresholds = (List<Threshold>) request.getAttribute("thresholds");
 %>
 
 <!DOCTYPE html>
@@ -82,7 +84,7 @@
         <hr>
     </section>
 
-    <%if(thresholds.length > 0){%>
+    <%if(!thresholds.isEmpty()){%>
         <section id="thresholds" class="clearfix">
             <%for (Threshold threshold : thresholds){%>
                 <%if(threshold.getAuction().getDeleted() == 'N'){%>
@@ -101,7 +103,7 @@
             <%}%>
         </section>
     <%}%>
-    <%if(thresholds.length == 0){%>
+    <%if(thresholds.isEmpty()){%>
         <h1 id ="noThresholds">
             Non hai ancora inserito nessuna prenotazione!
         </h1>

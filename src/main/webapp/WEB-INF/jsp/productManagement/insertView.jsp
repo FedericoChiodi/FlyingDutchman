@@ -1,9 +1,11 @@
 <%@ page session="false"%>
 <%@ page contentType="text/html;charset=UTF-8"%>
 <%@ page import="com.ingsw.flyingdutchman.model.mo.Category" %>
+<%@ page import="java.util.List"%>
 
 <%
-    Category[] categories = (Category[]) request.getAttribute("categories");
+    @SuppressWarnings("unchecked")
+    List<Category> categories = (List<Category>) request.getAttribute("categories");
 %>
 <!DOCTYPE html>
 <html>

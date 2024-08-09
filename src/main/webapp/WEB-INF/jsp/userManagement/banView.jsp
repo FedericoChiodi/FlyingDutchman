@@ -1,8 +1,10 @@
 <%@ page session="false"%>
 <%@ page import="com.ingsw.flyingdutchman.model.mo.User" %>
+<%@ page import="java.util.List"%>
 
 <%
-  User[] usernames = (User[]) request.getAttribute("usernames");
+  @SuppressWarnings("unchecked")
+  List<User> usernames = (List<User>) request.getAttribute("usernames");
 %>
 <!DOCTYPE html>
 <html>

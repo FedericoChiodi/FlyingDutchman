@@ -1,7 +1,9 @@
+<%@page import="com.ingsw.flyingdutchman.model.mo.User"%>
 <%
   response.setHeader("Cache-Control", "no-cache");
   String menuActiveLinkReq = (String) request.getAttribute("menuActiveLink");
   Boolean loggedOnHeader = (Boolean) request.getAttribute("loggedOn");
+  User loggedUserHeader = (User) request.getAttribute("loggedUser");
 
   String menuActiveLink;
   if (menuActiveLinkReq == null || menuActiveLinkReq.isEmpty()) {
@@ -74,7 +76,7 @@
       <li <%=menuActiveLink.equals("Ordini")?"class=\"active\"":""%>>
         <a href="/orderManagement/view">Ordini</a>
       </li>
-      <%String role = loggedUser.getRole();%>
+      <%String role = loggedUserHeader.getRole();%>
       <%if(role.equals("Premium") || role.equals("Admin") || role.equals("SuperAdmin")){%>
       <li <%=menuActiveLink.equals("Prenota")?"class=\"active\"":""%>>
         <a href="/thresholdManagement/view">Prenota</a>

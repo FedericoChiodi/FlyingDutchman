@@ -20,15 +20,15 @@ public class OrderService {
         this.orderRepository = orderRepository;
     }
 
-    public Order createOrder(Timestamp orderTime, Float sellingPrice, Character boughtFromThreshold, User buyer, Product product) {
-        sellingPrice = Math.round(sellingPrice * 100.0f) / 100.0f; // Arrotondamento a 2 decimali
+    public void createOrder(Timestamp orderTime, Float sellingPricePar, Character boughtFromThreshold, User buyer, Product product) {
+        Float sellingPrice = Math.round(sellingPricePar * 100.0f) / 100.0f; // Arrotondamento a 2 decimali
         Order order = new Order();
         order.setOrderTime(orderTime);
         order.setSellingPrice(sellingPrice);
         order.setBoughtFromThreshold(boughtFromThreshold);
         order.setBuyer(buyer);
         order.setProduct(product);
-        return orderRepository.save(order);
+        orderRepository.save(order);
     }
 
     public void deleteOrder(Order order) {

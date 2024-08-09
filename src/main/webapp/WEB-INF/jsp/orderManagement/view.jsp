@@ -1,8 +1,10 @@
 <%@ page session="false"%>
 <%@ page import="com.ingsw.flyingdutchman.model.mo.Order" %>
+<%@ page import="java.util.List"%>
 
 <%
-    Order[] orders = (Order[]) request.getAttribute("orders");
+    @SuppressWarnings("unchecked")
+    List<Order> orders = (List<Order>) request.getAttribute("orders");
 %>
 <%@ page contentType="text/html;charset=UTF-8"%>
 <!DOCTYPE html>
@@ -49,18 +51,18 @@
             </section>
 
             <section id="orders">
-                <%if(orders.length > 0){%>
-                    <%for(int i = 0; i < orders.length; i++){%>
+                <%if(!orders.isEmpty()){%>
+                    <%for(Order order : orders){%>
                         <article id="orderContainer" class="clearfix">
-                            <span id="counter" class="counter"><%=i+1%>- </span>
-                            <b><span id="productDescription" class="description"><%=orders[i].getProduct().getDescription()%></span></b><br/>
-                            <span id="order_time" class="order_time"><%=orders[i].getOrderTime().toString().substring(0,10)%> -
-                                <%=orders[i].getOrderTime().toString().substring(10, 16)%>
+                            <span id="counter" class="counter">- </span>
+                            <b><span id="productDescription" class="description"><%=order.getProduct().getDescription()%></span></b><br/>
+                            <span id="order_time" class="order_time"><%=order.getOrderTime().toString().substring(0,10)%> -
+                                <%=order.getOrderTime().toString().substring(10, 16)%>
                             </span><br/>
-                            <span id="productPrice" class="float-value"><%=orders[i].getSellingPrice()%></span><br/>
-                            <%if(orders[i].getProduct().getProductID() != 1){%> <!-- Premium -->
-                                <span id="seller" class="seller">Comprato da: <%=orders[i].getProduct().getOwner().getUsername()%></span><br/>
-                                <%if(orders[i].getBoughtFromThreshold() == 'Y'){%>
+                            <span id="productPrice" class="float-value"><%=order.getSellingPrice()%></span><br/>
+                            <%if(order.getProduct().getProductID() != 1){%> <!-- Premium -->
+                                <span id="seller" class="seller">Comprato da: <%=order.getProduct().getOwner().getUsername()%></span><br/>
+                                <%if(order.getBoughtFromThreshold() == 'Y'){%>
                                     <span id="boughtFromThreshold" class="boughtFromThreshold">Questo Prodotto &egrave; stato comprato da una Prenotazione!</span><br/>
                                 <%}%>
                             <%}%>
@@ -69,7 +71,7 @@
                     <%}%>
                 <%}%>
             </section>
-            <%if(orders.length == 0){%>
+            <%if(orders.isEmpty()){%>
                 <section id="noOrders">
                     <h2>
                         Non hai ancora completato nessun ordine

@@ -1,9 +1,11 @@
 <%@ page session="false"%>
 <%@ page contentType="text/html;charset=UTF-8"%>
 <%@ page import="com.ingsw.flyingdutchman.model.mo.Product" %>
+<%@ page import="java.util.List"%>
 
 <%
-    Product[] products = (Product []) request.getAttribute("products");
+    @SuppressWarnings("unchecked")
+    List<Product> products = (List<Product>) request.getAttribute("products");
 %>
 <!DOCTYPE html>
 <html>
@@ -79,7 +81,7 @@
 <%@include file="../include/header.jsp"%>
 <main>
 
-    <%if(products.length > 0){%>
+    <%if(!products.isEmpty()){%>
         <label id="pageTitle" for="productID">
             <h1>
                 Seleziona un prodotto da vendere
@@ -90,7 +92,7 @@
     <section id="insertFormSection">
         <form id="insertForm" name="insertForm" action="/auctionManagement/insert" method="post">
 
-            <%if(products.length > 0){%>
+            <%if(!products.isEmpty()){%>
                 <div id="productsList">
                     <select id="productID" name="productID">
                         <%for(Product product : products){%>
@@ -109,7 +111,7 @@
                     <input type="button" name="backButton" class="button" value="Annulla"/>
                 </div>
             <%}%>
-            <%if(products.length == 0){%>
+            <%if(products.isEmpty()){%>
                 <section id="noProducts">
                     <h1>
                         Non ci sono prodotti nel tuo account o sono tutti gi&aacute; all'asta!

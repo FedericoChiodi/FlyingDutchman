@@ -2,19 +2,19 @@
 <%@page import="com.ingsw.flyingdutchman.model.mo.Auction"%>
 <%@ page import="java.io.File" %>
 <%@ page import="com.ingsw.flyingdutchman.model.mo.Category" %>
+<%@ page import="java.util.*"%>
+
 <%
-    Auction[] auctions = (Auction[]) request.getAttribute("auctions");
+    @SuppressWarnings("unchecked")
+    List<Auction> auctions = (List<Auction>) request.getAttribute("auctions");
     Boolean canEditReq = (Boolean) request.getAttribute("canEdit");
     boolean canEdit;
     if(canEditReq == null)
         canEdit = false;
     else
         canEdit = canEditReq;
-    Category[] categories = (Category[]) request.getAttribute("categories");
-    if (categories.length == 0){
-        categories[0] = new Category();
-        categories[0].setName("esempio...");
-    }
+    @SuppressWarnings("unchecked")
+    List<Category> categories = (List<Category>) request.getAttribute("categories");
 %>
 <!DOCTYPE html>
 <html>
@@ -173,7 +173,7 @@
             <hr/>
         </section>
 
-        <%if(auctions.length > 0){%>
+        <%if(!auctions.isEmpty()){%>
             <section id="auctions" class="clearfix">
                 <%for (Auction auction : auctions){%>
                         <button id="auctionButton" onclick="inspectAuction(<%=auction.getAuctionID()%>)">
@@ -193,7 +193,7 @@
                 <%}%>
             </section>
         <%}%>
-        <%if(auctions.length == 0){%>
+        <%if(auctions.isEmpty()){%>
             <section id="noAuctions">
                 <%if(canEdit){%>
                     <h2>
