@@ -13,7 +13,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <%@include file="/include/htmlHead.jsp"%>
+        <%@include file="../include/htmlHead.jsp"%>
         <script>
             function buyProduct(auctionID){
                 document.buyForm.auctionID.value = auctionID;
@@ -114,9 +114,10 @@
                 margin-top: 15px;
             }
         </style>
+        <title></title>
     </head>
     <body>
-        <%@include file="/include/header.jsp"%>
+        <%@include file="../include/header.jsp"%>
         <main>
             <section id="productContainer">
                 <article id="productImageContainer">
@@ -151,30 +152,25 @@
                 </article>
             </section>
 
-            <form name="buyForm" method="post" action="Dispatcher">
+            <form name="buyForm" method="get" action="auctionManagement/buyProduct">
                 <input type="hidden" name="auctionID"/>
-                <input type="hidden" name="controllerAction" value="AuctionManagement.buyProductAuctioned"/>
             </form>
 
-            <form name="insertThresholdForm" method="post" action="Dispatcher">
+            <form name="insertThresholdForm" method="get" action="thresholdManagement/insert">
                 <input type="hidden" name="auctionID"/>
-                <input type="hidden" name="controllerAction" value="ThresholdManagement.insertView"/>
             </form>
 
-            <form name="lowerPriceForm" method="post" action="Dispatcher">
+            <form name="lowerPriceForm" method="get" action="auctionManagement/update">
                 <input type="hidden" name="auctionID"/>
-                <input type="hidden" name="controllerAction" value="AuctionManagement.updateView"/>
             </form>
 
-            <form name="backForm" method="post" action="Dispatcher">
-                <input type="hidden" name="controllerAction" value="<%=auction.getProduct_auctioned().getOwner().getUsername().equals(loggedUser.getUsername()) ? "AuctionManagement.viewMyAuctions" : "AuctionManagement.view"%>">
+            <form name="backForm" method="get" action="<%=auction.getProduct_auctioned().getOwner().getUsername().equals(loggedUser.getUsername()) ? "auctionManagement/myAuctions" : "auctionManagement/view"%>">
             </form>
 
-            <form name="deleteForm" method="post" action="Dispatcher">
+            <form name="deleteForm" method="post" action="auctionManagement/delete">
                 <input type="hidden" name="auctionID"/>
-                <input type="hidden" name="controllerAction" value="AuctionManagement.delete"/>
             </form>
         </main>
-        <%@include file="/include/footer.inc"%>
+        <%@include file="../include/footer.inc"%>
     </body>
 </html>

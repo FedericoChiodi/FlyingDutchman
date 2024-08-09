@@ -21,7 +21,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <%@include file="/include/htmlHead.jsp"%>
+        <%@include file="../include/htmlHead.jsp"%>
         <script>
             function insertAuction(){
                 document.insertForm.submit();
@@ -119,9 +119,10 @@
                 display: none;
             }
         </style>
+        <title></title>
     </head>
     <body>
-        <%@include file="/include/header.jsp"%>
+        <%@include file="../include/header.jsp"%>
     <main>
         <section id="pageTitle">
             <h1>Aste in Corso</h1>
@@ -140,7 +141,8 @@
             </article>
 
             <article id="searchFormSection">
-                <form id="searchCategoryForm" name="searchCategoryForm" action="Dispatcher" method="post">
+                <form id="searchCategoryForm" name="searchCategoryForm" action="auctionManagement/searchCategory" method="post">
+                    <label for="categoryID" class="hidden-label">Elenco delle categorie: </label>
                     <select id="categoryID" name="categoryID">
                         <%for(i = 0; i < categories.length ; i++){%>
                         <option value="<%=categories[i].getCategoryID()%>"><%=categories[i].getName()%></option>
@@ -148,15 +150,13 @@
                     </select>
                     <label for="searchCategoryButton" class="hidden-label">Cerca per Categoria:</label>
                     <input type="submit" id="searchCategoryButton" name="searchCategoryButton" value="Cerca"/>
-                    <input type="hidden" name="controllerAction" value="AuctionManagement.searchCategory"/>
                 </form>
 
-                <form id="searchForm" name="searchForm" action="Dispatcher" method="post">
+                <form id="searchForm" name="searchForm" action="auctionManagement/search" method="post">
                     <label for="auctionName" class="hidden-label">Cerca un'asta: </label>
                     <input type="text" id="auctionName" name="auctionName" required size="15" maxlength="200" minlength="5"
                            placeholder="Cerca un'asta..." autocomplete="off"/>
                     <input type="submit" id="searchButton" name="searchButton" value="Cerca"/>
-                    <input type="hidden" name="controllerAction" value="AuctionManagement.search"/>
                 </form>
             </article>
 
@@ -210,28 +210,23 @@
             </section>
         <%}%>
 
-        <form name="insertForm" method="post" action="Dispatcher">
-            <input type="hidden" name="controllerAction" value="AuctionManagement.insertView"/>
+        <form name="insertForm" method="get" action="auctionManagement/view">
         </form>
 
-        <form name="inspectForm" method="post" action="Dispatcher">
+        <form name="inspectForm" method="get" action="auctionManagement/inspect">
             <input type="hidden" name="auctionID"/>
-            <input type="hidden" name="controllerAction" value="AuctionManagement.inspectAuction"/>
         </form>
 
-        <form name="viewMyAuctionsForm" method="post" action="Dispatcher">
-            <input type="hidden" name="controllerAction" value="AuctionManagement.viewMyAuctions"/>
+        <form name="viewMyAuctionsForm" method="get" action="auctionManagement/myAuctions">
         </form>
 
-        <form name="viewAllAuctionsForm" method="post" action="Dispatcher">
-            <input type="hidden" name="controllerAction" value="AuctionManagement.view"/>
+        <form name="viewAllAuctionsForm" method="post" action="auctionManagement/view">
         </form>
 
-        <form name="editForm" method="post" action="Dispatcher">
+        <form name="editForm" method="get" action="auctionManagement/update">
             <input type="hidden" name="auctionID"/>
-            <input type="hidden" name="controllerAction" value="AuctionManagement.editView"/>
         </form>
     </main>
-        <%@include file="/include/footer.inc"%>
+        <%@include file="../include/footer.inc"%>
     </body>
 </html>

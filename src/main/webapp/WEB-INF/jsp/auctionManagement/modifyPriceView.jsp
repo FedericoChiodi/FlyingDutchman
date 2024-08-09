@@ -1,5 +1,5 @@
 <%@ page session="false"%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8"%>
 <%@ page import="com.ingsw.flyingdutchman.model.mo.User" %>
 <%@ page import="com.ingsw.flyingdutchman.model.mo.Auction" %>
 
@@ -14,7 +14,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <%@include file="/include/htmlHead.jsp"%>
+    <%@include file="../include/htmlHead.jsp"%>
+    <title></title>
 </head>
 <style>
     /* Allinea gli elementi del form in colonne */
@@ -65,21 +66,15 @@
     }
 </style>
 <script>
-    function submitAuction(){
-        let f;
-        f = document.ModForm;
-        f.controllerAction.value = "ThresholdManagement.checkOnUpdate";
-    }
     function goBack(){
         document.backForm.submit();
     }
     function mainOnLoadHandler(){
-        document.ModForm.addEventListener("submit",submitAuction);
         document.ModForm.backButton.addEventListener("click", goBack);
     }
 </script>
 <body>
-<%@include file="/include/header.jsp"%>
+<%@include file="../include/header.jsp"%>
 <main>
     <section id="pageTitle">
         <h1>
@@ -88,7 +83,7 @@
     </section>
 
     <section id="ModFormSection">
-        <form name="ModForm" action="Dispatcher" method="post">
+        <form name="ModForm" action="thresholdManagement/update" method="post">
             <span class="large-text">Attualmente il Prodotto costa: </span><br/>
             <span class="float-value"><%=auction.getProduct_auctioned().getCurrent_price()%></span><br/>
             <span class="large-text">Il prezzo minimo impostato vale: </span><br/>
@@ -107,17 +102,15 @@
                 <input type="button" name="backButton" class="button" value="Annulla"/>
             </div>
 
-            <input type="hidden" name="controllerAction"/>
             <input type="hidden" name="pageToReturn" value="auctionManagement/view">
             <input type="hidden" name="auctionID" value="<%=auction.getAuctionID()%>"/>
         </form>
     </section>
 
-    <form name="backForm" method="post" action="Dispatcher">
-        <input type="hidden" name="controllerAction" value="AuctionManagement.viewMyAuctions">
+    <form name="backForm" method="get" action="auctionManagement/myAuctions">
     </form>
 
 </main>
-<%@include file="/include/footer.inc"%>
+<%@include file="../include/footer.inc"%>
 </body>
 </html>

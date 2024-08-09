@@ -14,7 +14,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <%@include file="/include/htmlHead.jsp"%>
+    <%@include file="../include/htmlHead.jsp"%>
+    <title></title>
 </head>
 <style>
     /* Allinea gli elementi del form in colonne */
@@ -64,19 +65,13 @@
 <script>
     function submitAuction(){
         const currentDate = new Date();
-        const datetime
-            = currentDate.getFullYear() + "-"
-            + (currentDate.getMonth()+1)  + "-"
+
+        document.querySelector("#opening_timestamp").value = currentDate.getFullYear() + "-"
+            + (currentDate.getMonth() + 1) + "-"
             + currentDate.getDate() + " "
             + currentDate.getHours() + ":"
             + currentDate.getMinutes() + ":"
             + currentDate.getSeconds();
-
-        document.querySelector("#opening_timestamp").value = datetime;
-
-        var f;
-        f = document.insertForm;
-        f.controllerAction.value = "AuctionManagement.insert";
     }
     function goBack(){
         document.backForm.submit();
@@ -87,7 +82,7 @@
     }
 </script>
 <body>
-<%@include file="/include/header.jsp"%>
+<%@include file="../include/header.jsp"%>
 <main>
 
     <%if(products.length > 0){%>
@@ -99,7 +94,7 @@
     <%}%>
 
     <section id="insertFormSection">
-        <form id="insertForm" name="insertForm" action="Dispatcher" method="post">
+        <form id="insertForm" name="insertForm" action="auctionManagement/insert" method="post">
 
             <%if(products.length > 0){%>
                 <div id="productsList">
@@ -127,16 +122,13 @@
                     </h1>
                 </section>
             <%}%>
-
-            <input type="hidden" name="controllerAction"/>
         </form>
     </section>
 
-    <form name="backForm" method="post" action="Dispatcher">
-        <input type="hidden" name="controllerAction" value="AuctionManagement.view">
+    <form name="backForm" method="get" action="auctionManagement/view">
     </form>
 
 </main>
-<%@include file="/include/footer.inc"%>
+<%@include file="../include/footer.inc"%>
 </body>
 </html>

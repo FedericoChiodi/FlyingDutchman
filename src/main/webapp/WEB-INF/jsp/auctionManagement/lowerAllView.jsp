@@ -12,7 +12,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <%@include file="/include/htmlHead.jsp"%>
+        <%@include file="../include/htmlHead.jsp"%>
         <script>
             function lowerAll(){
                 document.lowerForm.submit();
@@ -40,9 +40,10 @@
             }
 
         </style>
+        <title></title>
     </head>
     <body>
-    <%@include file="/include/header.jsp"%>
+    <%@include file="../include/header.jsp"%>
         <main>
             <section id="contentSection">
                 <button id="lowerButton" onclick="lowerAll()">
@@ -50,12 +51,10 @@
                 </button>
             </section>
 
-
-            <form name="lowerForm" method="post" action="Dispatcher">
-                <input type="hidden" name="controllerAction" value="ThresholdManagement.checkOnUpdate">
+            <form name="lowerForm" method="get" action="thresholdManagement/update">
                 <input type="hidden" name="pageToReturn" value="auctionManagement/lowerAllView">
             </form>
         </main>
-    <%@include file="/include/footer.inc"%>
+    <%@include file="../include/footer.inc"%>
     </body>
 </html>
