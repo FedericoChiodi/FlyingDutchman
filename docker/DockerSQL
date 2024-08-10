@@ -6,6 +6,6 @@ ENV MYSQL_USER=root
 ENV MYSQL_PASSWORD=StrongPassword123@
 ENV MYSQL_TCP_PORT=3306
 
-COPY dumps/db/Dump20240725.sql /docker-entrypoint-initdb.d/
+COPY dumps/db/db.sql /docker-entrypoint-initdb.d/
 
 EXPOSE 3306
