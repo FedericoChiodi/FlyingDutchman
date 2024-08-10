@@ -60,6 +60,10 @@
 <script>
     let status = "<%=action%>";
 
+    function goBack(){
+        document.backForm.submit();
+    }
+
     function submitThreshold(){
         let f;
         f = document.insModForm;
