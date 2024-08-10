@@ -110,7 +110,7 @@ public class UserManagementController {
         request.setAttribute("loggedOn", loggedUser!=null);
         request.setAttribute("loggedUser",loggedUser);
         request.setAttribute("usernames",usernames);
-        request.setAttribute("menuActiveLink", "Utente");
+        request.setAttribute("menuActiveLink", "Banna");
 
         return "userManagement/banView";
     }

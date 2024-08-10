@@ -118,7 +118,7 @@ public class AuctionManagementController {
 
         request.setAttribute("loggedOn",loggedUser != null);
         request.setAttribute("loggedUser",loggedUser);
-        request.setAttribute("menuActiveLink", "Aste");
+        request.setAttribute("menuActiveLink", "Abbassa");
 
         return "auctionManagement/lowerAllView";
     }
