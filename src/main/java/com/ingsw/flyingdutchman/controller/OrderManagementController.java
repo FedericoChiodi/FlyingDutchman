@@ -46,6 +46,7 @@ public class OrderManagementController {
         request.setAttribute("loggedOn",loggedUser!=null);
         request.setAttribute("loggedUser",loggedUser);
         request.setAttribute("orders",orders);
+        request.setAttribute("menuActiveLink", "Ordini");
 
         return "orderManagement/view";
     }
@@ -78,6 +79,7 @@ public class OrderManagementController {
         request.setAttribute("loggedOn",loggedUser!=null);
         request.setAttribute("loggedUser",loggedUser);
         request.setAttribute("orders",orders);
+        request.setAttribute("menuActiveLink", "Ordini");
 
         return "orderManagement/view";
     }
@@ -108,6 +110,7 @@ public class OrderManagementController {
 
         request.setAttribute("loggedOn", true);
         request.setAttribute("loggedUser",loggedUser);
+        request.setAttribute("menuActiveLink", "Ordini");
 
         return "orderManagement/premium";
     }
@@ -121,6 +124,7 @@ public class OrderManagementController {
         request.setAttribute("loggedUser", loggedUser);
         request.setAttribute("auction", auction);
         request.setAttribute("isPremium", true);
+        request.setAttribute("menuActiveLink", "Ordini");
 
         return "orderManagement/insertView";
     }

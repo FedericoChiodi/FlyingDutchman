@@ -53,6 +53,7 @@ public class AuctionManagementController {
         request.setAttribute("loggedOn",loggedUser != null);
         request.setAttribute("loggedUser",loggedUser);
         request.setAttribute("products", products);
+        request.setAttribute("menuActiveLink", "Aste");
 
         return "auctionManagement/insertView";
     }
@@ -85,6 +86,7 @@ public class AuctionManagementController {
         request.setAttribute("loggedOn",loggedUser != null);
         request.setAttribute("loggedUser",loggedUser);
         request.setAttribute("auction",auction);
+        request.setAttribute("menuActiveLink", "Aste");
 
         String uri = request.getRequestURI();
         if(uri.endsWith("inspect")){
@@ -116,6 +118,7 @@ public class AuctionManagementController {
 
         request.setAttribute("loggedOn",loggedUser != null);
         request.setAttribute("loggedUser",loggedUser);
+        request.setAttribute("menuActiveLink", "Aste");
 
         return "auctionManagement/lowerAllView";
     }
@@ -158,6 +161,7 @@ public class AuctionManagementController {
         request.setAttribute("loggedUser",loggedUser);
         request.setAttribute("auctions", auctions);
         request.setAttribute("categories",categories);
+        request.setAttribute("menuActiveLink", "Aste");
 
         return "auctionManagement/view";
     }
@@ -177,6 +181,7 @@ public class AuctionManagementController {
         request.setAttribute("auctions", auctions);
         request.setAttribute("categories",categories);
         request.setAttribute("canEdit", true);
+        request.setAttribute("menuActiveLink", "Aste");
 
         return "auctionManagement/view";
     }

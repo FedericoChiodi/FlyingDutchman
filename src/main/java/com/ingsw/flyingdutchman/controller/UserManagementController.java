@@ -41,6 +41,8 @@ public class UserManagementController {
 
         request.setAttribute("loggedOn", loggedUser != null);
         request.setAttribute("loggedUser", loggedUser);
+        request.setAttribute("menuActiveLink", "Utente");
+
         return "userManagement/view";
     }
 
@@ -76,9 +78,11 @@ public class UserManagementController {
                 assert entries != null;
                 for(String s: entries){
                     File currentFile = new File(directory.getPath(),s);
-                    currentFile.delete();
+                    if(!currentFile.delete())
+                        throw new RuntimeException("Could not delete file: " + currentFile.getAbsolutePath());
                 }
-                directory.delete();
+                if(!directory.delete())
+                    throw new RuntimeException("Could not delete directory: " + directory.getAbsolutePath());
             }
             else {
                 System.out.println("Non ho cancellato nulla al path: " + directoryPath);
@@ -91,6 +95,7 @@ public class UserManagementController {
             request.setAttribute("loggedOn",false);
             request.setAttribute("loggedUser",null);
             request.setAttribute("applicationMessage","Account correttamente eliminato. Arrivederci!");
+            request.setAttribute("menuActiveLink", "Utente");
         }
 
         return "homeManagement/view";
@@ -105,6 +110,7 @@ public class UserManagementController {
         request.setAttribute("loggedOn", loggedUser!=null);
         request.setAttribute("loggedUser",loggedUser);
         request.setAttribute("usernames",usernames);
+        request.setAttribute("menuActiveLink", "Utente");
 
         return "userManagement/banView";
     }
@@ -113,7 +119,6 @@ public class UserManagementController {
     public String insertUser(HttpServletRequest request){
         User loggedUser = userService.findLoggedUser(request);
 
-        String applicationMessage;
         try {
             userService.create(
                     request.getParameter("username"),
@@ -130,15 +135,15 @@ public class UserManagementController {
                     request.getParameter("cel_number"),
                     request.getParameter("role")
             );
-            applicationMessage = "Account creato correttamente!";
+            request.setAttribute("applicationMessage", "Account creato correttamente!");
         }
         catch (Exception e){
-            applicationMessage = "Username già esistente!";
+            request.setAttribute("applicationMessage", "Username già esistente!");
         }
 
         request.setAttribute("loggedOn",loggedUser!=null);
         request.setAttribute("loggedUser",loggedUser);
-        request.setAttribute("applicationMessage", applicationMessage);
+        request.setAttribute("menuActiveLink", "Utente");
 
         return "homeManagement/view";
     }
@@ -149,6 +154,7 @@ public class UserManagementController {
 
         request.setAttribute("loggedOn",loggedUser!=null);
         request.setAttribute("loggedUser",loggedUser);
+        request.setAttribute("menuActiveLink", "Utente");
 
         return "userManagement/insModView";
     }
@@ -176,6 +182,7 @@ public class UserManagementController {
 
         request.setAttribute("loggedOn", true);
         request.setAttribute("loggedUser", user);
+        request.setAttribute("menuActiveLink", "Utente");
 
         String auctionID = request.getParameter("auctionID");
         try{
@@ -196,6 +203,7 @@ public class UserManagementController {
         request.setAttribute("loggedOn",loggedUser!=null);
         request.setAttribute("loggedUser",loggedUser);
         request.setAttribute("auctionID",request.getParameter("auctionID"));
+        request.setAttribute("menuActiveLink", "Utente");
 
         return "userManagement/insModView";
     }

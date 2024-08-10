@@ -49,6 +49,7 @@ public class ProductManagementController {
         request.setAttribute("loggedOn", loggedUser != null);
         request.setAttribute("loggedUser", loggedUser);
         request.setAttribute("categories", categories);
+        request.setAttribute("menuActiveLink", "Prodotti");
 
         return "productManagement/insertView";
     }
@@ -74,6 +75,7 @@ public class ProductManagementController {
         request.setAttribute("loggedUser", loggedUser);
         request.setAttribute("products", products);
         request.setAttribute("soldProductsAction", false);
+        request.setAttribute("menuActiveLink", "Prodotti");
 
         return "productManagement/view";
     }
@@ -110,6 +112,7 @@ public class ProductManagementController {
         request.setAttribute("products", products);
         request.setAttribute("buyers", buyers);
         request.setAttribute("soldProductsAction", true);
+        request.setAttribute("menuActiveLink", "Prodotti");
 
         return "productManagement/view";
     }
@@ -122,6 +125,7 @@ public class ProductManagementController {
         request.setAttribute("loggedUser", loggedUser);
         request.setAttribute("products", products);
         request.setAttribute("soldProductsAction", false);
+        request.setAttribute("menuActiveLink", "Prodotti");
 
         return "productManagement/view";
     }

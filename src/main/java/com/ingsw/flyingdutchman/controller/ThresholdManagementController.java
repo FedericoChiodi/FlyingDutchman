@@ -6,6 +6,7 @@ import com.ingsw.flyingdutchman.model.mo.Threshold;
 import com.ingsw.flyingdutchman.model.mo.User;
 import com.ingsw.flyingdutchman.model.service.*;
 import jakarta.servlet.http.HttpServletRequest;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -47,6 +48,7 @@ public class ThresholdManagementController {
         request.setAttribute("loggedUser", loggedUser);
         request.setAttribute("loggedOn", loggedUser != null);
         request.setAttribute("thresholds", thresholds);
+        request.setAttribute("menuActiveLink", "Prenota");
 
         return "thresholdManagement/view";
     }
@@ -63,6 +65,7 @@ public class ThresholdManagementController {
         request.setAttribute("loggedOn", loggedUser != null);
         request.setAttribute("thresholds", thresholds);
         request.setAttribute("applicationMessage", "Eliminata correttamente!");
+        request.setAttribute("menuActiveLink", "Prenota");
 
         return "thresholdManagement/view";
     }
@@ -86,6 +89,7 @@ public class ThresholdManagementController {
         request.setAttribute("loggedUser", loggedUser);
         request.setAttribute("loggedOn", loggedUser != null);
         request.setAttribute("thresholds", thresholds);
+        request.setAttribute("menuActiveLink", "Prenota");
 
         return "thresholdManagement/view";
     }
@@ -98,6 +102,7 @@ public class ThresholdManagementController {
         request.setAttribute("loggedUser", loggedUser);
         request.setAttribute("loggedOn", loggedUser != null);
         request.setAttribute("auction", auction);
+        request.setAttribute("menuActiveLink", "Prenota");
 
         return "thresholdManagement/insModView";
     }
@@ -120,6 +125,7 @@ public class ThresholdManagementController {
         request.setAttribute("loggedUser", loggedUser);
         request.setAttribute("loggedOn", loggedUser != null);
         request.setAttribute("thresholds", thresholds);
+        request.setAttribute("menuActiveLink", "Prenota");
 
         return "thresholdManagement/view";
     }
@@ -132,6 +138,7 @@ public class ThresholdManagementController {
         request.setAttribute("loggedUser", loggedUser);
         request.setAttribute("loggedOn", loggedUser != null);
         request.setAttribute("threshold", threshold);
+        request.setAttribute("menuActiveLink", "Prenota");
 
         return "thresholdManagement/insModView";
     }
@@ -183,6 +190,7 @@ public class ThresholdManagementController {
 
         request.setAttribute("loggedOn", loggedUser != null);
         request.setAttribute("loggedUser", loggedUser);
+        request.setAttribute("menuActiveLink", "Prenota");
 
         if(pageToReturn.equals("auctionManagement/view")){
             List<Auction> auctions = auctionService.findOpenAuctionsByOwnerNotDeleted(loggedUser);
@@ -211,7 +219,7 @@ public class ThresholdManagementController {
         }
     }
 
-    private void createOrderFromThreshold(Auction auction, List<Threshold> validThresholds) {
+    private void createOrderFromThreshold(Auction auction, @NotNull List<Threshold> validThresholds) {
         Threshold toOrder = validThresholds.get(0);
         for(Threshold threshold : validThresholds){
             if(threshold.getPrice() > toOrder.getPrice()){
