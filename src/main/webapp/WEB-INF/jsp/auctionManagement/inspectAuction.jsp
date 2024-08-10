@@ -118,12 +118,7 @@
             <section id="productContainer">
                 <article id="productImageContainer">
                     <%
-                        String imgPath = "/Uploads/" + auction.getProduct_auctioned().getOwner().getUsername() + "/" + auction.getProduct_auctioned().getDescription() + ".png";
-                        String imgPathAbs = "/home/sanpc/tomcat/webapps" + imgPath;
-                        File file = new File(imgPathAbs);
-                        if (!file.exists()) {
-                            imgPath = "/Uploads/default.png";
-                        }
+                        String imgPath = "/" + auction.getProduct_auctioned().getOwner().getUsername() + "/" + auction.getProduct_auctioned().getDescription() + ".png";
                     %>
                     <img id="productImage" src="<%=imgPath + "?nocache=" + System.currentTimeMillis()%>" alt="Product_Image">
                 </article>

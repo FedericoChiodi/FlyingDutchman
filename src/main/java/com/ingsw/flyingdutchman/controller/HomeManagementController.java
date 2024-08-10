@@ -18,7 +18,7 @@ public class HomeManagementController {
         this.userService = userService;
     }
 
-    @GetMapping({"/", "/view", "/homeManagement/view"})
+    @GetMapping({"/", "/view",  "/homeManagement/view"})
     public String view(HttpServletRequest request) {
         User userToAuthenticate = userService.findLoggedUser(request);
 
