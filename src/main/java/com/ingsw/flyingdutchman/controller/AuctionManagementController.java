@@ -37,20 +37,25 @@ public class AuctionManagementController {
     @GetMapping("/view")
     public String view(HttpServletRequest request){
         User loggedUser = userService.findLoggedUser(request);
+
         List<Auction> auctions = auctionService.findAllOpenAuctionsExceptUser(loggedUser);
+
         return prepareRequestCategory(request, loggedUser, auctions);
     }
 
     @GetMapping("/myAuctions")
     public String viewMyAuctions(HttpServletRequest request){
         User loggedUser = userService.findLoggedUser(request);
+
         List<Auction> auctions = auctionService.findOpenAuctionsByOwnerNotDeleted(loggedUser);
+
         return prepareRequestCategoryEdit(request, loggedUser, auctions);
     }
 
     @GetMapping("/insert")
     public String insertView(HttpServletRequest request){
         User loggedUser = userService.findLoggedUser(request);
+
         List<Product> products = productService.findProductsByOwnerNotDeleted(loggedUser);
         List<Auction> auctions = auctionService.findOpenAuctionsByOwnerNotDeleted(loggedUser);
 
@@ -68,7 +73,7 @@ public class AuctionManagementController {
             }
         }
 
-        request.setAttribute("loggedOn",loggedUser != null);
+        request.setAttribute("loggedOn", true);
         request.setAttribute("loggedUser",loggedUser);
         request.setAttribute("products", productsNotInAuctions);
         request.setAttribute("menuActiveLink", "Aste");
@@ -77,32 +82,41 @@ public class AuctionManagementController {
     }
 
     @PostMapping("/insert")
-    public String insert(HttpServletRequest request){
+    public String insert(HttpServletRequest request) {
         User loggedUser = userService.findLoggedUser(request);
+
         Product product = productService.findProductById(Long.parseLong(request.getParameter("productID")));
+
         List<Auction> auctions = auctionService.findByProductOpenNotDeleted(product);
 
         if(!auctions.isEmpty()){
             request.setAttribute("applicationMessage","Prodotto già all'asta!");
         }
         else{
-            auctionService.createAuction(
-                    Timestamp.valueOf(request.getParameter("opening_timestamp")),
-                    product
-            );
-            request.setAttribute("applicationMessage","Asta creata correttamente!");
+            try{
+                auctionService.createAuction(
+                        Timestamp.valueOf(request.getParameter("opening_timestamp")),
+                        product
+                );
+                request.setAttribute("applicationMessage","Asta creata correttamente!");
+            }
+            catch(Exception e){
+                request.setAttribute("applicationMessage","Auction creation failed");
+            }
         }
 
         List<Auction> open_auctions = auctionService.findAllOpenAuctionsExceptUser(loggedUser);
+
         return prepareRequestCategory(request, loggedUser, open_auctions);
     }
 
     @GetMapping({"/inspect","/buyProduct","/update"})
     public String inspectAuction(HttpServletRequest request){
         User loggedUser = userService.findLoggedUser(request);
+
         Auction auction = auctionService.findAuctionById(Long.valueOf(request.getParameter("auctionID")));
 
-        request.setAttribute("loggedOn",loggedUser != null);
+        request.setAttribute("loggedOn", true);
         request.setAttribute("loggedUser",loggedUser);
         request.setAttribute("auction",auction);
         request.setAttribute("menuActiveLink", "Aste");
@@ -120,13 +134,18 @@ public class AuctionManagementController {
     }
 
     @PostMapping("/update")
-    public String update(HttpServletRequest request){
+    public String update(HttpServletRequest request) {
         User loggedUser = userService.findLoggedUser(request);
+
         Auction auction = auctionService.findAuctionById(Long.valueOf(request.getParameter("auctionID")));
 
-        auction.getProduct_auctioned().setCurrent_price(Float.parseFloat(request.getParameter("price")));
-
-        auctionService.updateAuction(auction);
+        try{
+            auction.getProduct_auctioned().setCurrent_price(Float.parseFloat(request.getParameter("price")));
+            auctionService.updateAuction(auction);
+        }
+        catch (Exception e){
+            request.setAttribute("applicationMessage","Auction update failed");
+        }
 
         return prepareRequestAuctions(request, loggedUser);
     }
@@ -135,7 +154,7 @@ public class AuctionManagementController {
     public String lowerAllView(HttpServletRequest request){
         User loggedUser = userService.findLoggedUser(request);
 
-        request.setAttribute("loggedOn",loggedUser != null);
+        request.setAttribute("loggedOn", true);
         request.setAttribute("loggedUser",loggedUser);
         request.setAttribute("menuActiveLink", "Abbassa");
 
@@ -143,13 +162,27 @@ public class AuctionManagementController {
     }
 
     @PostMapping("/delete")
-    public String delete(HttpServletRequest request){
+    public String delete(HttpServletRequest request) {
         User loggedUser = userService.findLoggedUser(request);
+
         Auction auction = auctionService.findAuctionById(Long.valueOf(request.getParameter("auctionID")));
+
         List<Threshold> thresholds = thresholdService.findThresholdsByAuction(auction);
 
         for (Threshold threshold : thresholds){
-            thresholdService.deleteThreshold(threshold);
+            try{
+                thresholdService.deleteThreshold(threshold);
+            }
+            catch (Exception e){
+                request.setAttribute("applicationMessage","Threshold deletion failed");
+            }
+        }
+
+        try{
+            auctionService.deleteAuction(auction);
+        }
+        catch (Exception e){
+            request.setAttribute("applicationMessage","Auction deletion failed");
         }
 
         return prepareRequestAuctions(request, loggedUser);
@@ -160,6 +193,7 @@ public class AuctionManagementController {
         User loggedUser = userService.findLoggedUser(request);
 
         List<Auction> auctions = auctionService.findAuctionByProductDescription(request.getParameter("auctionName"));
+
         return prepareRequestCategory(request, loggedUser, auctions);
     }
 
@@ -168,15 +202,17 @@ public class AuctionManagementController {
         User loggedUser = userService.findLoggedUser(request);
 
         Category category = categoryService.findCategoryById(Long.valueOf(request.getParameter("categoryID")));
+
         List<Auction> auctions = auctionService.findAuctionsByCategory(category);
+
         return prepareRequestCategory(request, loggedUser, auctions);
     }
 
     @NotNull
-    private String prepareRequestCategory(HttpServletRequest request, User loggedUser, List<Auction> auctions) {
+    private String prepareRequestCategory(@NotNull HttpServletRequest request, User loggedUser, List<Auction> auctions) {
         List<Category> categories = categoryService.getAllCategoriesExceptPremium();
 
-        request.setAttribute("loggedOn",loggedUser != null);
+        request.setAttribute("loggedOn",true);
         request.setAttribute("loggedUser",loggedUser);
         request.setAttribute("auctions", auctions);
         request.setAttribute("categories",categories);
@@ -188,14 +224,15 @@ public class AuctionManagementController {
     @NotNull
     private String prepareRequestAuctions(HttpServletRequest request, User loggedUser) {
         List<Auction> auctions = auctionService.findAllOpenAuctionsExceptUser(loggedUser);
+
         return prepareRequestCategoryEdit(request, loggedUser, auctions);
     }
 
     @NotNull
-    private String prepareRequestCategoryEdit(HttpServletRequest request, User loggedUser, List<Auction> auctions) {
+    private String prepareRequestCategoryEdit(@NotNull HttpServletRequest request, User loggedUser, List<Auction> auctions) {
         List<Category> categories = categoryService.getAllCategoriesExceptPremium();
 
-        request.setAttribute("loggedOn",loggedUser != null);
+        request.setAttribute("loggedOn",true);
         request.setAttribute("loggedUser",loggedUser);
         request.setAttribute("auctions", auctions);
         request.setAttribute("categories",categories);
