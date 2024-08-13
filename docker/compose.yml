@@ -1,20 +1,20 @@
 networks:
-        flying_dutchman_net:
+        flyingdutchman_net:
 
         services:
-                db_flying_dutchman:
-                image: FedericoChiodi/db:latest
-                container_name: db_flying_dutchman
-                environment:
-                        - MYSQL_USER=root
-                        - MYSQL_PASSWORD=StrongPassword123@
-                ports:
-                        - 3306:3306
-                command: --default-authentication-plugin=caching_sha2_password
-                volumes:
-                        - dbdata:/var/lib/mysql
-                networks:
-                        - flying_dutchman_net
+                flyingdutchman_db:
+                        image: fedec/flyingdutchman_db:latest
+                        container_name: flyingdutchman_db
+                        environment:
+                                - MYSQL_USER=root
+                                - MYSQL_PASSWORD=StrongPassword123@
+                        ports:
+                                - 3306:3306
+                        command: --default-authentication-plugin=caching_sha2_password
+                        volumes:
+                                - dbdata:/var/lib/mysql
+                        networks:
+                                - flyingdutchman_net
         healthcheck:
                 test: mysqladmin ping -h 127.0.0.1 -u $$MYSQL_USER --password=$$MYSQL_PASSWORD
                 start_period: 2s
@@ -22,17 +22,17 @@ networks:
                 timeout: 5s
                 retries: 15
 
-        forze_armate:
-                image: FedericoChiodi/flying_dutchman:latest
-                container_name: flying_dutchman
+        flyingdutchman:
+                image: fedec/flyingdutchman:latest
+                container_name: flyingdutchman
                 environment:
-                        DB_HOST: db_flying_dutchman
+                        DB_HOST: flyingdutchman_db
                 ports:
                         - 8080:8080
                 depends_on:
-                        db_sito:
+                        flyingdutchman_db:
                                 condition: service_healthy
                 networks:
-                        - flying_dutchman_net
+                        - flyingdutchman_net
         volumes:
                 dbdata:
