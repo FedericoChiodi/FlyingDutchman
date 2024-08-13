@@ -22,13 +22,4 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     // Trova i Prodotti di una determinata Categoria
     List<Product> findByCategory(Category category);
-
-    @Query("SELECT p FROM Product p, Auction a WHERE p.deleted = 'N' AND a.product_sold = 'N' AND p.owner = :owner")
-    List<Product> findProductByOwnerNotDeletedNotSold(@Param("owner") User owner);
-
-    @Query("SELECT p FROM Product p, Auction a WHERE a.product_sold = 'N' AND p.deleted = 'N' AND p.owner = :owner AND a.deleted = 'Y'")
-    List<Product> findProductByOwnerNotDeletedNotSoldNotInAuction(@Param("owner") User owner);
-
-    @Query("SELECT p FROM Product p, Auction a WHERE a.product_sold = 'N' AND p.deleted = 'N' AND p.productID = :ID AND a.deleted = 'Y'")
-    Product findProductByIdNotDeletedNotSoldNotInAuction(@Param("ID") Long ID);
 }

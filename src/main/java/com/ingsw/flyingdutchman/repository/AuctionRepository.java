@@ -16,11 +16,11 @@ public interface AuctionRepository extends JpaRepository<Auction, Long> {
 
     // Trovare aste da un Prodotto
     @Query("SELECT a FROM Auction a WHERE a.product_auctioned = :product")
-    List<Auction> findByProductOwner(@Param("product") Product product);
+    List<Auction> findByProduct(@Param("product") Product product);
 
     // Trovare aste aperte e non cancellate da un Prodotto
     @Query("SELECT a FROM Auction a WHERE a.product_auctioned = :product AND a.deleted = 'N' AND a.closing_timestamp IS NULL")
-    List<Auction> findByProductOwnerOpenNotDeleted(@Param("product") Product product);
+    List<Auction> findByProductOpenNotDeleted(@Param("product") Product product);
 
     // Trovare aste dall'Utente che le ha aperte
     @Query("SELECT a FROM Auction a WHERE a.product_auctioned.owner = :owner")
