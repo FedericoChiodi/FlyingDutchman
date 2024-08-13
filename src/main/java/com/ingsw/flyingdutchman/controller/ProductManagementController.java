@@ -84,7 +84,7 @@ public class ProductManagementController {
     public String delete(HttpServletRequest request){
         User loggedUser = userService.findLoggedUser(request);
         Product product = productService.findProductById(Long.valueOf(request.getParameter("productID")));
-        List<Auction> auctions = auctionService.findByProductOwnerOpenNotDeleted(product);
+        List<Auction> auctions = auctionService.findByProductOpenNotDeleted(product);
 
         if(!auctions.isEmpty()){
             request.setAttribute("applicationMessage", "Non puoi eliminare un prodotto attualmente in asta!");

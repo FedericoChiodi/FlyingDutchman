@@ -10,7 +10,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/auctionManagement")
@@ -48,11 +51,26 @@ public class AuctionManagementController {
     @GetMapping("/insert")
     public String insertView(HttpServletRequest request){
         User loggedUser = userService.findLoggedUser(request);
-        List<Product> products = productService.findProductByOwnerNotDeletedNotSoldNotInAuction(loggedUser);
+        List<Product> products = productService.findProductsByOwnerNotDeleted(loggedUser);
+        List<Auction> auctions = auctionService.findOpenAuctionsByOwnerNotDeleted(loggedUser);
+
+        Set<Long> productsIDsInAuctions = new HashSet<>();
+
+        for (Auction auction : auctions) {
+            productsIDsInAuctions.add(auction.getProduct_auctioned().getProductID());
+        }
+
+        List<Product> productsNotInAuctions = new ArrayList<>();
+
+        for (Product product : products) {
+            if (!productsIDsInAuctions.contains(product.getProductID())) {
+                productsNotInAuctions.add(product);
+            }
+        }
 
         request.setAttribute("loggedOn",loggedUser != null);
         request.setAttribute("loggedUser",loggedUser);
-        request.setAttribute("products", products);
+        request.setAttribute("products", productsNotInAuctions);
         request.setAttribute("menuActiveLink", "Aste");
 
         return "auctionManagement/insertView";
@@ -61,9 +79,10 @@ public class AuctionManagementController {
     @PostMapping("/insert")
     public String insert(HttpServletRequest request){
         User loggedUser = userService.findLoggedUser(request);
-        Product product = productService.findProductByIdNotDeletedNotSoldNotInAuction(Long.parseLong(request.getParameter("productID")));
+        Product product = productService.findProductById(Long.parseLong(request.getParameter("productID")));
+        List<Auction> auctions = auctionService.findByProductOpenNotDeleted(product);
 
-        if(product == null){
+        if(!auctions.isEmpty()){
             request.setAttribute("applicationMessage","Prodotto già all'asta!");
         }
         else{
@@ -74,8 +93,8 @@ public class AuctionManagementController {
             request.setAttribute("applicationMessage","Asta creata correttamente!");
         }
 
-        List<Auction> auctions = auctionService.findAllOpenAuctionsExceptUser(loggedUser);
-        return prepareRequestCategory(request, loggedUser, auctions);
+        List<Auction> open_auctions = auctionService.findAllOpenAuctionsExceptUser(loggedUser);
+        return prepareRequestCategory(request, loggedUser, open_auctions);
     }
 
     @GetMapping({"/inspect","/buyProduct","/update"})
