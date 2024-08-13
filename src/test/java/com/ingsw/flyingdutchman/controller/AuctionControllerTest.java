@@ -3,7 +3,6 @@ package com.ingsw.flyingdutchman.controller;
 import com.ingsw.flyingdutchman.model.mo.*;
 import com.ingsw.flyingdutchman.model.service.*;
 import jakarta.servlet.http.HttpServletRequest;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -12,7 +11,6 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,11 +51,6 @@ public class AuctionControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(auctionManagementController).build();
     }
 
-    @AfterEach
-    public void teardown(){
-
-    }
-
     @Test
     public void testView() throws Exception {
         User loggedUser = new User();
@@ -78,33 +71,48 @@ public class AuctionControllerTest {
     public void testInsertAuctionSuccess() throws Exception {
         User loggedUser = new User();
         loggedUser.setUserID(1L);
+
         Product product = new Product();
         product.setProductID(1L);
 
+        List<Auction> auctions = new ArrayList<>();
+
         when(userService.findLoggedUser(any(HttpServletRequest.class))).thenReturn(loggedUser);
-        when(productService.findProductByIdNotDeletedNotSoldNotInAuction(any(Long.class))).thenReturn(product);
-        when(request.getParameter("opening_timestamp")).thenReturn(Timestamp.valueOf("2024-01-01 00:00:00").toString());
+        when(productService.findProductById(any(Long.class))).thenReturn(product);
+        when(auctionService.findByProductOpenNotDeleted(any(Product.class))).thenReturn(auctions);
+        when(auctionService.findAllOpenAuctionsExceptUser(any(User.class))).thenReturn(new ArrayList<>());
 
         mockMvc.perform(post("/auctionManagement/insert")
                         .param("productID", "1")
                         .param("opening_timestamp", "2024-01-01 00:00:00"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("auctionManagement/view"))
-                .andExpect(model().attribute("applicationMessage", "Asta creata correttamente!"));
+                .andExpect(request().attribute("applicationMessage", "Asta creata correttamente!"));
     }
+
 
     @Test
     public void testInsertAuctionFailure() throws Exception {
         User loggedUser = new User();
         loggedUser.setUserID(1L);
 
+        Product product = new Product();
+        product.setProductID(1L);
+
+        List<Auction> auctions = new ArrayList<>();
+        // Viene ritornata almeno 1 asta che contiene quel prodotto
+        auctions.add(new Auction());
+
         when(userService.findLoggedUser(any(HttpServletRequest.class))).thenReturn(loggedUser);
-        when(productService.findProductByIdNotDeletedNotSoldNotInAuction(any(Long.class))).thenReturn(null);
+        when(productService.findProductById(any(Long.class))).thenReturn(product);
+        when(auctionService.findByProductOpenNotDeleted(any(Product.class))).thenReturn(auctions);
+        when(auctionService.findAllOpenAuctionsExceptUser(any(User.class))).thenReturn(new ArrayList<>());
 
         mockMvc.perform(post("/auctionManagement/insert")
-                        .param("productID", "1"))
+                        .param("productID", "1")
+                        .param("opening_timestamp", "2024-01-01 00:00:00"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("auctionManagement/view"))
-                .andExpect(model().attribute("applicationMessage", "Prodotto già all'asta!"));
+                .andExpect(request().attribute("applicationMessage", "Prodotto già all'asta!"));
     }
 }
