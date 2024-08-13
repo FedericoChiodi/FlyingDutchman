@@ -44,12 +44,12 @@ public class AuctionService {
         return auctionRepository.findById(auctionID).orElse(null);
     }
 
-    public List<Auction> findByProductOwner(@NotNull Product product) {
-        return auctionRepository.findByProductOwner(product);
+    public List<Auction> findByProduct(@NotNull Product product) {
+        return auctionRepository.findByProduct(product);
     }
 
-    public List<Auction> findByProductOwnerOpenNotDeleted(@NotNull Product product) {
-        return auctionRepository.findByProductOwnerOpenNotDeleted(product);
+    public List<Auction> findByProductOpenNotDeleted(@NotNull Product product) {
+        return auctionRepository.findByProductOpenNotDeleted(product);
     }
 
     public List<Auction> findByOwner(User user) {
