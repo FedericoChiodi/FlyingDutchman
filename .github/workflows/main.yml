@@ -66,13 +66,13 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: build docker compose
-      run: docker compose -f ./docker/compose.yml build
+    - name: Build docker compose
+      run: docker compose build
     
-    - name: avvio
-      run: docker compose -f ./docker/compose.yml up -d
+    - name: Up docker
+      run: docker compose up -d
 
-    - name: download report Jacoco
+    - name: Download report Jacoco
       uses: actions/download-artifact@v4
       with:
         name: reports
