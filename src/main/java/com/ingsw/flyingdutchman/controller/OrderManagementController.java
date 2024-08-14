@@ -43,7 +43,7 @@ public class OrderManagementController {
         User loggedUser = userService.findLoggedUser(request);
         List<Order> orders = orderService.findOrdersByUser(loggedUser);
 
-        request.setAttribute("loggedOn",loggedUser!=null);
+        request.setAttribute("loggedOn",true);
         request.setAttribute("loggedUser",loggedUser);
         request.setAttribute("orders",orders);
         request.setAttribute("menuActiveLink", "Ordini");
@@ -76,7 +76,7 @@ public class OrderManagementController {
 
         List<Order> orders = orderService.findOrdersByUser(loggedUser);
 
-        request.setAttribute("loggedOn",loggedUser!=null);
+        request.setAttribute("loggedOn",true);
         request.setAttribute("loggedUser",loggedUser);
         request.setAttribute("orders",orders);
         request.setAttribute("menuActiveLink", "Ordini");
@@ -120,7 +120,7 @@ public class OrderManagementController {
         User loggedUser = userService.findLoggedUser(request);
         Auction auction = auctionService.findAuctionById(1L);
 
-        request.setAttribute("loggedOn",loggedUser != null);
+        request.setAttribute("loggedOn",true);
         request.setAttribute("loggedUser", loggedUser);
         request.setAttribute("auction", auction);
         request.setAttribute("isPremium", true);
