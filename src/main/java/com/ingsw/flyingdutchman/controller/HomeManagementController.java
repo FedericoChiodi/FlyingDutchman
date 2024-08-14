@@ -40,18 +40,21 @@ public class HomeManagementController {
         if (userToAuthenticate != null) {
             if (userToAuthenticate.getPassword().equals(password) && userToAuthenticate.isDeleted() == 'N') {
                 userService.createLoginCookie(userToAuthenticate, response);
+                request.setAttribute("loggedUser", userToAuthenticate);
+                request.setAttribute("loggedOn", true);
             } else {
                 applicationMessage = "Invalid username or password";
                 request.setAttribute("applicationMessage", applicationMessage);
+                request.setAttribute("loggedUser", null);
+                request.setAttribute("loggedOn", false);
             }
         }
         else{
             applicationMessage = "Could not find that User";
             request.setAttribute("applicationMessage", applicationMessage);
+            request.setAttribute("loggedUser", null);
+            request.setAttribute("loggedOn", false);
         }
-
-        request.setAttribute("loggedUser", userToAuthenticate);
-        request.setAttribute("loggedOn", userToAuthenticate != null);
 
         return "homeManagement/view";
     }
