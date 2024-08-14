@@ -30,19 +30,7 @@ public class HomeControllerTest {
     private MockMvc mockMvc;
 
     @Mock
-    private AuctionService auctionService;
-
-    @Mock
     private UserService userService;
-
-    @Mock
-    private CategoryService categoryService;
-
-    @Mock
-    private ProductService productService;
-
-    @Mock
-    private ThresholdService thresholdService;
 
     @InjectMocks
     private HomeManagementController homeManagementController;
