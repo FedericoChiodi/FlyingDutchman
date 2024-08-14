@@ -46,7 +46,7 @@ public class ProductManagementController {
         User loggedUser = userService.findLoggedUser(request);
         List<Category> categories = categoryService.getAllCategoriesExceptPremium();
 
-        request.setAttribute("loggedOn", loggedUser != null);
+        request.setAttribute("loggedOn", true);
         request.setAttribute("loggedUser", loggedUser);
         request.setAttribute("categories", categories);
         request.setAttribute("menuActiveLink", "Prodotti");
@@ -59,25 +59,22 @@ public class ProductManagementController {
         User loggedUser = userService.findLoggedUser(request);
 
         String imagePath = "/home/sanpc/tomcat/webapps/Uploads/" + loggedUser.getUsername() + File.separator + request.getParameter("description") + ".png";
-        productService.createProduct(
-                request.getParameter("description"),
-                Float.parseFloat(request.getParameter("min_price")),
-                Float.parseFloat(request.getParameter("starting_price")),
-                Float.parseFloat(request.getParameter("current_price")),
-                imagePath,
-                categoryService.findCategoryById(Long.valueOf(request.getParameter("categoryID"))),
-                loggedUser
-        );
+        try{
+            productService.createProduct(
+                    request.getParameter("description"),
+                    Float.parseFloat(request.getParameter("min_price")),
+                    Float.parseFloat(request.getParameter("starting_price")),
+                    Float.parseFloat(request.getParameter("current_price")),
+                    imagePath,
+                    categoryService.findCategoryById(Long.valueOf(request.getParameter("categoryID"))),
+                    loggedUser
+            );
+        }
+        catch (Exception e){
+            request.setAttribute("applicationMessage", "Could not create product!");
+        }
 
-        List<Product> products = productService.findProductByOwnerNotDeletedNotSold(loggedUser);
-
-        request.setAttribute("loggedOn", true);
-        request.setAttribute("loggedUser", loggedUser);
-        request.setAttribute("products", products);
-        request.setAttribute("soldProductsAction", false);
-        request.setAttribute("menuActiveLink", "Prodotti");
-
-        return "productManagement/view";
+        return prepareProducts(request, loggedUser);
     }
 
     @PostMapping("/delete")
@@ -90,7 +87,12 @@ public class ProductManagementController {
             request.setAttribute("applicationMessage", "Non puoi eliminare un prodotto attualmente in asta!");
         }
         else{
-            productService.deleteProduct(product);
+            try{
+                productService.deleteProduct(product);
+            }
+            catch (Exception e){
+                request.setAttribute("applicationMessage","Could not delete product!");
+            }
         }
 
         return prepareProducts(request, loggedUser);
@@ -107,7 +109,7 @@ public class ProductManagementController {
             buyers.add(userService.findByUserID(order.getBuyer().getUserID()));
         }
 
-        request.setAttribute("loggedOn", loggedUser != null);
+        request.setAttribute("loggedOn", true);
         request.setAttribute("loggedUser", loggedUser);
         request.setAttribute("products", products);
         request.setAttribute("buyers", buyers);
@@ -117,11 +119,10 @@ public class ProductManagementController {
         return "productManagement/view";
     }
 
-    @NotNull
-    private String prepareProducts(HttpServletRequest request, User loggedUser) {
+    private String prepareProducts(@NotNull HttpServletRequest request, User loggedUser) {
         List<Product> products = productService.findProductByOwnerNotDeletedNotSold(loggedUser);
 
-        request.setAttribute("loggedOn", loggedUser != null);
+        request.setAttribute("loggedOn", true);
         request.setAttribute("loggedUser", loggedUser);
         request.setAttribute("products", products);
         request.setAttribute("soldProductsAction", false);
