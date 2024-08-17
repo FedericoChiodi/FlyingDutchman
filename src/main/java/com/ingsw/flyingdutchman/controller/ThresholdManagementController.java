@@ -46,7 +46,7 @@ public class ThresholdManagementController {
         List<Threshold> thresholds = thresholdService.findThresholdsByUser(loggedUser);
 
         request.setAttribute("loggedUser", loggedUser);
-        request.setAttribute("loggedOn", loggedUser != null);
+        request.setAttribute("loggedOn", true);
         request.setAttribute("thresholds", thresholds);
         request.setAttribute("menuActiveLink", "Prenota");
 
@@ -59,12 +59,17 @@ public class ThresholdManagementController {
         List<Threshold> thresholds = thresholdService.findThresholdsByUser(loggedUser);
         Threshold threshold = thresholdService.findThresholdById(Long.valueOf(request.getParameter("thresholdID")));
 
-        thresholdService.deleteThreshold(threshold);
+        try{
+            thresholdService.deleteThreshold(threshold);
+            request.setAttribute("applicationMessage", "Eliminata correttamente!");
+        }
+        catch (Exception e){
+            request.setAttribute("applicationMessage", "Could not delete threshold!");
+        }
 
         request.setAttribute("loggedUser", loggedUser);
-        request.setAttribute("loggedOn", loggedUser != null);
+        request.setAttribute("loggedOn", true);
         request.setAttribute("thresholds", thresholds);
-        request.setAttribute("applicationMessage", "Eliminata correttamente!");
         request.setAttribute("menuActiveLink", "Prenota");
 
         return "thresholdManagement/view";
@@ -79,15 +84,20 @@ public class ThresholdManagementController {
         LocalDateTime currentDateTime = LocalDateTime.now();
         Timestamp timestamp = Timestamp.valueOf(currentDateTime);
 
-        thresholdService.createThreshold(
-                Float.parseFloat(request.getParameter("price")),
-                timestamp,
-                loggedUser,
-                auction
-        );
+        try {
+            thresholdService.createThreshold(
+                    Float.parseFloat(request.getParameter("price")),
+                    timestamp,
+                    loggedUser,
+                    auction
+            );
+        }
+        catch (Exception e){
+            request.setAttribute("applicationMessage", "Could not insert threshold!");
+        }
 
         request.setAttribute("loggedUser", loggedUser);
-        request.setAttribute("loggedOn", loggedUser != null);
+        request.setAttribute("loggedOn", true);
         request.setAttribute("thresholds", thresholds);
         request.setAttribute("menuActiveLink", "Prenota");
 
@@ -100,7 +110,7 @@ public class ThresholdManagementController {
         Auction auction = auctionService.findAuctionById(Long.valueOf(request.getParameter("auctionID")));
 
         request.setAttribute("loggedUser", loggedUser);
-        request.setAttribute("loggedOn", loggedUser != null);
+        request.setAttribute("loggedOn", true);
         request.setAttribute("auction", auction);
         request.setAttribute("menuActiveLink", "Prenota");
 
@@ -118,12 +128,17 @@ public class ThresholdManagementController {
         threshold.setPrice(Float.parseFloat(request.getParameter("price")));
         threshold.setReservationDate(timestamp);
 
-        thresholdService.updateThreshold(threshold);
+        try{
+            thresholdService.updateThreshold(threshold);
+        }
+        catch (Exception e){
+            request.setAttribute("applicationMessage","Could not update threshold!");
+        }
 
         List<Threshold> thresholds = thresholdService.findThresholdsByUser(loggedUser);
 
         request.setAttribute("loggedUser", loggedUser);
-        request.setAttribute("loggedOn", loggedUser != null);
+        request.setAttribute("loggedOn", true);
         request.setAttribute("thresholds", thresholds);
         request.setAttribute("menuActiveLink", "Prenota");
 
@@ -136,7 +151,7 @@ public class ThresholdManagementController {
         Threshold threshold = thresholdService.findThresholdById(Long.valueOf(request.getParameter("thresholdID")));
 
         request.setAttribute("loggedUser", loggedUser);
-        request.setAttribute("loggedOn", loggedUser != null);
+        request.setAttribute("loggedOn", true);
         request.setAttribute("threshold", threshold);
         request.setAttribute("menuActiveLink", "Prenota");
 
@@ -152,10 +167,15 @@ public class ThresholdManagementController {
 
         if(pageToReturn.equals("auctionManagement/view")){
             Auction auction = auctionService.findAuctionById(Long.valueOf(request.getParameter("auctionID")));
-
             auction.getProduct_auctioned().setCurrent_price(Float.parseFloat(request.getParameter("price")));
-            auctionService.updateAuction(auction);
-            request.setAttribute("applicationMessage", "Prezzo abbassato correttamente!");
+
+            try{
+                auctionService.updateAuction(auction);
+                request.setAttribute("applicationMessage", "Prezzo abbassato correttamente!");
+            }
+            catch (Exception e){
+                request.setAttribute("applicationMessage", "Could not lower price!");
+            }
 
             checkPrices(auction);
         }
@@ -167,28 +187,32 @@ public class ThresholdManagementController {
             List<Auction> auctions = auctionService.findAllOpenAuctionsExceptUser(user);
 
             for(Auction auction : auctions){
-                int randomNumber = (int) (Math.random() * (max - min + 1)) + min;
-                float percentageToLower = randomNumber / 100f;
+                float percentageToLower_gen = generateRandom();
+                float priceLowered = auction.getProduct_auctioned().getCurrent_price() - (auction.getProduct_auctioned().getCurrent_price() * percentageToLower_gen);
 
                 // Il prezzo abbassato è superiore al prezzo minimo
-                if(auction.getProduct_auctioned().getCurrent_price() - (auction.getProduct_auctioned().getCurrent_price() * percentageToLower) > auction.getProduct_auctioned().getMin_price()){
-                    auction.getProduct_auctioned().setCurrent_price(auction.getProduct_auctioned().getCurrent_price() * percentageToLower);
+                if(priceLowered > auction.getProduct_auctioned().getMin_price()){
+                    auction.getProduct_auctioned().setCurrent_price(priceLowered);
                 }
                 else{
                     auction.getProduct_auctioned().setCurrent_price(auction.getProduct_auctioned().getMin_price());
                 }
 
-                auctionService.updateAuction(auction);
+                try{
+                    auctionService.updateAuction(auction);
+                    request.setAttribute("applicationMessage","Prezzi aggiornati in " + auctions.size() + " aste!");
+                }
+                catch (Exception e){
+                    request.setAttribute("applicationMessage","Could not lower prices!");
+                }
             }
-
-            request.setAttribute("applicationMessage","Prezzi aggiornati in " + auctions.size() + " aste!");
 
             for (Auction auction : auctions) {
                 checkPrices(auction);
             }
         }
 
-        request.setAttribute("loggedOn", loggedUser != null);
+        request.setAttribute("loggedOn", true);
         request.setAttribute("loggedUser", loggedUser);
         request.setAttribute("menuActiveLink", "Prenota");
 
@@ -253,5 +277,11 @@ public class ThresholdManagementController {
         );
 
         thresholdService.deleteThreshold(toOrder);
+    }
+
+    public float generateRandom(){
+        int randomNumber = (int) (Math.random() * (max - min + 1)) + min;
+        System.out.println(randomNumber / 100f);
+        return (randomNumber / 100f);
     }
 }
