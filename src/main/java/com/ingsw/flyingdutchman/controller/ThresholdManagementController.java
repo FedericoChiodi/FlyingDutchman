@@ -6,7 +6,6 @@ import com.ingsw.flyingdutchman.model.mo.Threshold;
 import com.ingsw.flyingdutchman.model.mo.User;
 import com.ingsw.flyingdutchman.model.service.*;
 import jakarta.servlet.http.HttpServletRequest;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -228,7 +227,7 @@ public class ThresholdManagementController {
         return pageToReturn;
     }
 
-    private void checkPrices(Auction auction) {
+    public void checkPrices(Auction auction) {
         List<Threshold> thresholds = thresholdService.findThresholdsByAuction(auction);
         if(!thresholds.isEmpty()){
             List<Threshold> validThresholds = new ArrayList<>();
@@ -243,40 +242,56 @@ public class ThresholdManagementController {
         }
     }
 
-    private void createOrderFromThreshold(Auction auction, @NotNull List<Threshold> validThresholds) {
+    public void createOrderFromThreshold(Auction auction, List<Threshold> validThresholds) {
+        // Si trova la prenotazione da ordinare:
+        // Quella con prezzo più alto. In caso di parità si
+        // sceglie quella piazzata prima cronologicamente
         Threshold toOrder = validThresholds.get(0);
-        for(Threshold threshold : validThresholds){
-            if(threshold.getPrice() > toOrder.getPrice()){
+        for (Threshold threshold : validThresholds) {
+            if (threshold.getPrice() > toOrder.getPrice()) {
                 toOrder = threshold;
-            }
-            else if(Objects.equals(threshold.getPrice(), toOrder.getPrice())){
-                if(threshold.getReservationDate().compareTo(toOrder.getReservationDate()) < 0){
+            } else if (Objects.equals(threshold.getPrice(), toOrder.getPrice())) {
+                if (threshold.getReservationDate().compareTo(toOrder.getReservationDate()) < 0) {
                     toOrder = threshold;
                 }
             }
         }
-        for(Threshold threshold : validThresholds){
-            thresholdService.deleteThreshold(threshold);
+
+        Float fallback_price = auction.getProduct_auctioned().getCurrent_price();
+        try {
+            LocalDateTime currentDateTime = LocalDateTime.now();
+            Timestamp timestamp = Timestamp.valueOf(currentDateTime);
+
+            auction.setClosing_timestamp(timestamp);
+            auction.setProduct_sold('Y');
+            auction.getProduct_auctioned().setCurrent_price(toOrder.getPrice());
+
+            auctionService.updateAuction(auction);
+            try {
+                orderService.createOrder(
+                        timestamp,
+                        toOrder.getPrice(),
+                        'Y',
+                        toOrder.getUser(),
+                        auction.getProduct_auctioned()
+                );
+                for (Threshold threshold : validThresholds) {
+                    try {
+                        thresholdService.deleteThreshold(threshold);
+                    } catch (Exception e) {
+                        System.err.println("Could not delete threshold: " + threshold);
+                    }
+                }
+            } catch (Exception e) {
+                System.err.println("Could not create order from: " + toOrder);
+            }
+        } catch (Exception e) {
+            auction.setClosing_timestamp(null);
+            auction.setProduct_sold('N');
+            auction.getProduct_auctioned().setCurrent_price(fallback_price);
+
+            System.err.println("Could not update auction: " + auction);
         }
-
-        LocalDateTime currentDateTime = LocalDateTime.now();
-        Timestamp timestamp = Timestamp.valueOf(currentDateTime);
-
-        auction.setClosing_timestamp(timestamp);
-        auction.setProduct_sold('Y');
-        auction.getProduct_auctioned().setCurrent_price(toOrder.getPrice());
-        auctionService.updateAuction(auction);
-
-        User buyer = toOrder.getUser();
-        orderService.createOrder(
-                timestamp,
-                toOrder.getPrice(),
-                'Y',
-                buyer,
-                auction.getProduct_auctioned()
-        );
-
-        thresholdService.deleteThreshold(toOrder);
     }
 
     public float generateRandom(){
