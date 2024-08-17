@@ -13,9 +13,10 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -336,7 +337,7 @@ public class ThresholdControllerTest {
     @CsvSource({
             "auctionManagement/lowerAllView, , "
     })
-    public void testCheckOnUpdate_1iter(String pageToReturn, String auctionID, String price) throws Exception {
+    public void testCheckOnUpdate_1iter(String pageToReturn, String auctionID, String price) {
         User loggedUser = new User();
         loggedUser.setUserID(1L);
 
@@ -416,7 +417,7 @@ public class ThresholdControllerTest {
     @CsvSource({
             "auctionManagement/lowerAllView, , "
     })
-    public void testCheckOnUpdate_2iter(String pageToReturn, String auctionID, String price) throws Exception {
+    public void testCheckOnUpdate_2iter(String pageToReturn, String auctionID, String price) {
         User loggedUser = new User();
         loggedUser.setUserID(1L);
 
@@ -512,9 +513,282 @@ public class ThresholdControllerTest {
         }
     }
 
-    @Test
-    public void testCheckOnUpdate_exception() throws Exception {
+    @ParameterizedTest
+    @CsvSource({
+            "auctionManagement/view, 1, 150.0",
+            "auctionManagement/lowerAllView, , "
+    })
+    public void testCheckOnUpdate_exception(String pageToReturn, String auctionID, String price) throws Exception {
+        User loggedUser = new User();
+        loggedUser.setUserID(1L);
 
+        Product product = new Product();
+        product.setCurrent_price(100.0f);
+        product.setMin_price(80.0f);
+
+        Auction auction = new Auction();
+        auction.setAuctionID(1L);
+        auction.setProduct_auctioned(product);
+
+        List<Auction> auctions = new ArrayList<>();
+        auctions.add(auction);
+
+        when(userService.findLoggedUser(any(HttpServletRequest.class))).thenReturn(loggedUser);
+        when(auctionService.findAllOpenAuctionsExceptUser(any(User.class))).thenReturn(auctions);
+        when(auctionService.findAuctionById(any(Long.class))).thenReturn(auction);
+
+        doThrow(new RuntimeException()).when(auctionService).updateAuction(any(Auction.class));
+
+        if(pageToReturn.equals("auctionManagement/view")){
+            mockMvc.perform(post("/thresholdManagement/update")
+                            .param("auctionID", auctionID)
+                            .param("pageToReturn",pageToReturn)
+                            .param("price", price))
+                    .andExpect(status().isOk())
+                    .andExpect(view().name(pageToReturn))
+                    .andExpect(request().attribute("applicationMessage", "Could not lower price!"));
+        }
+
+        if(pageToReturn.equals("auctionManagement/lowerAllView")){
+            mockMvc.perform(post("/thresholdManagement/update")
+                            .param("auctionID", auctionID)
+                            .param("pageToReturn",pageToReturn)
+                            .param("price", price))
+                    .andExpect(status().isOk())
+                    .andExpect(view().name(pageToReturn))
+                    .andExpect(request().attribute("applicationMessage", "Could not lower prices!"));
+        }
+    }
+
+    @Test
+    public void testCheckPrices_NoThresholds() {
+        ThresholdManagementController controller = spy(new ThresholdManagementController(thresholdService, userService, auctionService, orderService, categoryService));
+
+        Auction auction = new Auction();
+        Product product = new Product();
+        product.setCurrent_price(100.0f);
+        product.setMin_price(80.0f);
+        auction.setProduct_auctioned(product);
+
+        // Simulazione di nessuna soglia trovata
+        when(thresholdService.findThresholdsByAuction(auction)).thenReturn(Collections.emptyList());
+
+        controller.checkPrices(auction);
+
+        // Il metodo createOrderFromThreshold non è stato chiamato
+        verify(controller, never()).createOrderFromThreshold(any(Auction.class), anyList());
+    }
+
+    @Test
+    public void testCheckPrices_NoValidThresholds() {
+        ThresholdManagementController controller = spy(new ThresholdManagementController(thresholdService, userService, auctionService, orderService, categoryService));
+
+        Auction auction = new Auction();
+        Product product = new Product();
+        product.setCurrent_price(100.0f);
+        product.setMin_price(80.0f);
+        auction.setProduct_auctioned(product);
+
+        // Simulazione di soglie trovate ma nessuna valida
+        Threshold threshold1 = new Threshold();
+        threshold1.setPrice(50.0f);
+
+        Threshold threshold2 = new Threshold();
+        threshold2.setPrice(80.0f);
+
+        List<Threshold> thresholds = new ArrayList<>();
+        thresholds.add(threshold1);
+        thresholds.add(threshold2);
+
+        when(thresholdService.findThresholdsByAuction(auction)).thenReturn(thresholds);
+
+        controller.checkPrices(auction);
+
+        // Comunque mai chiamato
+        verify(controller, never()).createOrderFromThreshold(any(Auction.class), anyList());
+    }
+
+    @Test
+    public void testCheckPrices_ValidThresholds() {
+        ThresholdManagementController controller = spy(new ThresholdManagementController(thresholdService, userService, auctionService, orderService, categoryService));
+
+        Auction auction = new Auction();
+        Product product = new Product();
+        product.setCurrent_price(100.0f);
+        product.setMin_price(80.0f);
+        auction.setProduct_auctioned(product);
+
+        // Soglie trovate e valide
+        Threshold threshold1 = new Threshold();
+        threshold1.setPrice(120.0f);
+        threshold1.setReservationDate(new Timestamp(System.currentTimeMillis()));
+
+        Threshold threshold2 = new Threshold();
+        threshold2.setPrice(100.0f);
+        threshold1.setReservationDate(new Timestamp(System.currentTimeMillis()));
+
+        List<Threshold> thresholds = new ArrayList<>();
+        thresholds.add(threshold1);
+        thresholds.add(threshold2);
+
+        when(thresholdService.findThresholdsByAuction(auction)).thenReturn(thresholds);
+
+        controller.checkPrices(auction);
+
+        // Creazione di ArgumentCaptor specifico per List<Threshold>
+        ArgumentCaptor<List<Threshold>> validThresholdsCaptor = ArgumentCaptor.forClass((Class<List<Threshold>>) (Class<?>) List.class);
+        verify(controller).createOrderFromThreshold(eq(auction), validThresholdsCaptor.capture());
+
+        // La lista catturata contiene solo le soglie valide
+        List<Threshold> validThresholds = validThresholdsCaptor.getValue();
+        assertEquals(2, validThresholds.size()); // Due soglie valide
+    }
+
+    @Test
+    public void createOrderFromThreshold() {
+        ThresholdManagementController controller = spy(new ThresholdManagementController(thresholdService, userService, auctionService, orderService, categoryService));
+
+        Product product = new Product();
+        product.setProductID(1L);
+        product.setCurrent_price(90.0f);
+
+        Auction auction = new Auction();
+        auction.setAuctionID(1L);
+        auction.setProduct_auctioned(product);
+        auction.setProduct_sold('N');
+
+        List<Threshold> validThresholds = new ArrayList<>();
+
+        User user = new User();
+        user.setUserID(1L);
+
+        Threshold threshold1 = new Threshold();
+        threshold1.setPrice(80.0f);
+        threshold1.setReservationDate(Timestamp.valueOf("2024-01-01 10:10:10"));
+        threshold1.setUser(user);
+
+        // Dovrei ordinare questa: prezzo più alto messa prima
+        Threshold threshold2 = new Threshold();
+        threshold2.setPrice(100.0f);
+        threshold2.setReservationDate(Timestamp.valueOf("2024-01-01 10:10:10"));
+        threshold2.setUser(user);
+
+        Threshold threshold3 = new Threshold();
+        threshold3.setPrice(100.0f);
+        threshold3.setReservationDate(Timestamp.valueOf("2024-03-03 10:10:10"));
+        threshold3.setUser(user);
+
+        validThresholds.add(threshold1);
+        validThresholds.add(threshold3); // Copertura condizioni!
+        validThresholds.add(threshold2);
+
+        controller.createOrderFromThreshold(auction, validThresholds);
+
+        verify(thresholdService, times(3)).deleteThreshold(any(Threshold.class));
+        verify(auctionService).updateAuction(auction);
+        verify(orderService).createOrder(any(Timestamp.class),anyFloat(),anyChar(),any(User.class),any(Product.class));
+        assertEquals(auction.getProduct_sold(), 'Y');
+        // Verifico che il prezzo sia cambiato a causa della prenotazione
+        assertEquals(auction.getProduct_auctioned().getCurrent_price(), threshold2.getPrice());
+    }
+
+    @Test
+    public void createOrderFromThreshold_exceptions() {
+        ThresholdManagementController controller = spy(new ThresholdManagementController(thresholdService, userService, auctionService, orderService, categoryService));
+
+        Product product = new Product();
+        product.setProductID(1L);
+        product.setCurrent_price(90.0f);
+
+        Auction auction = new Auction();
+        auction.setAuctionID(1L);
+        auction.setProduct_auctioned(product);
+        auction.setProduct_sold('N');
+
+        List<Threshold> validThresholds = new ArrayList<>();
+
+        User user = new User();
+        user.setUserID(1L);
+
+        Threshold threshold1 = new Threshold();
+        threshold1.setPrice(80.0f);
+        threshold1.setReservationDate(Timestamp.valueOf("2024-01-01 10:10:10"));
+        threshold1.setUser(user);
+
+        // Dovrei ordinare questa: prezzo più alto messa prima
+        Threshold threshold2 = new Threshold();
+        threshold2.setPrice(100.0f);
+        threshold2.setReservationDate(Timestamp.valueOf("2024-01-01 10:10:10"));
+        threshold2.setUser(user);
+
+        Threshold threshold3 = new Threshold();
+        threshold3.setPrice(100.0f);
+        threshold3.setReservationDate(Timestamp.valueOf("2024-03-03 10:10:10"));
+        threshold3.setUser(user);
+
+        validThresholds.add(threshold1);
+        validThresholds.add(threshold2);
+        validThresholds.add(threshold3);
+
+        // Redirect System.err to capture the output
+        ByteArrayOutputStream errContent = new ByteArrayOutputStream();
+        PrintStream originalErr = System.err;
+        System.setErr(new PrintStream(errContent));
+
+        doThrow(new RuntimeException()).when(thresholdService).deleteThreshold(any(Threshold.class));
+
+        controller.createOrderFromThreshold(auction, validThresholds);
+
+        System.setErr(originalErr);
+        assertTrue(errContent.toString().contains("Could not delete threshold: " + threshold1));
+
+        verify(thresholdService, times(3)).deleteThreshold(any(Threshold.class));
+        verify(auctionService).updateAuction(auction);
+        verify(orderService).createOrder(any(Timestamp.class),anyFloat(),anyChar(),any(User.class),any(Product.class));
+        assertEquals(auction.getProduct_sold(), 'Y');
+        assertEquals(auction.getProduct_auctioned().getCurrent_price(), threshold2.getPrice());
+
+        reset(thresholdService);
+        reset(orderService);
+        reset(auctionService);
+
+        doThrow(new RuntimeException()).when(orderService).createOrder(any(Timestamp.class),anyFloat(),anyChar(),any(User.class),any(Product.class));
+
+        errContent = new ByteArrayOutputStream();
+        originalErr = System.err;
+        System.setErr(new PrintStream(errContent));
+
+        controller.createOrderFromThreshold(auction, validThresholds);
+
+        System.setErr(originalErr);
+        assertTrue(errContent.toString().contains("Could not create order from: " + threshold2));
+
+        verify(thresholdService, times(0)).deleteThreshold(any(Threshold.class));
+        verify(auctionService).updateAuction(auction);
+        verify(orderService).createOrder(any(Timestamp.class),anyFloat(),anyChar(),any(User.class),any(Product.class));
+        assertEquals(auction.getProduct_sold(), 'Y');
+        assertEquals(auction.getProduct_auctioned().getCurrent_price(), threshold2.getPrice());
+
+        reset(thresholdService);
+        reset(orderService);
+        reset(auctionService);
+
+        doThrow(new RuntimeException()).when(auctionService).updateAuction(auction);
+
+        errContent = new ByteArrayOutputStream();
+        originalErr = System.err;
+        System.setErr(new PrintStream(errContent));
+
+        controller.createOrderFromThreshold(auction, validThresholds);
+
+        System.setErr(originalErr);
+        assertTrue(errContent.toString().contains("Could not update auction: " + auction));
+
+        verify(thresholdService, times(0)).deleteThreshold(any(Threshold.class));
+        verify(auctionService).updateAuction(auction);
+        verify(orderService, times(0)).createOrder(any(Timestamp.class),anyFloat(),anyChar(),any(User.class),any(Product.class));
+        assertEquals(auction.getProduct_sold(), 'N');
+        assertEquals(auction.getProduct_auctioned().getCurrent_price(), product.getCurrent_price());
     }
 
 }
