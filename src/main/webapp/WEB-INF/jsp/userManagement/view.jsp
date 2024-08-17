@@ -105,7 +105,7 @@
             <input type="hidden" name="userID"/>
         </form>
 
-        <form name="deleteForm" method="post" action="/userManagement/ban">
+        <form name="deleteForm" method="post" action="/userManagement/delete">
             <input type="hidden" name="userID"/>
         </form>
     </main>
