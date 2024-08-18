@@ -106,7 +106,9 @@ public class ProductManagementController {
 
         for(Product product : products){
             Order order = orderService.findOrderByProduct(product);
-            buyers.add(userService.findByUserID(order.getBuyer().getUserID()));
+            if(order != null){
+                buyers.add(userService.findByUserID(order.getBuyer().getUserID()));
+            }
         }
 
         request.setAttribute("loggedOn", true);
