@@ -46,68 +46,48 @@ public class UserManagementController {
         return "userManagement/view";
     }
 
-    @PostMapping("/ban")
+    @PostMapping("/delete")
     public String delete(HttpServletRequest request, HttpServletResponse response){
         User loggedUser = userService.findLoggedUser(request);
 
-        if(loggedUser != null){
-            // Elimina tutte le prenotazioni dell'utente
-            List<Threshold> thresholdList = thresholdService.findThresholdsByUser(loggedUser);
-            for(Threshold threshold : thresholdList){
-                thresholdService.deleteThreshold(threshold);
-            }
+        String directoryPath = "/home/sanpc/Uploads/" + loggedUser.getUsername();
+        File directory = new File(directoryPath);
 
-            // Elimina tutti i prodotti dell'utente
-            List<Product> productList = productService.findAllProducts();
-            for(Product product : productList){
-                productService.deleteProduct(product);
-            }
+        delete_user(loggedUser, directory);
 
-            // Elimina tutte le aste dell'utente
-            List<Auction> auctionList = auctionService.findAllAuctions();
-            for(Auction auction : auctionList){
-                auctionService.deleteAuction(auction);
-            }
+        userService.deleteLoginCookie(response);
 
-            // Elimina tutte le immagini dell'utente
-            String directoryPath = "/home/sanpc/tomcat/webapps/Uploads/" + loggedUser.getUsername();
-            File directory = new File(directoryPath);
-
-            if (directory.isDirectory()) {
-                String[] entries = directory.list();
-                assert entries != null;
-                for(String s: entries){
-                    File currentFile = new File(directory.getPath(),s);
-                    if(!currentFile.delete())
-                        throw new RuntimeException("Could not delete file: " + currentFile.getAbsolutePath());
-                }
-                if(!directory.delete())
-                    throw new RuntimeException("Could not delete directory: " + directory.getAbsolutePath());
-            }
-            else {
-                System.out.println("Non ho cancellato nulla al path: " + directoryPath);
-            }
-
-            // Elimina l'utente e il cookie di login
-            userService.deleteUser(loggedUser);
-            userService.deleteLoginCookie(response);
-
-            request.setAttribute("loggedOn",false);
-            request.setAttribute("loggedUser",null);
-            request.setAttribute("applicationMessage","Account correttamente eliminato. Arrivederci!");
-            request.setAttribute("menuActiveLink", "Utente");
-        }
+        request.setAttribute("loggedOn",false);
+        request.setAttribute("loggedUser",null);
+        request.setAttribute("applicationMessage","Account correttamente eliminato. Arrivederci!");
 
         return "homeManagement/view";
     }
 
-    @RequestMapping("/ban")
+    @PostMapping("/ban")
+    public String ban(HttpServletRequest request){
+        User loggeduser = userService.findLoggedUser(request);
+        User toDelete = userService.findByUsername(request.getParameter("username"));
+
+        String directoryPath = "/home/sanpc/Uploads/" + toDelete.getUsername();
+        File directory = new File(directoryPath);
+
+        delete_user(toDelete, directory);
+
+        request.setAttribute("loggedOn",true);
+        request.setAttribute("loggedUser",loggeduser);
+        request.setAttribute("applicationMessage","Bannato: " + toDelete.getUsername());
+
+        return "homeManagement/view";
+    }
+
+    @GetMapping("/ban")
     public String banView(HttpServletRequest request){
         User loggedUser = userService.findLoggedUser(request);
 
         List<User> usernames = userService.findAllUsersExceptMeAndDeleted(loggedUser);
 
-        request.setAttribute("loggedOn", loggedUser!=null);
+        request.setAttribute("loggedOn", true);
         request.setAttribute("loggedUser",loggedUser);
         request.setAttribute("usernames",usernames);
         request.setAttribute("menuActiveLink", "Banna");
@@ -116,7 +96,7 @@ public class UserManagementController {
     }
 
     @RequestMapping("/register")
-    public String insertUser(HttpServletRequest request){
+    public String insert(HttpServletRequest request){
         User loggedUser = userService.findLoggedUser(request);
 
         try {
@@ -160,7 +140,7 @@ public class UserManagementController {
     }
 
     @PostMapping("/modify")
-    public String modifyUser(HttpServletRequest request){
+    public String modify(HttpServletRequest request){
         User user = userService.findLoggedUser(request);
 
         user.setUsername(request.getParameter("username"));
@@ -176,9 +156,14 @@ public class UserManagementController {
         user.setEmail(request.getParameter("email"));
         user.setCel_number(request.getParameter("cel_number"));
         user.setRole(request.getParameter("role"));
-        user.setDeleted(request.getParameter("deleted").equals("Y") ? 'Y' : 'N');
+        user.setDeleted(request.getParameter("deleted").charAt(0));
 
-        userService.updateUser(user);
+        try{
+            userService.updateUser(user);
+        }
+        catch (Exception e){
+            request.setAttribute("applicationMessage", "Could not update User!");
+        }
 
         request.setAttribute("loggedOn", true);
         request.setAttribute("loggedUser", user);
@@ -207,4 +192,59 @@ public class UserManagementController {
 
         return "userManagement/insModView";
     }
+
+    public void delete_user(User user, File directory){
+        // Elimina tutte le prenotazioni dell'utente
+        List<Threshold> thresholdList = thresholdService.findThresholdsByUser(user);
+        for(Threshold threshold : thresholdList){
+            try{
+                thresholdService.deleteThreshold(threshold);
+            }
+            catch (Exception e){
+                System.err.println("Could not delete threshold: " + threshold);
+            }
+        }
+
+        // Elimina tutti i prodotti dell'utente
+        List<Product> productList = productService.findProductsByOwner(user);
+        for(Product product : productList){
+            try {
+                productService.deleteProduct(product);
+            }
+            catch (Exception e){
+                System.err.println("Could not delete product: " + product);
+            }
+        }
+
+        // Elimina tutte le aste dell'utente
+        List<Auction> auctionList = auctionService.findByOwner(user);
+        for(Auction auction : auctionList){
+            try {
+                auctionService.deleteAuction(auction);
+            }
+            catch (Exception e){
+                System.err.println("Could not delete auction: " + auction);
+            }
+        }
+
+        // Elimina tutte le immagini dell'utente
+        File[] files = directory.listFiles();
+        if(files != null){
+            for(File file: files){
+                if(!file.delete())
+                    System.err.println("Could not delete file: " + file.getAbsolutePath());
+            }
+            if(!directory.delete())
+                System.err.println("Could not delete directory: " + directory.getAbsolutePath());
+        }
+
+        // Elimina l'utente
+        try{
+            userService.deleteUser(user);
+        }
+        catch (Exception e){
+            System.err.println("Could not delete user: " + user);
+        }
+    }
+
 }
