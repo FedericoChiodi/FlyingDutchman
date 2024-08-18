@@ -23,18 +23,6 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
-        
-    - name: Build with Maven
-      run: mvn --batch-mode --update-snapshots verify
-
-    - name: Generate coverage report
-      run: mvn jacoco:report 
-
-    - name: Upload Jacoco reports
-      uses: actions/upload-artifact@v4
-      with:
-        name: test-reports
-        path: target/site
 
     - name: Docker login
       uses: docker/login-action@v3
@@ -57,7 +45,19 @@ jobs:
         file: DockerSQL
         push: true
         tags: fedec/flyingdutchman_db:latest
-  
+
+    - name: Build with Maven
+      run: mvn --batch-mode --update-snapshots verify
+
+    - name: Generate coverage report
+      run: mvn jacoco:report
+
+    - name: Upload Jacoco reports
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-reports
+        path: target/site
+
   deploy:    
     runs-on: self-hosted
     needs: build
