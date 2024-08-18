@@ -6,8 +6,8 @@ on:
   pull_request:
     branches: [ "master" ]
 
-permissions: 
-    contents: read 
+permissions:
+  contents: read 
 
 jobs:
   build:
@@ -21,7 +21,7 @@ jobs:
       uses: actions/setup-java@v4.2.2
       with:
         java-version: '17'
-        distribution: 'temurin'
+        distribution: 'adopt-openjdk'
         cache: maven
 
     - name: Build with Maven
@@ -49,7 +49,7 @@ jobs:
         file: Dockerfile
         push: true 
         tags: fedec/flyingdutchman:latest
-      
+
     - name: Docker build and push database
       uses: docker/build-push-action@v5
       with: 
@@ -58,7 +58,7 @@ jobs:
         push: true
         tags: fedec/flyingdutchman_db:latest
 
-  deploy:    
+  deploy:
     runs-on: self-hosted
     needs: build
     
@@ -67,13 +67,13 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Build docker compose
-      run: docker compose build
+      run: docker-compose build
     
     - name: Up docker
-      run: docker compose up -d
+      run: docker-compose up -d
 
-    - name: Download report Jacoco
+    - name: Download Jacoco report
       uses: actions/download-artifact@v4
       with:
-        name: reports
+        name: test-reports
         path: flyingdutchman/reports
