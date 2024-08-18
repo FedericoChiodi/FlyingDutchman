@@ -2,6 +2,8 @@ package com.ingsw.flyingdutchman.services;
 
 import com.ingsw.flyingdutchman.model.mo.User;
 import com.ingsw.flyingdutchman.model.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -9,20 +11,23 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 
+import static org.apache.tomcat.util.http.fileupload.FileUtils.deleteDirectory;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class UploadControllerTest {
+
+    private MockMvc mockMvc;
 
     @Mock
     private UserService userService;
@@ -36,6 +41,49 @@ public class UploadControllerTest {
     @BeforeEach
     public void setup() {
         MockitoAnnotations.openMocks(this);
+        mockMvc = MockMvcBuilders.standaloneSetup(uploadController).build();
+    }
+
+    @AfterAll
+    public static void teardown() throws IOException {
+        File directory = new File("/home/sanpc/Uploads/testuser");
+        if (directory.isDirectory()) {
+            File[] files = directory.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    deleteDirectory(file);
+                }
+            }
+        }
+        if(!directory.delete())
+            System.out.println("Failed to delete directory");
+    }
+
+    @Test
+    public void test_request_params() throws Exception {
+        User loggedUser = new User();
+        loggedUser.setUsername("testUser");
+
+        when(userService.findLoggedUser(any(HttpServletRequest.class))).thenReturn(loggedUser);
+
+        MockMultipartFile file = new MockMultipartFile(
+                "image",
+                "testImage.png",
+                "image/png",
+                "test image content".getBytes()
+        );
+
+        MvcResult result = mockMvc.perform(multipart("/Upload")
+                        .file(file)
+                        .param("description", "testDescription"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        HttpServletRequest request = result.getRequest();
+        Boolean loggedOn = (Boolean) request.getAttribute("loggedOn");
+
+        assertEquals(Boolean.TRUE, loggedOn);
+        assertEquals(loggedUser, request.getAttribute("loggedUser"));
     }
 
     @Test
@@ -132,7 +180,7 @@ public class UploadControllerTest {
 
     @Test
     public void testGetUploadDirectory() {
-        String username = "testUser";
+        String username = "testuser";
 
         File expectedDirectory = new File("/home/sanpc/Uploads/" + username);
         File actualDirectory = uploadController.getUploadDirectory(username);

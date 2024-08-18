@@ -52,6 +52,10 @@ public class UploadController {
         Files.copy(file.getInputStream(), Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
 
         redirectAttributes.addFlashAttribute("message", "File uploaded successfully!");
+
+        request.setAttribute("loggedOn", true);
+        request.setAttribute("loggedUser", loggedUser);
+
         return "productManagement/view";
     }
 
