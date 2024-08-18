@@ -1,6 +1,10 @@
 package com.ingsw.flyingdutchman.services;
 
+import com.ingsw.flyingdutchman.model.mo.Category;
+import com.ingsw.flyingdutchman.model.mo.Product;
 import com.ingsw.flyingdutchman.model.mo.User;
+import com.ingsw.flyingdutchman.model.service.CategoryService;
+import com.ingsw.flyingdutchman.model.service.ProductService;
 import com.ingsw.flyingdutchman.model.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.AfterAll;
@@ -18,6 +22,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.apache.tomcat.util.http.fileupload.FileUtils.deleteDirectory;
 import static org.junit.jupiter.api.Assertions.*;
@@ -31,6 +37,12 @@ public class UploadControllerTest {
 
     @Mock
     private UserService userService;
+
+    @Mock
+    private ProductService productService;
+
+    @Mock
+    private CategoryService categoryService;
 
     @Mock
     private RedirectAttributes redirectAttributes;
@@ -51,7 +63,8 @@ public class UploadControllerTest {
             File[] files = directory.listFiles();
             if (files != null) {
                 for (File file : files) {
-                    deleteDirectory(file);
+                    if(!file.delete())
+                        System.out.println("Failed to delete file " + file.getName());
                 }
             }
         }
@@ -64,7 +77,10 @@ public class UploadControllerTest {
         User loggedUser = new User();
         loggedUser.setUsername("testUser");
 
+        List<Product> products = new ArrayList<>();
+
         when(userService.findLoggedUser(any(HttpServletRequest.class))).thenReturn(loggedUser);
+        when(productService.findProductByOwnerNotDeletedNotSold(any(User.class))).thenReturn(products);
 
         MockMultipartFile file = new MockMultipartFile(
                 "image",
@@ -84,40 +100,37 @@ public class UploadControllerTest {
 
         assertEquals(Boolean.TRUE, loggedOn);
         assertEquals(loggedUser, request.getAttribute("loggedUser"));
+        assertEquals(products, request.getAttribute("products"));
+        assertEquals(false, request.getAttribute("soldProductsAction"));
+        assertEquals("Prodotti", request.getAttribute("menuActiveLink"));
     }
 
     @Test
-    public void testHandleFileUpload() throws IOException {
-        // Arrange
-        User mockUser = new User();
-        mockUser.setUsername("testuser");
+    public void testCreationException() throws Exception {
+        User loggedUser = new User();
+        loggedUser.setUsername("testUser");
 
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        MockMultipartFile mockFile = new MockMultipartFile(
-                "image", "testimage.png", "image/png", "some-image".getBytes()
+        List<Product> products = new ArrayList<>();
+
+        when(userService.findLoggedUser(any(HttpServletRequest.class))).thenReturn(loggedUser);
+        when(productService.findProductByOwnerNotDeletedNotSold(any(User.class))).thenReturn(products);
+        doThrow(new RuntimeException()).when(productService).createProduct(anyString(),anyFloat(),anyFloat(),anyFloat(),anyString(),any(Category.class),any(User.class));
+
+        MockMultipartFile file = new MockMultipartFile(
+                "image",
+                "testImage.png",
+                "image/png",
+                "test image content".getBytes()
         );
 
-        when(userService.findLoggedUser(request)).thenReturn(mockUser);
-        when(redirectAttributes.addFlashAttribute(anyString(), anyString())).thenReturn(redirectAttributes);
+        MvcResult result = mockMvc.perform(multipart("/Upload")
+                        .file(file)
+                        .param("description", "testDescription"))
+                .andExpect(status().isOk())
+                .andReturn();
 
-        // Act
-        String viewName = uploadController.handleFileUpload("description", mockFile, request, redirectAttributes);
-
-        // Assert
-        verify(userService, times(1)).findLoggedUser(request);
-        verify(redirectAttributes, times(1)).addFlashAttribute("message", "File uploaded successfully!");
-
-        String expectedFilePath = "/home/sanpc/Uploads/testuser/description.png";
-        File file = new File(expectedFilePath);
-
-        assertEquals("productManagement/view", viewName);
-        assertTrue(file.exists());
-
-        // Cleanup
-        if (file.exists()) {
-            if(!file.delete())
-                System.err.println("Failed to delete file");
-        }
+        HttpServletRequest request = result.getRequest();
+        assertEquals("Could not create product!", request.getAttribute("applicationMessage"));
     }
 
     @Test
@@ -133,7 +146,7 @@ public class UploadControllerTest {
 
         when(userService.findLoggedUser(request)).thenReturn(mockUser);
 
-        UploadController controllerSpy = spy(new UploadController(userService));
+        UploadController controllerSpy = spy(new UploadController(userService, productService, categoryService));
 
         File mockDir = mock(File.class);
         when(controllerSpy.getUploadDirectory(mockUser.getUsername())).thenReturn(mockDir);
@@ -162,12 +175,40 @@ public class UploadControllerTest {
 
         when(userService.findLoggedUser(request)).thenReturn(mockUser);
 
-        UploadController controllerSpy = spy(new UploadController(userService));
+        UploadController controllerSpy = spy(new UploadController(userService, productService, categoryService));
 
         File mockDir = mock(File.class);
         when(controllerSpy.getUploadDirectory(mockUser.getUsername())).thenReturn(mockDir);
         when(mockDir.exists()).thenReturn(false);
         when(mockDir.mkdirs()).thenReturn(true);
+
+        // Act & Assert
+        IOException exception = assertThrows(IOException.class, () -> {
+            controllerSpy.handleFileUpload("description", mockFile, request, redirectAttributes);
+        });
+
+        assertNotEquals("Directory could not be created.", exception.getMessage());
+        verify(controllerSpy).getUploadDirectory("testuser");
+    }
+
+    @Test
+    public void testHandleFileUpload_FolderPresent() {
+        // Arrange
+        User mockUser = new User();
+        mockUser.setUsername("testuser");
+
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        MockMultipartFile mockFile = new MockMultipartFile(
+                "image", "testimage.jpg", "image/jpeg", "some-image".getBytes()
+        );
+
+        when(userService.findLoggedUser(request)).thenReturn(mockUser);
+
+        UploadController controllerSpy = spy(new UploadController(userService, productService, categoryService));
+
+        File mockDir = mock(File.class);
+        when(controllerSpy.getUploadDirectory(mockUser.getUsername())).thenReturn(mockDir);
+        when(mockDir.exists()).thenReturn(true);
 
         // Act & Assert
         IOException exception = assertThrows(IOException.class, () -> {

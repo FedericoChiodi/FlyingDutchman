@@ -94,7 +94,7 @@ public class ProductControllerTest {
     public void insert_test() throws Exception {
         User loggedUser = new User();
         loggedUser.setUserID(1L);
-        loggedUser.setUsername("testUser");
+        loggedUser.setUsername("testuser");
 
         Category category = new Category();
         category.setCategoryID(1L);
@@ -127,7 +127,7 @@ public class ProductControllerTest {
                 eq(100f),
                 eq(120f),
                 eq(150f),
-                eq("/home/sanpc/tomcat/webapps/Uploads/testUser" + File.separator + "Test Product.png"),
+                eq("/home/sanpc/Uploads/testuser" + File.separator + "Test Product.png"),
                 eq(category),
                 eq(loggedUser)
         );
