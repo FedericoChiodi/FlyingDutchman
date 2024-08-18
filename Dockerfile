@@ -4,6 +4,8 @@ WORKDIR /home/sanpc/Desktop/flyingdutchman
 
 COPY /home/sanpc/Desktop/sample_files /home/sanpc/Desktop/flyingdutchman/sample_files
 
+RUN mkdir -p /home/sanpc/Uploads
+
 COPY target/flyingdutchman-0.0.1-SNAPSHOT.war /usr/local/tomcat/webapps/ROOT.war
 
 EXPOSE 8080

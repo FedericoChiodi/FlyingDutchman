@@ -13,6 +13,7 @@ networks:
                         command: --default-authentication-plugin=caching_sha2_password
                         volumes:
                                 - dbdata:/var/lib/mysql
+                                - /home/sanpc/Uploads:/home/sanpc/Uploads
                         networks:
                                 - flyingdutchman_net
         healthcheck:
