@@ -161,10 +161,12 @@
           <label>&#160;</label>
           <input type="submit" class="button" value="Invia"/>
 
+        <%if(action.equals("modify")){%>
           <form name="backForm" method="get" action="/userManagement/view">
             <input type="hidden" name="auctionID" value="<%=auctionID%>">
             <input type="submit" name="backButton" class="button" value="Annulla"/>
           </form>
+        <%}%>
         </div>
 
         <input type="hidden" name="auctionID" value="-1">
