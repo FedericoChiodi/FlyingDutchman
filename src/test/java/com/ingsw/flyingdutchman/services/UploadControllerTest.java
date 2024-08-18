@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.apache.tomcat.util.http.fileupload.FileUtils.deleteDirectory;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
@@ -57,7 +56,7 @@ public class UploadControllerTest {
     }
 
     @AfterAll
-    public static void teardown() throws IOException {
+    public static void teardown() {
         File directory = new File("/home/sanpc/Uploads/testuser");
         if (directory.isDirectory()) {
             File[] files = directory.listFiles();
@@ -105,6 +104,51 @@ public class UploadControllerTest {
         assertEquals("Prodotti", request.getAttribute("menuActiveLink"));
     }
 
+    @Test
+    public void testHandleFileUpload() throws IOException {
+        // Arrange
+        User mockUser = new User();
+        mockUser.setUsername("testuser");
+
+        Category category = new Category();
+
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        MockMultipartFile mockFile = new MockMultipartFile(
+                "image", "testimage.png", "image/png", "some-image".getBytes()
+        );
+
+        when(userService.findLoggedUser(request)).thenReturn(mockUser);
+        when(categoryService.findCategoryById(anyLong())).thenReturn(category);
+        when(redirectAttributes.addFlashAttribute(anyString(), anyString())).thenReturn(redirectAttributes);
+
+        request.setParameter("min_price","100");
+        request.setParameter("starting_price","120");
+        request.setParameter("categoryID","1");
+
+        // Act
+        String viewName = uploadController.handleFileUpload("description", mockFile, request, redirectAttributes);
+
+        // Assert
+        verify(userService, times(1)).findLoggedUser(request);
+        verify(categoryService, times(1)).findCategoryById(anyLong());
+        verify(redirectAttributes, times(1)).addFlashAttribute("message", "File uploaded successfully!");
+        verify(productService, times(1)).createProduct(
+                eq("description"),
+                eq(100f),
+                eq(120f),
+                eq(120f),
+                eq("/home/sanpc/Uploads/testuser" + File.separator + "description.png"),
+                eq(category),
+                eq(mockUser)
+        );
+
+        String expectedFilePath = "/home/sanpc/Uploads/testuser/description.png";
+        File file = new File(expectedFilePath);
+
+        assertEquals("productManagement/view", viewName);
+        assertTrue(file.exists());
+    }
+    
     @Test
     public void testCreationException() throws Exception {
         User loggedUser = new User();
