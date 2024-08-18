@@ -36,11 +36,8 @@ public class UploadController {
 
         User loggedUser = userService.findLoggedUser(request);
 
-        // Specifica il percorso della cartella in cui desideri salvare il file
-        String uploadDirPath = "/home/sanpc/Uploads/" + loggedUser.getUsername();
-
         // Crea la cartella se non esiste
-        File uploadDir = new File(uploadDirPath);
+        File uploadDir = getUploadDirectory(loggedUser.getUsername());
         if (!uploadDir.exists()) {
             if (!uploadDir.mkdirs()) {
                 throw new IOException("Directory could not be created.");
@@ -49,12 +46,16 @@ public class UploadController {
 
         // Crea il percorso completo del file di destinazione
         String fileExtension = Objects.requireNonNull(file.getOriginalFilename()).split("\\.(?=[^.]+$)")[1];
-        String filePath = uploadDirPath + File.separator + description + "." + fileExtension;
+        String filePath = uploadDir.getAbsolutePath() + File.separator + description + "." + fileExtension;
 
         // Salva il file nel percorso specificato
         Files.copy(file.getInputStream(), Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
 
         redirectAttributes.addFlashAttribute("message", "File uploaded successfully!");
         return "productManagement/view";
+    }
+
+    protected File getUploadDirectory(String username) {
+        return new File("/home/sanpc/Uploads/" + username);
     }
 }
