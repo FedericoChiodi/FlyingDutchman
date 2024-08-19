@@ -246,15 +246,8 @@ public class ProductControllerTest {
         Product product = new Product();
         product.setProductID(1L);
 
-        Order order = new Order();
-        User buyer = new User();
-        buyer.setUserID(2L);
-        order.setBuyer(buyer);
-
         when(userService.findLoggedUser(any(HttpServletRequest.class))).thenReturn(loggedUser);
-        when(productService.findProductByOwnerNotDeletedNotSold(loggedUser)).thenReturn(Collections.singletonList(product));
-        when(orderService.findOrderByProduct(product)).thenReturn(order);
-        when(userService.findByUserID(buyer.getUserID())).thenReturn(buyer);
+        when(productService.findProductByOwnerNotDeletedSold(loggedUser)).thenReturn(Collections.singletonList(product));
 
         // Case 1: Utente loggato con prodotti venduti e ordini associati
         mockMvc.perform(get("/productManagement/viewSold"))
@@ -263,22 +256,19 @@ public class ProductControllerTest {
                 .andExpect(request().attribute("loggedOn", true))
                 .andExpect(request().attribute("loggedUser", loggedUser))
                 .andExpect(request().attribute("products", Collections.singletonList(product)))
-                .andExpect(request().attribute("buyers", Collections.singletonList(buyer)))
                 .andExpect(request().attribute("soldProductsAction", true))
                 .andExpect(request().attribute("menuActiveLink", "Prodotti"));
 
         // Verifica che i metodi dei servizi siano stati chiamati
         verify(userService, times(1)).findLoggedUser(any(HttpServletRequest.class));
-        verify(productService, times(1)).findProductByOwnerNotDeletedNotSold(loggedUser);
-        verify(orderService, times(1)).findOrderByProduct(product);
-        verify(userService, times(1)).findByUserID(buyer.getUserID());
+        verify(productService, times(1)).findProductByOwnerNotDeletedSold(loggedUser);
 
         // Reset the mocks for the next case
         reset(userService, productService, orderService);
 
         // Case 2: Utente loggato senza prodotti venduti
         when(userService.findLoggedUser(any(HttpServletRequest.class))).thenReturn(loggedUser);
-        when(productService.findProductByOwnerNotDeletedNotSold(loggedUser)).thenReturn(Collections.emptyList());
+        when(productService.findProductByOwnerNotDeletedSold(loggedUser)).thenReturn(Collections.emptyList());
 
         mockMvc.perform(get("/productManagement/viewSold"))
                 .andExpect(status().isOk())
@@ -286,14 +276,11 @@ public class ProductControllerTest {
                 .andExpect(request().attribute("loggedOn", true))
                 .andExpect(request().attribute("loggedUser", loggedUser))
                 .andExpect(request().attribute("products", Collections.emptyList()))
-                .andExpect(request().attribute("buyers", Collections.emptyList()))
                 .andExpect(request().attribute("soldProductsAction", true))
                 .andExpect(request().attribute("menuActiveLink", "Prodotti"));
 
         // Verifica che i metodi dei servizi siano stati chiamati correttamente
         verify(userService, times(1)).findLoggedUser(any(HttpServletRequest.class));
-        verify(productService, times(1)).findProductByOwnerNotDeletedNotSold(loggedUser);
-        verify(orderService, never()).findOrderByProduct(any(Product.class));  // Nessun ordine dovrebbe essere cercato
-        verify(userService, never()).findByUserID(anyLong());
+        verify(productService, times(1)).findProductByOwnerNotDeletedSold(loggedUser);
     }
 }
