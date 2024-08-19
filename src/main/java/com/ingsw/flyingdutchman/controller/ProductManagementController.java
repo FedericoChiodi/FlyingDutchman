@@ -101,20 +101,11 @@ public class ProductManagementController {
     @RequestMapping("/viewSold")
     public String viewSoldProducts(HttpServletRequest request){
         User loggedUser = userService.findLoggedUser(request);
-        List<Product> products = productService.findProductByOwnerNotDeletedNotSold(loggedUser);
-        List<User> buyers = new ArrayList<>();
-
-        for(Product product : products){
-            Order order = orderService.findOrderByProduct(product);
-            if(order != null){
-                buyers.add(userService.findByUserID(order.getBuyer().getUserID()));
-            }
-        }
+        List<Product> products = productService.findProductByOwnerNotDeletedSold(loggedUser);
 
         request.setAttribute("loggedOn", true);
         request.setAttribute("loggedUser", loggedUser);
         request.setAttribute("products", products);
-        request.setAttribute("buyers", buyers);
         request.setAttribute("soldProductsAction", true);
         request.setAttribute("menuActiveLink", "Prodotti");
 

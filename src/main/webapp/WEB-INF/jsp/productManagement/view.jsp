@@ -7,8 +7,6 @@
     @SuppressWarnings("unchecked")
     List<Product> products = (List<Product>) request.getAttribute("products");
     Boolean soldProductsAction = (Boolean) request.getAttribute("soldProductsAction");
-    @SuppressWarnings("unchecked")
-    List<User> buyers = (List<User>) request.getAttribute("buyers");
 %>
 
 <!DOCTYPE html>
@@ -132,8 +130,6 @@
                         <b><span class="description"><%=product.getDescription()%></span></b>
                         <br/>
                         <%if(soldProductsAction){%>
-                            <label for="who_sold">Venduto a: </label>
-                            <span id="who_sold"><%=buyers.get(i).getUsername()%></span><br/>
                             <label for="current_price_sold">Venduto per: </label>
                             <span id="current_price_sold" class="float-value"><%=product.getCurrent_price()%></span>
                         <%}%>
