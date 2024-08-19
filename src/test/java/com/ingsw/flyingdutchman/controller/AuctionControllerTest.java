@@ -108,15 +108,8 @@ public class AuctionControllerTest {
         products.add(product1);
         products.add(product2);
 
-        List<Auction> auctions = new ArrayList<>();
-        Auction auction = new Auction();
-        auction.setAuctionID(1L);
-        auction.setProduct_auctioned(product1);
-        auctions.add(auction);
-
         when(userService.findLoggedUser(any(HttpServletRequest.class))).thenReturn(loggedUser);
-        when(productService.findProductsByOwnerNotDeleted(any(User.class))).thenReturn(products);
-        when(auctionService.findOpenAuctionsByOwnerNotDeleted(any(User.class))).thenReturn(auctions);
+        when(productService.findByOwnerNotInAuctions(any(User.class))).thenReturn(products);
 
         mockMvc.perform(get("/auctionManagement/insert"))
             .andExpect(status().isOk())
@@ -124,8 +117,7 @@ public class AuctionControllerTest {
             .andExpect(request().attribute("loggedOn", true))
             .andExpect(request().attribute("loggedUser", loggedUser))
             .andExpect(request().attribute("menuActiveLink", "Aste"))
-            .andExpect(request().attribute("products", hasSize(1)))  // Only product2 should be in the list
-            .andExpect(request().attribute("products", hasItem(product2)));
+            .andExpect(request().attribute("products", products));
     }
 
     @Test
