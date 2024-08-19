@@ -4,16 +4,13 @@ package com.ingsw.flyingdutchman.controller;
 import com.ingsw.flyingdutchman.model.mo.*;
 import com.ingsw.flyingdutchman.model.service.*;
 import jakarta.servlet.http.HttpServletRequest;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.HashSet;
+
 import java.util.List;
-import java.util.Set;
 
 @Controller
 @RequestMapping("/auctionManagement")
@@ -193,8 +190,7 @@ public class AuctionManagementController {
         return prepareRequestCategory(request, loggedUser, auctions);
     }
 
-    @NotNull
-    private String prepareRequestCategory(@NotNull HttpServletRequest request, User loggedUser, List<Auction> auctions) {
+    private String prepareRequestCategory(HttpServletRequest request, User loggedUser, List<Auction> auctions) {
         List<Category> categories = categoryService.getAllCategoriesExceptPremium();
 
         request.setAttribute("loggedOn",true);
@@ -206,15 +202,13 @@ public class AuctionManagementController {
         return "auctionManagement/view";
     }
 
-    @NotNull
     private String prepareRequestAuctions(HttpServletRequest request, User loggedUser) {
         List<Auction> auctions = auctionService.findAllOpenAuctionsExceptUser(loggedUser);
 
         return prepareRequestCategoryEdit(request, loggedUser, auctions);
     }
 
-    @NotNull
-    private String prepareRequestCategoryEdit(@NotNull HttpServletRequest request, User loggedUser, List<Auction> auctions) {
+    private String prepareRequestCategoryEdit(HttpServletRequest request, User loggedUser, List<Auction> auctions) {
         List<Category> categories = categoryService.getAllCategoriesExceptPremium();
 
         request.setAttribute("loggedOn",true);
