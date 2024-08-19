@@ -1,6 +1,5 @@
 <%@ page session="false"%>
 <%@page import="com.ingsw.flyingdutchman.model.mo.Auction"%>
-<%@ page import="java.io.File" %>
 <%@ page import="com.ingsw.flyingdutchman.model.mo.Category" %>
 <%@ page import="java.util.*"%>
 
@@ -203,7 +202,7 @@
             </section>
         <%}%>
 
-        <form name="insertForm" method="get" action="/auctionManagement/view">
+        <form name="insertForm" method="get" action="/auctionManagement/insert">
         </form>
 
         <form name="inspectForm" method="get" action="/auctionManagement/inspect">

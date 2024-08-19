@@ -72,4 +72,8 @@ public class ProductService {
     public List<Product> findProductByOwnerNotDeletedSold(User owner) {
         return productRepository.findByOwnerAndDeletedFalseSold(owner);
     }
+
+    public List<Product> findByOwnerNotInAuctions(User owner) {
+        return productRepository.findByOwnerNotInAuctions(owner);
+    }
 }
