@@ -56,26 +56,11 @@ public class AuctionManagementController {
     public String insertView(HttpServletRequest request){
         User loggedUser = userService.findLoggedUser(request);
 
-        List<Product> products = productService.findProductsByOwnerNotDeleted(loggedUser);
-        List<Auction> auctions = auctionService.findOpenAuctionsByOwnerNotDeleted(loggedUser);
-
-        Set<Long> productsIDsInAuctions = new HashSet<>();
-
-        for (Auction auction : auctions) {
-            productsIDsInAuctions.add(auction.getProduct_auctioned().getProductID());
-        }
-
-        List<Product> productsNotInAuctions = new ArrayList<>();
-
-        for (Product product : products) {
-            if (!productsIDsInAuctions.contains(product.getProductID())) {
-                productsNotInAuctions.add(product);
-            }
-        }
+        List<Product> products = productService.findByOwnerNotInAuctions(loggedUser);
 
         request.setAttribute("loggedOn", true);
         request.setAttribute("loggedUser",loggedUser);
-        request.setAttribute("products", productsNotInAuctions);
+        request.setAttribute("products", products);
         request.setAttribute("menuActiveLink", "Aste");
 
         return "auctionManagement/insertView";

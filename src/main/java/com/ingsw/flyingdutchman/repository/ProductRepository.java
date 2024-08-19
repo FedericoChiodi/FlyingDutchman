@@ -28,6 +28,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("SELECT p FROM Product p WHERE p.owner = :owner AND p.deleted = 'N' AND p IN (SELECT a.product_auctioned FROM Auction a WHERE a.product_auctioned = p AND a.product_sold = 'Y')")
     List<Product> findByOwnerAndDeletedFalseSold(@Param("owner") User owner);
 
+    // Trova prodotti che non sono all'asta in questo momento
+    @Query("SELECT p FROM Product p WHERE p.owner = :owner AND p.deleted = 'N' AND p NOT IN (SELECT a.product_auctioned FROM Auction a WHERE a.product_auctioned = p AND a.deleted = 'N')")
+    List<Product> findByOwnerNotInAuctions(@Param("owner") User owner);
 
     // Trova i Prodotti di una determinata Categoria
     List<Product> findByCategory(Category category);
