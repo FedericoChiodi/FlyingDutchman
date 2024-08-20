@@ -3,19 +3,43 @@ name: FlyingDutchman CI/CD Pipeline
 on:
   push:
     branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
 
 permissions:
   contents: read 
 
 jobs:
   build:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
+    services:
+      db:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: StrongPassword123@
+          MYSQL_DATABASE: flyingdutchman
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost" 
+          --health-interval=10s 
+          --health-timeout=5s 
+          --health-retries=3
+          
     steps:
+    - name: Create uploads directory
+      run: |
+        sudo mkdir -p /srv/flyingdutchman/uploads/
+        sudo chown -R $USER:$USER /srv/flyingdutchman/uploads/
+        sudo chmod -R 755 /srv/flyingdutchman/uploads/
+        
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v4.1.7
+
+    - name: Wait for MySQL to be ready
+      run: until mysqladmin ping -h"127.0.0.1" --silent; do sleep 1; done
+
+    - name: Import database schema
+      run: mysql -h 127.0.0.1 -u root -pStrongPassword123@ flyingdutchman < ./dumps/db//db.sql
 
     - name: Set up JDK 17
       uses: actions/setup-java@v4.2.2
@@ -31,27 +55,27 @@ jobs:
       run: mvn jacoco:report
 
     - name: Upload Jacoco reports
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v4.3.6
       with:
         name: test-reports
         path: target/site
 
     - name: Docker login
-      uses: docker/login-action@v3
+      uses: docker/login-action@v3.3.0
       with: 
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
     - name: Docker build and push
-      uses: docker/build-push-action@v5
+      uses: docker/build-push-action@v6.7.0
       with: 
         context: .
         file: Dockerfile
-        push: true 
+        push: true
         tags: fedec/flyingdutchman:latest
 
     - name: Docker build and push database
-      uses: docker/build-push-action@v5
+      uses: docker/build-push-action@v6.7.0
       with: 
         context: . 
         file: DockerSQL
@@ -64,7 +88,7 @@ jobs:
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v4.1.7
 
     - name: Build docker compose
       run: docker-compose build
@@ -73,7 +97,7 @@ jobs:
       run: docker-compose up -d
 
     - name: Download Jacoco report
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v4.1.8
       with:
         name: test-reports
         path: flyingdutchman/reports

@@ -1,40 +1,43 @@
+version: '3.8'
+
 networks:
-        flyingdutchman_net:
+  flyingdutchman_net:
 
-        services:
-                flyingdutchman_db:
-                        image: fedec/flyingdutchman_db:latest
-                        container_name: flyingdutchman_db
-                        environment:
-                                - MYSQL_USER=root
-                                - MYSQL_PASSWORD=StrongPassword123@
-                        ports:
-                                - 3306:3306
-                        command: --default-authentication-plugin=caching_sha2_password
-                        volumes:
-                                - dbdata:/var/lib/mysql
-                                - /home/sanpc/Uploads:/home/sanpc/Uploads
-                                - /home/sanpc/Desktop/flyingdutchman/sample_files:/home/sanpc/Desktop/flyingdutchman/sample_files
-                        networks:
-                                - flyingdutchman_net
-        healthcheck:
-                test: mysqladmin ping -h 127.0.0.1 -u $$MYSQL_USER --password=$$MYSQL_PASSWORD
-                start_period: 2s
-                interval: 3s
-                timeout: 5s
-                retries: 15
+services:
+  flyingdutchman_db:
+    image: fedec/flyingdutchman_db:latest
+    container_name: flyingdutchman_db
+    environment:
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=StrongPassword123@
+    ports:
+      - 3306:3306
+    command: --default-authentication-plugin=caching_sha2_password
+    volumes:
+      - dbdata:/var/lib/mysql
+      - /home/sanpc/Uploads:/home/sanpc/Uploads
+      - /home/sanpc/Desktop/flyingdutchman/sample_files:/home/sanpc/Desktop/flyingdutchman/sample_files
+    networks:
+      - flyingdutchman_net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "$$MYSQL_USER", "--password=$$MYSQL_PASSWORD"]
+      start_period: 2s
+      interval: 3s
+      timeout: 5s
+      retries: 15
 
-        flyingdutchman:
-                image: fedec/flyingdutchman:latest
-                container_name: flyingdutchman
-                environment:
-                        DB_HOST: flyingdutchman_db
-                ports:
-                        - 8080:8080
-                depends_on:
-                        flyingdutchman_db:
-                                condition: service_healthy
-                networks:
-                        - flyingdutchman_net
-        volumes:
-                dbdata:
+  flyingdutchman:
+    image: fedec/flyingdutchman:latest
+    container_name: flyingdutchman
+    environment:
+      DB_HOST: flyingdutchman_db
+    ports:
+      - 8080:8080
+    depends_on:
+      flyingdutchman_db:
+        condition: service_healthy
+    networks:
+      - flyingdutchman_net
+
+volumes:
+  dbdata:
