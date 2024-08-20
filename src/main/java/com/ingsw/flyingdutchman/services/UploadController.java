@@ -93,6 +93,6 @@ public class UploadController {
     }
 
     protected File getUploadDirectory(String username) {
-        return new File("/home/sanpc/Uploads/" + username);
+        return new File("/srv/flyingdutchman/uploads/" + username);
     }
 }
