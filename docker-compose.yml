@@ -15,8 +15,7 @@ services:
     command: --default-authentication-plugin=caching_sha2_password
     volumes:
       - dbdata:/var/lib/mysql
-      - /home/sanpc/Uploads:/home/sanpc/Uploads
-      - /home/sanpc/Desktop/flyingdutchman/sample_files:/home/sanpc/Desktop/flyingdutchman/sample_files
+      - /srv/flyingdutchman/uploads:/srv/flyingdutchman/uploads
     networks:
       - flyingdutchman_net
     healthcheck:
