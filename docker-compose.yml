@@ -8,10 +8,9 @@ services:
     image: fedec/flyingdutchman_db:latest
     container_name: flyingdutchman_db
     environment:
-      - MYSQL_USER=root
-      - MYSQL_PASSWORD=StrongPassword123@
+      - MYSQL_ROOT_PASSWORD=StrongPassword123@
     expose:
-      - "3306:3306"
+      - "3306"
     command: --default-authentication-plugin=caching_sha2_password
     volumes:
       - dbdata:/var/lib/mysql
