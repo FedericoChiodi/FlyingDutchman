@@ -47,7 +47,8 @@ jobs:
       with: 
         context: .
         file: Dockerfile
-        push: true 
+        push: true
+        mtu: 1300
         tags: fedec/flyingdutchman:latest
 
     - name: Docker build and push database
@@ -56,6 +57,7 @@ jobs:
         context: . 
         file: DockerSQL
         push: true
+        mtu: 1300
         tags: fedec/flyingdutchman_db:latest
 
   deploy:
