@@ -35,6 +35,8 @@ services:
         condition: service_healthy
     networks:
       - flyingdutchman_net
+    volumes:
+      - /srv/flyingdutchman/uploads:/srv/flyingdutchman/uploads
 
 volumes:
   dbdata:
