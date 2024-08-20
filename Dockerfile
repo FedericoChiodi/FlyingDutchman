@@ -6,7 +6,7 @@ WORKDIR /home/sanpc/Desktop/flyingdutchman
 
 COPY target/flyingdutchman-0.0.1-SNAPSHOT /usr/local/tomcat/webapps
 
-RUN mkdir /srv/flyingdutchman/uploads
+RUN mkdir -p /srv/flyingdutchman/uploads
 
 COPY /srv/flyingdutchman/uploads /srv/flyingdutchman/uploads
 
