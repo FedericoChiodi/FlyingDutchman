@@ -33,7 +33,7 @@ jobs:
       run: until mysqladmin ping -h"127.0.0.1" --silent; do sleep 1; done
 
     - name: Import database schema
-      run: mysql -h 127.0.0.1 -u root -pStrongPassword123@ flyingdutchman < /docker-entrypoint-initdb.d/db.sql
+      run: mysql -h 127.0.0.1 -u root -pStrongPassword123@ flyingdutchman < ./dumps/db//db.sql
 
     - name: Set up JDK 17
       uses: actions/setup-java@v4.2.2
