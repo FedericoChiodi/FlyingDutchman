@@ -2,8 +2,8 @@ FROM mysql:8.0.34
 
 ENV MYSQL_DATABASE=flyingdutchmandb
 ENV MYSQL_ROOT_PASSWORD=StrongPassword123@
-ENV MYSQL_TCP_PORT=3307
+ENV MYSQL_TCP_PORT=3306
 
 COPY dumps/db/db.sql /docker-entrypoint-initdb.d/
 
-EXPOSE 3307
+EXPOSE 3306
