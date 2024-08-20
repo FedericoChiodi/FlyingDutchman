@@ -18,7 +18,7 @@ jobs:
           MYSQL_ROOT_PASSWORD: StrongPassword123@
           MYSQL_DATABASE: flyingdutchman
         ports:
-          - 3306:3306
+          - 3307:3307
         options: >-
           --health-cmd="mysqladmin ping -h localhost" 
           --health-interval=10s 
