@@ -14,7 +14,6 @@ services:
     command: --default-authentication-plugin=caching_sha2_password
     volumes:
       - dbdata:/var/lib/mysql
-      - /srv/flyingdutchman/uploads:/srv/flyingdutchman/uploads
     networks:
       - flyingdutchman_net
     healthcheck:
@@ -28,7 +27,7 @@ services:
     image: fedec/flyingdutchman:latest
     container_name: flyingdutchman
     environment:
-      DB_HOST: flyingdutchman_db
+      DB: flyingdutchman_db
     ports:
       - "8080:8080"
     depends_on:

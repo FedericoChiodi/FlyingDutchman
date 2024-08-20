@@ -100,4 +100,4 @@ jobs:
       uses: actions/download-artifact@v4.1.8
       with:
         name: test-reports
-        path: flyingdutchman/reports
+        path: reports

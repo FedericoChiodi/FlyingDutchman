@@ -4,7 +4,9 @@ RUN rm -rf /usr/local/tomcat/webapps/*
 
 WORKDIR /home/sanpc/Desktop/flyingdutchman
 
-COPY target/flyingdutchman-0.0.1-SNAPSHOT.war /usr/local/tomcat/webapps/ROOT.war
+COPY target/flyingdutchman-0.0.1-SNAPSHOT /usr/local/tomcat/webapps
+
+COPY /srv/flyingdutchman/uploads /srv/flyingdutchman/uploads
 
 EXPOSE 8080
 
