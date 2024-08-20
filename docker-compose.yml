@@ -11,7 +11,7 @@ services:
       - MYSQL_USER=root
       - MYSQL_PASSWORD=StrongPassword123@
     ports:
-      - 3306:3306
+      - "3306:3306"
     command: --default-authentication-plugin=caching_sha2_password
     volumes:
       - dbdata:/var/lib/mysql
@@ -32,7 +32,7 @@ services:
     environment:
       DB_HOST: flyingdutchman_db
     ports:
-      - 8080:8080
+      - "8080:8080"
     depends_on:
       flyingdutchman_db:
         condition: service_healthy
