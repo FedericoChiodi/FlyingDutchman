@@ -36,7 +36,7 @@ services:
     networks:
       - flyingdutchman_net
     volumes:
-      - /srv/flyingdutchman/uploads:/srv/flyingdutchman/uploads
+      - /home/sanpc/uploads:/home/sanpc/uploads
 
 volumes:
   dbdata:

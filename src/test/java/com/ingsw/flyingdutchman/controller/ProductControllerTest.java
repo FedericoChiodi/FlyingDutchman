@@ -127,7 +127,7 @@ public class ProductControllerTest {
                 eq(100f),
                 eq(120f),
                 eq(150f),
-                eq("/srv/flyingdutchman/uploads/testuser" + File.separator + "Test Product.png"),
+                eq("/home/sanpc/uploads/testuser" + File.separator + "Test Product.png"),
                 eq(category),
                 eq(loggedUser)
         );

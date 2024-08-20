@@ -53,7 +53,7 @@ public class ProductManagementController {
     public String insert(HttpServletRequest request){
         User loggedUser = userService.findLoggedUser(request);
 
-        String imagePath = "/srv/flyingdutchman/uploads/" + loggedUser.getUsername() + File.separator + request.getParameter("description") + ".png";
+        String imagePath = "/home/sanpc/uploads/" + loggedUser.getUsername() + File.separator + request.getParameter("description") + ".png";
         try{
             productService.createProduct(
                     request.getParameter("description"),
