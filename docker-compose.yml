@@ -11,19 +11,13 @@ services:
       - MYSQL_USER=root
       - MYSQL_PASSWORD=StrongPassword123@
     ports:
-      - "3307:3306"
+      - "3306:3306"
     command: --default-authentication-plugin=caching_sha2_password
     volumes:
       - dbdata:/var/lib/mysql
       - /srv/flyingdutchman/uploads:/srv/flyingdutchman/uploads
     networks:
       - flyingdutchman_net
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "$$MYSQL_USER", "--password=$$MYSQL_PASSWORD"]
-      start_period: 2s
-      interval: 3s
-      timeout: 5s
-      retries: 15
 
   flyingdutchman:
     image: fedec/flyingdutchman:latest
