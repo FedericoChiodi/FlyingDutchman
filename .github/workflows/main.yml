@@ -26,6 +26,12 @@ jobs:
           --health-retries=3
           
     steps:
+    - name: Create uploads directory
+      run: |
+        sudo mkdir -p /srv/flyingdutchman/uploads/
+        sudo chown -R $USER:$USER /srv/flyingdutchman/uploads/
+        sudo chmod -R 755 /srv/flyingdutchman/uploads/
+        
     - name: Checkout code
       uses: actions/checkout@v4.1.7
 
