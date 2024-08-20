@@ -10,8 +10,8 @@ services:
     environment:
       - MYSQL_USER=root
       - MYSQL_PASSWORD=StrongPassword123@
-    ports:
-      - "3307:3306"
+    expose:
+      - "3306:3306"
     command: --default-authentication-plugin=caching_sha2_password
     volumes:
       - dbdata:/var/lib/mysql
