@@ -5,85 +5,106 @@ on:
     branches: [ "master" ]
 
 permissions:
-  contents: read 
+  contents: read
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
+    services:
+      flyingdutchman_db:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: StrongPassword123@
+          MYSQL_DATABASE: flyingdutchmandb
+          MYSQL_TCP_PORT: 3306
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1" 
+          --health-interval=10s 
+          --health-timeout=5s 
+          --health-retries=3
+
     steps:
-    - name: Create uploads dir
-      run: |
-        sudo mkdir -p /home/sanpc/uploads/
-        sudo chown -R $USER:$USER /home/sanpc/uploads/
-        sudo chmod -R 755 /home/sanpc/uploads/
+      - name: Create uploads dir
+        run: |
+          sudo mkdir -p /home/sanpc/uploads/
+          sudo chown -R $USER:$USER /home/sanpc/uploads/
+          sudo chmod -R 755 /home/sanpc/uploads/
 
-    - name: Checkout code
-      uses: actions/checkout@v4.1.7
+      - name: Checkout code
+        uses: actions/checkout@v4.1.7
 
-    - name: Set up JDK 17
-      uses: actions/setup-java@v4.2.2
-      with:
-        java-version: '17'
-        distribution: 'temurin'
-        cache: maven
+      - name: Wait for MySQL to be ready
+        run: until mysqladmin ping -h"127.0.0.1" --silent; do sleep 1; done
 
-    - name: Build with Maven
-      run: mvn -B verify -X -e
+      - name: Import database schema
+        run: mysql -h 127.0.0.1 -u root -pStrongPassword123@ flyingdutchmandb < ./dumps/db/db.sql
 
-    - name: Generate coverage report
-      run: mvn jacoco:report
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4.2.2
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
 
-    - name: Upload Jacoco reports
-      uses: actions/upload-artifact@v4.3.6
-      with:
-        name: test-reports
-        path: target/site
+      - name: Build with Maven
+        run: mvn -B verify -X -e
 
-    - name: Docker login
-      uses: docker/login-action@v3.3.0
-      with: 
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_PASSWORD }}
+      - name: Generate coverage report
+        run: mvn jacoco:report
 
-    - name: Docker build and push
-      uses: docker/build-push-action@v6.7.0
-      with: 
-        context: .
-        file: Dockerfile
-        push: true
-        tags: fedec/flyingdutchman:latest
+      - name: Upload Jacoco reports
+        uses: actions/upload-artifact@v4.3.6
+        with:
+          name: test-reports
+          path: target/site
 
-    - name: Docker build and push database
-      uses: docker/build-push-action@v6.7.0
-      with: 
-        context: . 
-        file: DockerfileSQL
-        push: true
-        tags: fedec/flyingdutchman_db:latest
+      - name: Docker login
+        uses: docker/login-action@v3.3.0
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Docker build and push
+        uses: docker/build-push-action@v6.7.0
+        with:
+          context: .
+          file: Dockerfile
+          push: true
+          tags: fedec/flyingdutchman:latest
+
+      - name: Docker build and push database
+        uses: docker/build-push-action@v6.7.0
+        with:
+          context: .
+          file: DockerfileSQL
+          push: true
+          tags: fedec/flyingdutchman_db:latest
 
   deploy:
     runs-on: self-hosted
     needs: build
     
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4.1.7
+      - name: Checkout code
+        uses: actions/checkout@v4.1.7
 
-    - name: Pull latest images
-      run: docker compose pull
+      - name: Pull latest images
+        run: docker compose pull
 
-    - name: Build docker compose
-      run: docker compose build --no-cache
-    
-    - name: Up docker
-      run: docker compose up -d --force-recreate
+      - name: Build docker compose
+        run: docker compose build --no-cache
 
-    - name: Check docker logs
-      run: docker logs flyingdutchman
+      - name: Up docker
+        run: docker compose up -d --force-recreate
 
-    - name: Download Jacoco report
-      uses: actions/download-artifact@v4.1.8
-      with:
-        name: test-reports
-        path: reports
+      - name: Check docker logs
+        run: docker logs flyingdutchman
+
+      - name: Download Jacoco report
+        uses: actions/download-artifact@v4.1.8
+        with:
+          name: test-reports
+          path: reports
