@@ -39,7 +39,7 @@ jobs:
       - name: Wait for MySQL to be ready
         run: until mysqladmin ping -h"127.0.0.1" --silent; do sleep 1; done
 
-      - name: Import database schema
+      - name: Import database schema for testing
         run: mysql -h 127.0.0.1 -u root -pStrongPassword123@ flyingdutchmandb < ./dumps/db/db.sql
 
       - name: Set up JDK 17
