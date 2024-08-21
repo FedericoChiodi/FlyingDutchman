@@ -7,6 +7,8 @@ services:
     container_name: flyingdutchman_db
     environment:
       - MYSQL_ROOT_PASSWORD=StrongPassword123@
+      - MYSQL_DATABASE=flyingdutchmandb
+      - MYSQL_TCP_PORT=3306
     ports:
       - "3306:3306"
     command: --default-authentication-plugin=caching_sha2_password
