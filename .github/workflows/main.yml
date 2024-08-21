@@ -50,7 +50,7 @@ jobs:
         cache: maven
 
     - name: Build with Maven
-      run: mvn -B verify -X -e
+      run: mvn -B package
 
     - name: Generate coverage report
       run: mvn jacoco:report

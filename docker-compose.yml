@@ -26,8 +26,6 @@ services:
   flyingdutchman:
     image: fedec/flyingdutchman:latest
     container_name: flyingdutchman
-    environment:
-      DB: flyingdutchman_db
     ports:
       - "8080:8080"
     depends_on:
