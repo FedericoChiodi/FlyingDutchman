@@ -31,6 +31,8 @@ services:
     depends_on:
       flyingdutchman_db:
         condition: service_healthy
+    volumes:
+      - /home/sanpc/uploads/:/home/sanpc/uploads/
     networks:
       - flyingdutchman_net
 
