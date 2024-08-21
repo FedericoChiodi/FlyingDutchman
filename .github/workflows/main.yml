@@ -13,7 +13,7 @@ jobs:
 
     services:
       flyingdutchman_db:
-        image: mysql:8.0.34
+        image: mysql:9.0.1
         env:
           MYSQL_ROOT_PASSWORD: StrongPassword123@
           MYSQL_DATABASE: flyingdutchmandb

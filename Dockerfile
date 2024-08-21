@@ -1,4 +1,4 @@
-FROM tomcat:10.1.28-jdk17-temurin
+FROM tomcat:10.1.24-jdk17
 
 COPY target/flyingdutchman-0.0.1-SNAPSHOT.war /usr/local/tomcat/webapps/ROOT.war
 

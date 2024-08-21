@@ -5,10 +5,7 @@ services:
   flyingdutchman_db:
     image: fedec/flyingdutchman_db:latest
     container_name: flyingdutchman_db
-    environment:
-      - MYSQL_ROOT_PASSWORD=StrongPassword123@
-      - MYSQL_DATABASE=flyingdutchmandb
-      - MYSQL_TCP_PORT=3306
+
     ports:
       - 3306:3306
     command: --default-authentication-plugin=caching_sha2_password
@@ -17,7 +14,7 @@ services:
     networks:
       - flyingdutchman_net
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "$$MYSQL_USER", "--password=$$MYSQL_PASSWORD"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "root", "--password=StrongPassword123@"]
       start_period: 2s
       interval: 3s
       timeout: 5s
