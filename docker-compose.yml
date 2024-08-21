@@ -10,7 +10,7 @@ services:
       - MYSQL_DATABASE=flyingdutchmandb
       - MYSQL_TCP_PORT=3306
     ports:
-      - "3306:3306"
+      - 3306:3306
     command: --default-authentication-plugin=caching_sha2_password
     volumes:
       - dbdata:/var/lib/mysql
@@ -27,7 +27,7 @@ services:
     image: fedec/flyingdutchman:latest
     container_name: flyingdutchman
     ports:
-      - "8080:8080"
+      - 8080:8080
     depends_on:
       flyingdutchman_db:
         condition: service_healthy
