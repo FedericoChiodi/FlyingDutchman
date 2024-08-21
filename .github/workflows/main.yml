@@ -87,6 +87,9 @@ jobs:
     needs: build
     
     steps:
+    - name: Maven clean install
+      run: mvn clean install
+
     - name: Checkout code
       uses: actions/checkout@v4.1.7
 
