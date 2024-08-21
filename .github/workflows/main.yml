@@ -28,9 +28,9 @@ jobs:
     steps:
     - name: Create uploads directory
       run: |
-        sudo mkdir -p /srv/flyingdutchman/uploads/
-        sudo chown -R $USER:$USER /srv/flyingdutchman/uploads/
-        sudo chmod -R 755 /srv/flyingdutchman/uploads/
+        sudo mkdir -p /home/sanpc/uploads/
+        sudo chown -R $USER:$USER /home/sanpc/uploads/
+        sudo chmod -R 755 /home/sanpc/uploads/
         
     - name: Checkout code
       uses: actions/checkout@v4.1.7
@@ -100,4 +100,4 @@ jobs:
       uses: actions/download-artifact@v4.1.8
       with:
         name: test-reports
-        path: flyingdutchman/reports
+        path: reports

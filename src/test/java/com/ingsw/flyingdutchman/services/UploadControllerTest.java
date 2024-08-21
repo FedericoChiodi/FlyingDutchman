@@ -57,7 +57,7 @@ public class UploadControllerTest {
 
     @AfterAll
     public static void teardown() {
-        File directory = new File("/srv/flyingdutchman/uploads/testuser");
+        File directory = new File("/home/sanpc/uploads/testuser");
         if (directory.isDirectory()) {
             File[] files = directory.listFiles();
             if (files != null) {
@@ -137,12 +137,12 @@ public class UploadControllerTest {
                 eq(100f),
                 eq(120f),
                 eq(120f),
-                eq("/srv/flyingdutchman/uploads/testuser" + File.separator + "description.png"),
+                eq("/home/sanpc/uploads/testuser" + File.separator + "description.png"),
                 eq(category),
                 eq(mockUser)
         );
 
-        String expectedFilePath = "/srv/flyingdutchman/uploads/testuser/description.png";
+        String expectedFilePath = "/home/sanpc/uploads/testuser/description.png";
         File file = new File(expectedFilePath);
 
         assertEquals("productManagement/view", viewName);
@@ -267,7 +267,7 @@ public class UploadControllerTest {
     public void testGetUploadDirectory() {
         String username = "testuser";
 
-        File expectedDirectory = new File("/srv/flyingdutchman/uploads/" + username);
+        File expectedDirectory = new File("/home/sanpc/uploads/" + username);
         File actualDirectory = uploadController.getUploadDirectory(username);
 
         assertEquals(expectedDirectory, actualDirectory);

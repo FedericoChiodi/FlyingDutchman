@@ -50,7 +50,7 @@ public class UserManagementController {
     public String delete(HttpServletRequest request, HttpServletResponse response){
         User loggedUser = userService.findLoggedUser(request);
 
-        String directoryPath = "/srv/flyingdutchman/uploads/" + loggedUser.getUsername();
+        String directoryPath = "/home/sanpc/uploads/" + loggedUser.getUsername();
         File directory = new File(directoryPath);
 
         delete_user(loggedUser, directory);
@@ -69,7 +69,7 @@ public class UserManagementController {
         User loggeduser = userService.findLoggedUser(request);
         User toDelete = userService.findByUsername(request.getParameter("username"));
 
-        String directoryPath = "/srv/flyingdutchman/uploads/" + toDelete.getUsername();
+        String directoryPath = "/home/sanpc/uploads/" + toDelete.getUsername();
         File directory = new File(directoryPath);
 
         delete_user(toDelete, directory);

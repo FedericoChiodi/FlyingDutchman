@@ -136,7 +136,7 @@ CREATE TABLE `PRODUCT` (
 
 LOCK TABLES `PRODUCT` WRITE;
 /*!40000 ALTER TABLE `PRODUCT` DISABLE KEYS */;
-INSERT INTO `PRODUCT` VALUES (1,'Premium Membership',50,50,50,'/srv/flyingdutchman/uploads/Mario12/Premium Membership.png','Y',1,1),(2,'Canna da pesca in ottime condizioni',50,250,55,'/srv/flyingdutchman/uploads/JohnDoe/Canna da pesca in ottime condizioni.png','N',2,3),(3,'Tavolo in legno massello fatto a mano',100,500,100,'/srv/flyingdutchman/uploads/Mario12/Tavolo in legno massello fatto a mano.png','N',3,1),(4,'Scacchiera in marmo',75,200,150,'/srv/flyingdutchman/uploads/Giulia88/Scacchiera in marmo.png','N',3,3),(5,'Racchetta da ping pong',5,25,24,'/srv/flyingdutchman/uploads/JohnDoe/Racchetta da ping pong.png','N',4,3),(6,'Sedia da Giardino',15,50,20,'/srv/flyingdutchman/uploads/Giulia88/Sedia da Giardino.png','N',3,3);
+INSERT INTO `PRODUCT` VALUES (1,'Premium Membership',50,50,50,'/home/sanpc/uploads/Mario12/Premium Membership.png','Y',1,1),(2,'Canna da pesca in ottime condizioni',50,250,55,'/home/sanpc/uploads/JohnDoe/Canna da pesca in ottime condizioni.png','N',2,3),(3,'Tavolo in legno massello fatto a mano',100,500,100,'/home/sanpc/uploads/Mario12/Tavolo in legno massello fatto a mano.png','N',3,1),(4,'Scacchiera in marmo',75,200,150,'/home/sanpc/uploads/Giulia88/Scacchiera in marmo.png','N',3,3),(5,'Racchetta da ping pong',5,25,24,'/home/sanpc/uploads/JohnDoe/Racchetta da ping pong.png','N',4,3),(6,'Sedia da Giardino',15,50,20,'/home/sanpc/uploads/Giulia88/Sedia da Giardino.png','N',3,3);
 /*!40000 ALTER TABLE `PRODUCT` ENABLE KEYS */;
 UNLOCK TABLES;
 
