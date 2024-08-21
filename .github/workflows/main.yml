@@ -12,11 +12,11 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
-      db:
-        image: mysql:8.0
+      flyingdutchman_db:
+        image: mysql:8.0.34
         env:
           MYSQL_ROOT_PASSWORD: StrongPassword123@
-          MYSQL_DATABASE: flyingdutchman
+          MYSQL_DATABASE: flyingdutchmandb
         ports:
           - 3306:3306
         options: >-
@@ -26,12 +26,6 @@ jobs:
           --health-retries=3
           
     steps:
-    - name: Create uploads directory
-      run: |
-        sudo mkdir -p /home/sanpc/uploads/
-        sudo chown -R $USER:$USER /home/sanpc/uploads/
-        sudo chmod -R 755 /home/sanpc/uploads/
-        
     - name: Checkout code
       uses: actions/checkout@v4.1.7
 
@@ -39,7 +33,7 @@ jobs:
       run: until mysqladmin ping -h"127.0.0.1" --silent; do sleep 1; done
 
     - name: Import database schema
-      run: mysql -h 127.0.0.1 -u root -pStrongPassword123@ flyingdutchman < ./dumps/db/db.sql
+      run: mysql -h 127.0.0.1 -u root -pStrongPassword123@ flyingdutchmandb < ./dumps/db/db.sql
 
     - name: Set up JDK 17
       uses: actions/setup-java@v4.2.2
