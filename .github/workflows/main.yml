@@ -26,6 +26,12 @@ jobs:
           --health-retries=3
           
     steps:
+    - name: Create uploads dir
+      run: |
+        sudo mkdir -p /home/sanpc/uploads/
+        sudo chown -R $USER:$USER /home/sanpc/uploads/
+        sudo chmod -R 755 /home/sanpc/uploads/
+
     - name: Checkout code
       uses: actions/checkout@v4.1.7
 
