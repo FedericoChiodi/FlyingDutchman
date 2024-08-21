@@ -17,10 +17,11 @@ jobs:
         env:
           MYSQL_ROOT_PASSWORD: StrongPassword123@
           MYSQL_DATABASE: flyingdutchmandb
+          MYSQL_TCP_PORT: 3306
         ports:
           - "3306:3306"
         options: >-
-          --health-cmd="mysqladmin ping -h localhost" 
+          --health-cmd="mysqladmin ping -h 127.0.0.1" 
           --health-interval=10s 
           --health-timeout=5s 
           --health-retries=3
@@ -90,11 +91,17 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4.1.7
 
+    - name: Pull latest images
+      run: docker compose pull
+
     - name: Build docker compose
       run: docker compose build --no-cache
     
     - name: Up docker
       run: docker compose up -d --force-recreate
+
+    - name: Check docker logs
+      run: docker logs flyingdutchman
 
     - name: Download Jacoco report
       uses: actions/download-artifact@v4.1.8
