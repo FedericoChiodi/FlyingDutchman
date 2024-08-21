@@ -1,4 +1,4 @@
-FROM mysql:8.0.34
+FROM mysql:9.0.1
 
 ENV MYSQL_DATABASE=flyingdutchmandb
 ENV MYSQL_ROOT_PASSWORD=StrongPassword123@
