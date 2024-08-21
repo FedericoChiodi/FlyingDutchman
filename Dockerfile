@@ -1,16 +1,8 @@
-FROM tomcat:10.1.7-jdk17
+FROM tomcat:10.1.24-jdk17
 
-RUN mkdir -p /home/sanpc/uploads
+RUN cp -r $CATALINA_HOME/webapps.dist/* $CATALINA_HOME/webapps
 
-RUN rm -rf /usr/local/tomcat/webapps/*
-
-WORKDIR /srv/flyingdutchman
-
-COPY /uploads /home/sanpc/uploads
-
-WORKDIR /home/sanpc/Desktop/flyingdutchman
-
-COPY /target/flyingdutchman-0.0.1-SNAPSHOT /usr/local/tomcat/webapps
+COPY target/flyingdutchman-0.0.1-SNAPSHOT.war /usr/local/tomcat/webapps/ROOT.war
 
 EXPOSE 8080
 
