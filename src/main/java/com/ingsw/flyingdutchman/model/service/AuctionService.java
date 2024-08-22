@@ -22,13 +22,13 @@ public class AuctionService {
         this.auctionRepository = auctionRepository;
     }
 
-    public Auction createAuction(Timestamp openingTimestamp, Product product) {
+    public void createAuction(Timestamp openingTimestamp, Product product) {
         Auction auction = new Auction();
         auction.setProduct_auctioned(product);
         auction.setOpening_timestamp(openingTimestamp);
         auction.setDeleted('N');
         auction.setProduct_sold('N');
-        return auctionRepository.save(auction);
+        auctionRepository.save(auction);
     }
 
     public void deleteAuction(@NotNull Auction auction) {
@@ -36,28 +36,20 @@ public class AuctionService {
         auctionRepository.save(auction);
     }
 
-    public Auction updateAuction(Auction auction) {
-        return auctionRepository.save(auction);
+    public void updateAuction(Auction auction) {
+        auctionRepository.save(auction);
     }
 
     public Auction findAuctionById(Long auctionID) {
         return auctionRepository.findById(auctionID).orElse(null);
     }
 
-    public List<Auction> findByProduct(@NotNull Product product) {
-        return auctionRepository.findByProduct(product);
-    }
-
-    public List<Auction> findByProductOpenNotDeleted(@NotNull Product product) {
+    public List<Auction> findByProductOpenNotDeleted(Product product) {
         return auctionRepository.findByProductOpenNotDeleted(product);
     }
 
     public List<Auction> findByOwner(User user) {
         return auctionRepository.findByOwner(user);
-    }
-
-    public List<Auction> findByOwnerNotPremium(User user) {
-        return auctionRepository.findByOwnerNotPremium(user);
     }
 
     public List<Auction> findOpenAuctionsByOwnerNotDeleted(User user) {
@@ -66,14 +58,6 @@ public class AuctionService {
 
     public List<Auction> findAllOpenAuctionsExceptUser(User user) {
         return auctionRepository.findAllOpenAuctionsExceptUser(user);
-    }
-
-    public List<Auction> findAllAuctions() {
-        return auctionRepository.findAll();
-    }
-
-    public List<Auction> findAllAuctionsExceptPremium() {
-        return auctionRepository.findAllAuctionsExceptPremium();
     }
 
     public List<Auction> findAuctionByProductDescription(String description) {

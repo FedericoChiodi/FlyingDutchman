@@ -14,10 +14,6 @@ import java.util.List;
 @Repository
 public interface AuctionRepository extends JpaRepository<Auction, Long> {
 
-    // Trovare aste da un Prodotto
-    @Query("SELECT a FROM Auction a WHERE a.product_auctioned = :product")
-    List<Auction> findByProduct(@Param("product") Product product);
-
     // Trovare aste aperte e non cancellate da un Prodotto
     @Query("SELECT a FROM Auction a WHERE a.product_auctioned = :product AND a.deleted = 'N' AND a.closing_timestamp IS NULL")
     List<Auction> findByProductOpenNotDeleted(@Param("product") Product product);
@@ -26,10 +22,6 @@ public interface AuctionRepository extends JpaRepository<Auction, Long> {
     @Query("SELECT a FROM Auction a WHERE a.product_auctioned.owner = :owner")
     List<Auction> findByOwner(@Param("owner") User owner);
 
-    // Trovare aste dall'Utente che le ha aperte, tranne l'asta Premium
-    @Query("SELECT a FROM Auction a WHERE a.product_auctioned.owner = :owner AND a.product_auctioned.productID <> 1")
-    List<Auction> findByOwnerNotPremium(@Param("owner") User owner);
-
     // Trovare aste aperte dall'Utente e non cancellate
     @Query("SELECT a FROM Auction a WHERE a.product_auctioned.owner = :owner AND a.deleted = 'N' AND a.closing_timestamp IS NULL AND a.product_sold = 'N'")
     List<Auction> findOpenAuctionsByOwnerNotDeleted(@Param("owner") User owner);
@@ -37,10 +29,6 @@ public interface AuctionRepository extends JpaRepository<Auction, Long> {
     // Trova tutte le aste aperte tranne quelle dell'Utente
     @Query("SELECT a FROM Auction a WHERE a.product_auctioned.owner <> :owner AND a.product_auctioned.deleted = 'N' AND a.closing_timestamp IS NULL AND a.product_sold = 'N'")
     List<Auction> findAllOpenAuctionsExceptUser(@Param("owner") User owner);
-
-    // Trova tutte le Aste tranne quella Premium
-    @Query("SELECT a FROM Auction a WHERE a.product_auctioned.productID <> 1")
-    List<Auction> findAllAuctionsExceptPremium();
 
     // Trova Aste per la descrizione del Prodotto
     @Query("SELECT a FROM Auction a WHERE a.product_auctioned.description = :description AND a.deleted = 'N' AND a.product_sold = 'N'")
