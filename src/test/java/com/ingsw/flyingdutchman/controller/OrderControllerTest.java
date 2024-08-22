@@ -90,7 +90,7 @@ public class OrderControllerTest {
         when(orderService.findOrdersByUser(mockUser)).thenReturn(mockOrders);
 
         mockMvc.perform(post("/orderManagement/pay")
-                        .param("auctionId", "1"))
+                        .param("auctionID", "1"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("orderManagement/view"))
                 .andExpect(request().attribute("applicationMessage", "Il tuo ordine è stato inserito!"))
