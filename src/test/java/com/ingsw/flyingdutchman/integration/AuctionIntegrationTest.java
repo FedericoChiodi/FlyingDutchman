@@ -91,9 +91,20 @@ public class AuctionIntegrationTest {
         product.setDeleted('N');
         product.setCategory(category);
         product.setDescription("test_desc");
-        product.setImage("/home/sanpc/uploads/loggedUser/test_desc.png");
+        product.setImage("/home/sanpc/uploads/otherUser/test_desc.png");
         product.setOwner(otherUser);
         productRepository.save(product);
+
+        Product product2 = new Product();
+        product2.setCurrent_price(5.0f);
+        product2.setMin_price(1.0f);
+        product2.setStarting_price(10.0f);
+        product2.setDeleted('N');
+        product2.setCategory(category);
+        product2.setDescription("test_desc");
+        product2.setImage("/home/sanpc/uploads/loggedUser/test_desc.png");
+        product2.setOwner(loggedUser);
+        productRepository.save(product2);
 
         Auction auction = new Auction();
         auction.setProduct_sold('N');
