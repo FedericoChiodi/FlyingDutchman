@@ -74,7 +74,7 @@ public class UploadControllerTest {
     @Test
     public void test_request_params() throws Exception {
         User loggedUser = new User();
-        loggedUser.setUsername("testUser");
+        loggedUser.setUsername("testuser");
 
         List<Product> products = new ArrayList<>();
 
@@ -152,7 +152,7 @@ public class UploadControllerTest {
     @Test
     public void testCreationException() throws Exception {
         User loggedUser = new User();
-        loggedUser.setUsername("testUser");
+        loggedUser.setUsername("testuser");
 
         List<Product> products = new ArrayList<>();
 

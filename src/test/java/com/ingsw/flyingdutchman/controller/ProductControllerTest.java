@@ -140,7 +140,7 @@ public class ProductControllerTest {
     public void insert_test_exception() throws Exception {
         User loggedUser = new User();
         loggedUser.setUserID(1L);
-        loggedUser.setUsername("testUser");
+        loggedUser.setUsername("testuser");
 
         Category category = new Category();
         category.setCategoryID(1L);
