@@ -20,14 +20,14 @@ public class ThresholdService {
         this.thresholdRepository = thresholdRepository;
     }
 
-    public Threshold createThreshold(Float price, Timestamp reservationDate, User buyer, Auction auction) {
+    public void createThreshold(Float price, Timestamp reservationDate, User buyer, Auction auction) {
         price = Math.round(price * 100.0) / 100.0f; // Arrotondamento a 2 decimali
         Threshold threshold = new Threshold();
         threshold.setPrice(price);
         threshold.setReservationDate(reservationDate);
         threshold.setUser(buyer);
         threshold.setAuction(auction);
-        return thresholdRepository.save(threshold);
+        thresholdRepository.save(threshold);
     }
 
     public void updateThreshold(Threshold threshold) {
@@ -50,7 +50,4 @@ public class ThresholdService {
         return thresholdRepository.findByAuction(auction);
     }
 
-    public List<Threshold> findAllThresholds() {
-        return thresholdRepository.findAll();
-    }
 }
