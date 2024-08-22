@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
-import java.util.Base64;
 import java.util.List;
 
 @Service
@@ -70,7 +69,7 @@ public class UserService {
         return userRepository.findAllUsersExceptMeAndDeleted(user);
     }
 
-    public void createLoginCookie(@NotNull User user, @NotNull HttpServletResponse response) {
+    public void createLoginCookie(User user, HttpServletResponse response) {
         // Crea un valore del cookie con le informazioni dell'utente
         String userInfo = user.getUsername();
 
@@ -83,13 +82,13 @@ public class UserService {
     }
 
     public void deleteLoginCookie(HttpServletResponse response) {
-        Cookie cookie = new Cookie("loggedUser", "");
+        Cookie cookie = new Cookie("loggedUser", null);
         cookie.setMaxAge(0);
         cookie.setPath("/");
         response.addCookie(cookie);
     }
 
-    public User findLoggedUser(@NotNull HttpServletRequest request) {
+    public User findLoggedUser(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
