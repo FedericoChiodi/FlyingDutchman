@@ -5,7 +5,6 @@ import com.ingsw.flyingdutchman.repository.UserRepository;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -49,20 +48,8 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public User findByUserID(Long userID) {
-        return userRepository.findById(userID).orElse(null);
-    }
-
     public User findByUsername(String username) {
         return userRepository.findByUsername(username);
-    }
-
-    public List<User> findByRole(String role) {
-        return userRepository.findByRole(role);
-    }
-
-    public List<User> findAllUsers() {
-        return userRepository.findAll();
     }
 
     public List<User> findAllUsersExceptMeAndDeleted(User user) {

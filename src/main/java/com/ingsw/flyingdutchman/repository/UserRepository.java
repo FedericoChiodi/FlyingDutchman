@@ -15,9 +15,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT u FROM User u WHERE u.username = :username AND u.deleted = 'N'")
     User findByUsername(@Param("username") String username);
 
-    // Trova gli Utenti dal loro ruolo
-    List<User> findByRole(String role);
-
     // Trova tutti gli utenti tranne me e quelli cancellati
     @Query("SELECT u FROM User u WHERE u <> :user AND u.deleted = 'N'")
     List<User> findAllUsersExceptMeAndDeleted(@Param("user") User user);
