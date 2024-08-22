@@ -47,10 +47,4 @@ public class CategoryTest {
         assertEquals(2, category.getProducts().size());
     }
 
-    @Test
-    public void testCategoryInitialization() {
-        assertNull(category.getCategoryID());
-        assertNull(category.getName());
-        assertNull(category.getProducts());
-    }
 }

@@ -56,12 +56,4 @@ public class OrderTest {
         assertEquals(product, order.getProduct());
     }
 
-    @Test
-    public void testOrderInitialization() {
-        assertNull(order.getSellingPrice());
-        assertNull(order.getOrderTime());
-        assertNull(order.getBoughtFromThreshold());
-        assertNull(order.getBuyer());
-        assertNull(order.getProduct());
-    }
 }

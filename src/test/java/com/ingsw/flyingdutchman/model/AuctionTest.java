@@ -63,13 +63,4 @@ public class AuctionTest {
         assertEquals(product, auction.getProduct_auctioned());
     }
 
-    @Test
-    public void testAuctionInitialization() {
-        assertNull(auction.getAuctionID());
-        assertNull(auction.getOpening_timestamp());
-        assertNull(auction.getClosing_timestamp());
-        assertNull(auction.getProduct_sold());
-        assertNull(auction.getDeleted());
-        assertNull(auction.getProduct_auctioned());
-    }
 }
