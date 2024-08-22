@@ -108,6 +108,9 @@ public class UserIntegrationTest {
 
     @Test
     public void ban_test() throws Exception {
+        User otherUser = userRepository.findByUsername("otherUser");
+        assert otherUser != null;
+
         mockMvc.perform(post("/userManagement/ban")
                         .cookie(new Cookie("loggedUser","loggedUser"))
                         .param("username", "otherUser"))
@@ -121,6 +124,9 @@ public class UserIntegrationTest {
 
     @Test
     public void register_test() throws Exception {
+        User user = userRepository.findByUsername("newUser");
+        assert user == null;
+
         mockMvc.perform(post("/userManagement/register")
                         .param("username", "newUser")
                         .param("password", "newPassword")
