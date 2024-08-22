@@ -1,12 +1,7 @@
 package com.ingsw.flyingdutchman.integration;
 
-import com.ingsw.flyingdutchman.model.mo.Auction;
-import com.ingsw.flyingdutchman.model.mo.Product;
-import com.ingsw.flyingdutchman.model.mo.Threshold;
-import com.ingsw.flyingdutchman.model.mo.User;
-import com.ingsw.flyingdutchman.repository.AuctionRepository;
-import com.ingsw.flyingdutchman.repository.ThresholdRepository;
-import com.ingsw.flyingdutchman.repository.UserRepository;
+import com.ingsw.flyingdutchman.model.mo.*;
+import com.ingsw.flyingdutchman.repository.*;
 import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,18 +10,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.FileSystemUtils;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -48,10 +37,15 @@ public class ThresholdIntegrationTest {
     @Autowired
     private AuctionRepository auctionRepository;
 
+    @Autowired
+    private ProductRepository productRepository;
+
+    @Autowired
+    private CategoryRepository categoryRepository;
+
     @BeforeEach
     public void setup() {
         User loggedUser = new User();
-        loggedUser.setUserID(1L);
         loggedUser.setUsername("loggedUser");
         loggedUser.setPassword("password");
         loggedUser.setFirstname("First");
@@ -68,11 +62,22 @@ public class ThresholdIntegrationTest {
         loggedUser.setDeleted('N');
         userRepository.save(loggedUser);
 
+        Category category = new Category();
+        category.setName("test_name");
+        categoryRepository.save(category);
+
         Product product = new Product();
-        product.setProductID(1L);
+        product.setCurrent_price(5.0f);
+        product.setMin_price(1.0f);
+        product.setStarting_price(10.0f);
+        product.setDeleted('N');
+        product.setCategory(category);
+        product.setDescription("test_desc");
+        product.setImage("/home/sanpc/uploads/loggedUser/test_desc.png");
+        product.setOwner(loggedUser);
+        productRepository.save(product);
 
         Auction auction = new Auction();
-        auction.setAuctionID(1L);
         auction.setProduct_sold('N');
         auction.setOpening_timestamp(Timestamp.valueOf(LocalDateTime.now()));
         auction.setClosing_timestamp(Timestamp.valueOf(LocalDateTime.now()));
@@ -81,7 +86,6 @@ public class ThresholdIntegrationTest {
         auctionRepository.save(auction);
 
         Threshold threshold = new Threshold();
-        threshold.setThresholdID(1L);
         threshold.setUser(loggedUser);
         threshold.setReservationDate(Timestamp.valueOf(LocalDateTime.now()));
         threshold.setPrice(10.0f);
@@ -91,53 +95,51 @@ public class ThresholdIntegrationTest {
 
     @Test
     public void delete_test() throws Exception {
+        User loggedUser = userRepository.findByUsername("loggedUser");
+
+        List<Threshold> thresholds = thresholdRepository.findByUser(loggedUser);
+
         mockMvc.perform(post("/thresholdManagement/delete")
                         .cookie(new Cookie("loggedUser","loggedUser"))
-                        .param("thresholdID","1"))
+                        .param("thresholdID",thresholds.get(0).getThresholdID().toString()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("thresholdManagement/view"))
                 .andExpect(request().attribute("applicationMessage", "Eliminata correttamente!"));
 
-        User loggedUser = new User();
-        loggedUser.setUserID(1L);
-        loggedUser.setUsername("loggedUser");
-
         List<Threshold> deleted = thresholdRepository.findByUser(loggedUser);
-        assert deleted.isEmpty();
+        assert deleted.size() == thresholds.size() - 1;
     }
 
     @Test
     public void insert_test() throws Exception {
+        List<Auction> auctions = auctionRepository.findByOwner(userRepository.findByUsername("loggedUser"));
+        List<Threshold> thresholds = thresholdRepository.findByUser(userRepository.findByUsername("loggedUser"));
+
         mockMvc.perform(post("/thresholdManagement/insert")
                         .cookie(new Cookie("loggedUser","loggedUser"))
-                        .param("auctionID","1")
-                        .param("price","10.0"))
+                        .param("auctionID",auctions.get(0).getAuctionID().toString())
+                        .param("price","2.5"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("thresholdManagement/view"));
 
-        Auction auction = new Auction();
-        auction.setAuctionID(1L);
-
-        List<Threshold> deleted = thresholdRepository.findByAuction(auction);
-        assert deleted.size() == 2;
-        assert deleted.get(1).getPrice().equals(10.0f);
+        List<Threshold> added = thresholdRepository.findByUser(userRepository.findByUsername("loggedUser"));
+        assert added.size() == thresholds.size() + 1;
+        assert added.get(1).getPrice().equals(2.5f);
     }
 
     @Test
     public void modify_test() throws Exception {
+        List<Threshold> thresholds = thresholdRepository.findByUser(userRepository.findByUsername("loggedUser"));
+
         mockMvc.perform(post("/thresholdManagement/modify")
                         .cookie(new Cookie("loggedUser","loggedUser"))
-                        .param("thresholdID","1")
-                        .param("price","199.5"))
+                        .param("thresholdID",thresholds.get(0).getThresholdID().toString())
+                        .param("price","9.5"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("thresholdManagement/view"));
 
-        Auction auction = new Auction();
-        auction.setAuctionID(1L);
-
-        List<Threshold> deleted = thresholdRepository.findByAuction(auction);
-        assert deleted.size() == 1;
-        assert deleted.get(0).getPrice().equals(199.5f);
+        List<Threshold> modified = thresholdRepository.findByUser(userRepository.findByUsername("loggedUser"));
+        assert modified.get(0).getPrice().equals(9.5f);
     }
 
 }
