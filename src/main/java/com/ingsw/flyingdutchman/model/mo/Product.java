@@ -69,10 +69,6 @@ public class Product {
         this.min_price = min_price;
     }
 
-    public Float getStarting_price() {
-        return starting_price;
-    }
-
     public void setStarting_price(Float starting_price) {
         this.starting_price = starting_price;
     }
