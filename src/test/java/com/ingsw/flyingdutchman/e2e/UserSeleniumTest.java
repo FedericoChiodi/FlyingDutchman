@@ -207,4 +207,40 @@ public class UserSeleniumTest {
         assertEquals("Benvenuto test_user, su Flying Dutchman!", welcomeMessage.getText());
     }
 
+    @Test
+    public void testBan() {
+        testRegister();
+
+        driver.get("http://localhost:8080/userManagement/ban");
+
+        WebElement username = driver.findElement(By.id("username"));
+        username.sendKeys("test_user");
+
+        WebElement submitButton = driver.findElement(By.cssSelector("input[type='submit']"));
+        submitButton.click();
+
+        String messageBan = driver.switchTo().alert().getText();
+        assertEquals("Bannato: test_user", messageBan);
+
+        driver.switchTo().alert().accept();
+
+        driver.get("http://localhost:8080/logout");
+
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(3));
+
+        driver.get("http://localhost:8080/");
+
+        WebElement usernameField = driver.findElement(By.id("usernameLogin"));
+        WebElement passwordField = driver.findElement(By.id("passwordLogin"));
+        WebElement submitButton1 = driver.findElement(By.cssSelector("input[type='submit']"));
+
+        usernameField.sendKeys("test_user");
+        passwordField.sendKeys("pass");
+
+        submitButton1.click();
+
+        String message = driver.switchTo().alert().getText();
+        assertEquals("Could not find that User", message);
+    }
+
 }
