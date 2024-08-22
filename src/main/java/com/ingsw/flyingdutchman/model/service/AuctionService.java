@@ -5,7 +5,6 @@ import com.ingsw.flyingdutchman.model.mo.Category;
 import com.ingsw.flyingdutchman.model.mo.Product;
 import com.ingsw.flyingdutchman.model.mo.User;
 import com.ingsw.flyingdutchman.repository.AuctionRepository;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +30,7 @@ public class AuctionService {
         auctionRepository.save(auction);
     }
 
-    public void deleteAuction(@NotNull Auction auction) {
+    public void deleteAuction(Auction auction) {
         auction.setDeleted('Y');
         auctionRepository.save(auction);
     }
