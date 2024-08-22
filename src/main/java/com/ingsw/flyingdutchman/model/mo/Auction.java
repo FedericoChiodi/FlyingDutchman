@@ -40,6 +40,8 @@ public class Auction {
         this.opening_timestamp = opening_timestamp;
     }
 
+    public Timestamp getOpening_timestamp() { return opening_timestamp; }
+
     public Timestamp getClosing_timestamp() {
         return closing_timestamp;
     }
