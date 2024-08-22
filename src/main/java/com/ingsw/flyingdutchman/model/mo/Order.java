@@ -29,14 +29,6 @@ public class Order {
     @JoinColumn(name = "productID")
     private Product product;
 
-    public Long getOrderID() {
-        return orderID;
-    }
-
-    public void setOrderID(Long orderID) {
-        this.orderID = orderID;
-    }
-
     public Float getSellingPrice() {
         return sellingPrice;
     }
@@ -59,10 +51,6 @@ public class Order {
 
     public void setBoughtFromThreshold(Character boughtFromThreshold) {
         this.boughtFromThreshold = boughtFromThreshold;
-    }
-
-    public User getBuyer() {
-        return buyer;
     }
 
     public void setBuyer(User buyer) {
