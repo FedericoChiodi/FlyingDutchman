@@ -55,7 +55,6 @@ public class ThresholdManagementController {
     @PostMapping("/delete")
     public String delete(HttpServletRequest request){
         User loggedUser = userService.findLoggedUser(request);
-        List<Threshold> thresholds = thresholdService.findThresholdsByUser(loggedUser);
         Threshold threshold = thresholdService.findThresholdById(Long.valueOf(request.getParameter("thresholdID")));
 
         try{
@@ -65,6 +64,8 @@ public class ThresholdManagementController {
         catch (Exception e){
             request.setAttribute("applicationMessage", "Could not delete threshold!");
         }
+
+        List<Threshold> thresholds = thresholdService.findThresholdsByUser(loggedUser);
 
         request.setAttribute("loggedUser", loggedUser);
         request.setAttribute("loggedOn", true);
@@ -78,7 +79,6 @@ public class ThresholdManagementController {
     public String insert(HttpServletRequest request){
         User loggedUser = userService.findLoggedUser(request);
         Auction auction = auctionService.findAuctionById(Long.valueOf(request.getParameter("auctionID")));
-        List<Threshold> thresholds = thresholdService.findThresholdsByUser(loggedUser);
 
         LocalDateTime currentDateTime = LocalDateTime.now();
         Timestamp timestamp = Timestamp.valueOf(currentDateTime);
@@ -94,6 +94,8 @@ public class ThresholdManagementController {
         catch (Exception e){
             request.setAttribute("applicationMessage", "Could not insert threshold!");
         }
+
+        List<Threshold> thresholds = thresholdService.findThresholdsByUser(loggedUser);
 
         request.setAttribute("loggedUser", loggedUser);
         request.setAttribute("loggedOn", true);
