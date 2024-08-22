@@ -2,7 +2,7 @@ name: FlyingDutchman CI/CD Pipeline
 
 on:
   push:
-    branches: [ "disabled" ]
+    branches: [ "master" ]
 
 permissions:
   contents: read
