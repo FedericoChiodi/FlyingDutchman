@@ -4,7 +4,6 @@ import com.ingsw.flyingdutchman.model.mo.User;
 import com.ingsw.flyingdutchman.model.service.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -12,7 +11,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -103,7 +101,7 @@ public class HomeControllerTest {
                 .andExpect(request().attribute("loggedOn", false));
     }
 
-    private static @NotNull Stream<Object[]> userProvider() {
+    private static Stream<Object[]> userProvider() {
         User loggedUser = new User();
         loggedUser.setUserID(1L);
 
@@ -113,7 +111,7 @@ public class HomeControllerTest {
         );
     }
 
-    private static @NotNull Stream<Object[]> loginProvider() {
+    private static Stream<Object[]> loginProvider() {
         User validUser = new User();
         validUser.setUserID(1L);
         validUser.setUsername("validUser");
