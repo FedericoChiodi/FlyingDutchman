@@ -151,7 +151,6 @@ public class UserSeleniumTest {
     }
 
     @Test
-    @Transactional
     public void testRegister() {
         driver.get("http://localhost:8080/userManagement/insert");
 
