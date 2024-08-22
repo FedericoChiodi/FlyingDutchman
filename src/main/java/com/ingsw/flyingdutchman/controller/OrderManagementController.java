@@ -55,7 +55,7 @@ public class OrderManagementController {
     public String pay(HttpServletRequest request){
         User loggedUser = userService.findLoggedUser(request);
 
-        Auction auction = auctionService.findAuctionById(Long.parseLong(request.getParameter("auctionId")));
+        Auction auction = auctionService.findAuctionById(Long.parseLong(request.getParameter("auctionID")));
         LocalDateTime currentDateTime = LocalDateTime.now();
         Timestamp timestamp = Timestamp.valueOf(currentDateTime);
 
