@@ -184,14 +184,6 @@ public class User {
         this.deleted = deleted;
     }
 
-    public List<Threshold> getThresholds() {
-        return thresholds;
-    }
-
-    public void setThresholds(List<Threshold> thresholds) {
-        this.thresholds = thresholds;
-    }
-
     public List<Product> getProducts() {
         return products;
     }
@@ -200,11 +192,4 @@ public class User {
         this.products = products;
     }
 
-    public List<Order> getOrders() {
-        return orders;
-    }
-
-    public void setOrders(List<Order> orders) {
-        this.orders = orders;
-    }
 }
