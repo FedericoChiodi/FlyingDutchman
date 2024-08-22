@@ -57,6 +57,8 @@ public class Order {
         this.buyer = buyer;
     }
 
+    public User getBuyer() { return buyer; }
+
     public Product getProduct() {
         return product;
     }
