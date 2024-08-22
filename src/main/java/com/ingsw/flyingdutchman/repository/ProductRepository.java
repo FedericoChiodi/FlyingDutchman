@@ -14,7 +14,8 @@ import java.util.List;
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
     // Trova i Prodotti dall'Utente che lo vende
-    List<Product> findByOwner(User owner);
+    @Query("SELECT p FROM Product p WHERE p.owner = :owner")
+    List<Product> findByOwner(@Param("owner") User owner);
 
     // Trova i Prodotti dall'Utente che lo vende, ma non cancellati
     @Query("SELECT p FROM Product p  WHERE p.owner = :owner AND p.deleted = 'N'")
