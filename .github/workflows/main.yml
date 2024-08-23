@@ -50,7 +50,7 @@ jobs:
           cache: maven
 
       - name: Build with Maven
-        run: mvn -B verify -Dspring.profiles.active=test -X -e
+        run: mvn -B verify
 
       - name: Generate coverage report
         run: mvn jacoco:report
@@ -107,4 +107,4 @@ jobs:
         uses: actions/download-artifact@v4.1.8
         with:
           name: test-reports
-          path: reports
+          path: target/site
