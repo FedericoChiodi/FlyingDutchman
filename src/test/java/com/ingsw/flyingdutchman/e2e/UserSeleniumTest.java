@@ -13,7 +13,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
-@Disabled
+@Tag("e2e")
 public class UserSeleniumTest {
 
     WebDriver driver;
