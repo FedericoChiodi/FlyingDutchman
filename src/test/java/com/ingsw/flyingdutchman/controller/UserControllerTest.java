@@ -6,13 +6,14 @@ import com.ingsw.flyingdutchman.model.mo.Threshold;
 import com.ingsw.flyingdutchman.model.mo.User;
 import com.ingsw.flyingdutchman.model.service.*;
 import jakarta.servlet.http.HttpServletRequest;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -31,30 +32,24 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
 
 @ActiveProfiles("test")
+@WebMvcTest(UserManagementController.class)
+@AutoConfigureMockMvc
 public class UserControllerTest {
 
+    @Autowired
     private MockMvc mockMvc;
 
-    @Mock
+    @MockBean
     private AuctionService auctionService;
 
-    @Mock
+    @MockBean
     private UserService userService;
 
-    @Mock
+    @MockBean
     private ProductService productService;
 
-    @Mock
+    @MockBean
     private ThresholdService thresholdService;
-
-    @InjectMocks
-    private UserManagementController userManagementController;
-
-    @BeforeEach
-    public void setup() {
-        MockitoAnnotations.openMocks(this);
-        mockMvc = MockMvcBuilders.standaloneSetup(userManagementController).build();
-    }
 
     @Test
     public void view_test() throws Exception {
