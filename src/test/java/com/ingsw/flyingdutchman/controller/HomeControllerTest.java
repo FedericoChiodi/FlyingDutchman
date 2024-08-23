@@ -4,16 +4,15 @@ import com.ingsw.flyingdutchman.model.mo.User;
 import com.ingsw.flyingdutchman.model.service.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.stream.Stream;
 
@@ -26,21 +25,15 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ActiveProfiles("test")
+@WebMvcTest(HomeManagementController.class)
+@AutoConfigureMockMvc
 public class HomeControllerTest {
 
+    @Autowired
     private MockMvc mockMvc;
 
-    @Mock
+    @MockBean
     private UserService userService;
-
-    @InjectMocks
-    private HomeManagementController homeManagementController;
-
-    @BeforeEach
-    public void setup() {
-        MockitoAnnotations.openMocks(this);
-        mockMvc = MockMvcBuilders.standaloneSetup(homeManagementController).build();
-    }
 
     @ParameterizedTest
     @MethodSource("userProvider")
