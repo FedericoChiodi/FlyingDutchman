@@ -1,6 +1,5 @@
 package com.ingsw.flyingdutchman.services;
 
-import com.ingsw.flyingdutchman.model.mo.Category;
 import com.ingsw.flyingdutchman.model.mo.Product;
 import com.ingsw.flyingdutchman.model.mo.User;
 import com.ingsw.flyingdutchman.model.service.CategoryService;
